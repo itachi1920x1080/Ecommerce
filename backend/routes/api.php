@@ -2,7 +2,93 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+*/
+
+// ១. អ្នកធម្មតាអាចមើលទំនិញបាន
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/{product}', [ProductController::class, 'show']);
+
+// ២. បង្កើតគណនី (Register API)
+Route::post('/register', function (Request $request) {
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => 'required|min:8',
+    ]);
+
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        // ពេលចុះឈ្មោះទូទៅ គឺឲ្យសិទ្ធិជា 'user' ធម្មតា
+        'role' => 'user', 
+    ]);
+
+    return response()->json([
+        'message' => 'បង្កើតគណនីជោគជ័យ!',
+        'token' => $user->createToken('API_Token')->plainTextToken
+    ], 201);
+});
+
+// ៣. ចូលគណនី (Login API)
+Route::post('/login', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+
+    if (! $user || ! Hash::check($request->password, $user->password)) {
+        return response()->json(['message' => 'Email ឬ Password មិនត្រឹមត្រូវទេ'], 401);
+    }
+
+    return response()->json([
+        'message' => 'ចូលគណនីជោគជ័យ!',
+        'token' => $user->createToken('API_Token')->plainTextToken,
+        'role' => $user->role // បញ្ជូនសិទ្ធិប្រាប់ទៅកុំព្យូទ័រវិញផងដែរ
+    ]);
+});
+
+
+// ៤. ក្រុមទី ១៖ សម្រាប់អ្នកប្រើប្រាស់ធម្មតា (User Routes)
+Route::middleware(['auth:sanctum'])->group(function () {
+    
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::post('/logout', function (Request $request) {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message' => 'ចាកចេញជោគជ័យ!']);
+    });
+    // 📦 មើលប្រវត្តិការទិញរបស់ខ្លួនឯង
+    Route::get('/my-orders', [\App\Http\Controllers\OrderController::class, 'myOrders']);
+
+    // កន្ត្រកទិញទំនិញ និង គិតលុយ
+    Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index']);
+    Route::post('/cart', [\App\Http\Controllers\CartController::class, 'store']);
+    Route::delete('/cart/{id}', [\App\Http\Controllers\CartController::class, 'destroy']);
+    Route::post('/checkout', [\App\Http\Controllers\OrderController::class, 'checkout']);
+});
+
+// ៥. ក្រុមទី ២៖ សម្រាប់តែម្ចាស់ហាងប៉ុណ្ណោះ (Admin Routes) 🛡️
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    
+    // គ្រប់គ្រងទំនិញ (ទាល់តែមានកាត Admin ទើបចូលមកកន្លែងនេះបាន)
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::put('/products/{product}', [ProductController::class, 'update']);
+    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+    // 📦 គ្រប់គ្រងវិក្កយបត្រអតិថិជន
+    Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'index']);
+    Route::put('/orders/{id}/status', [\App\Http\Controllers\OrderController::class, 'updateStatus']);
+    
+});
