@@ -15,6 +15,8 @@ use App\Models\User;
 // ១. អ្នកធម្មតាអាចមើលទំនិញបាន
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
+// ទាញយកប្រភេទ Categories ទាំងអស់ (យកទៅប្រើនៅ Frontend)
+Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'index']);
 
 // ២. បង្កើតគណនី (Register API)
 Route::post('/register', function (Request $request) {
@@ -78,10 +80,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/cart', [\App\Http\Controllers\CartController::class, 'store']);
     Route::delete('/cart/{id}', [\App\Http\Controllers\CartController::class, 'destroy']);
     Route::post('/checkout', [\App\Http\Controllers\OrderController::class, 'checkout']);
+    
 });
 
 // ៥. ក្រុមទី ២៖ សម្រាប់តែម្ចាស់ហាងប៉ុណ្ណោះ (Admin Routes) 🛡️
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    // គ្រប់គ្រង Categories
+    Route::post('/categories', [\App\Http\Controllers\CategoryController::class, 'store']);
+    Route::delete('/categories/{id}', [\App\Http\Controllers\CategoryController::class, 'destroy']);
     
     // គ្រប់គ្រងទំនិញ (ទាល់តែមានកាត Admin ទើបចូលមកកន្លែងនេះបាន)
     Route::post('/products', [ProductController::class, 'store']);
@@ -90,5 +96,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // 📦 គ្រប់គ្រងវិក្កយបត្រអតិថិជន
     Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'index']);
     Route::put('/orders/{id}/status', [\App\Http\Controllers\OrderController::class, 'updateStatus']);
+    // 📊 ទាញយករបាយការណ៍ Dashboard
+    Route::get('/dashboard/analytics', [\App\Http\Controllers\DashboardController::class, 'getAnalytics']);
     
 });
