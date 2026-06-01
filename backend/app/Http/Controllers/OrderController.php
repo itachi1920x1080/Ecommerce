@@ -5,131 +5,119 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class OrderController extends Controller
 {
-    // 🛒 ១. មុខងារបញ្ជាទិញ និងគិតលុយ (Checkout - Pro Version)
+    // មុខងារបញ្ជាទិញ និងគិតលុយ (Checkout)
     public function checkout(Request $request)
     {
-        // តម្រូវឱ្យមានការជ្រើសរើសទីតាំងអាសយដ្ឋានមុនពេលទិញ
-        $request->validate([
-            'address_id' => 'required|exists:addresses,id',
-            'payment_method' => 'nullable|string',
-        ]);
-
         $user = $request->user();
-        
-        // ទាញយកទំនិញទាំងអស់ពីកន្ត្រករបស់គាត់
-        $cartItems = Cart::where('user_id', $user->id)->with('product')->get();
 
-        if ($cartItems->isEmpty()) {
-            return response()->json(['message' => 'កន្ត្រករបស់អ្នកទទេស្អាត! គ្មានអ្វីត្រូវគិតលុយទេ'], 400);
-        }
-
-        // ប្រើប្រាស់ DB Transaction ដើម្បីការពារសុវត្ថិភាព (បើ Error វានឹងអូសត្រលប់ក្រោយវិញទាំងអស់)
         try {
             DB::beginTransaction();
 
-            $totalAmount = 0;
-            $orderItemsData = [];
+            // ១. ទាញយកទំនិញពីកន្ត្រក
+            $cartItems = Cart::where('user_id', $user->id)->with('product')->get();
 
-            // គណនាតម្លៃសរុប និងកាត់ស្តុកទំនិញ (គិតទាំង Product ធម្មតា និង Variant)
-            foreach ($cartItems as $item) {
-                $product = $item->product;
-                $price = $product->price;
-
-                // បើទំនិញក្នុងកន្ត្រកមានភ្ជាប់ជម្រើស (Variant)
-                if ($item->product_variant_id) {
-                    $variant = ProductVariant::findOrFail($item->product_variant_id);
-                    if ($variant->stock < $item->quantity) {
-                        throw new \Exception("ជម្រើសទំនិញ {$product->name} ({$variant->name}) មិនមានស្តុកគ្រប់គ្រាន់ទេ!");
-                    }
-                    $variant->decrement('stock', $item->quantity); // កាត់ស្តុក Variant
-                    $price = $variant->price; // យកតម្លៃ Variant មកគិតលុយ
-                } else {
-                    // បើទំនិញធម្មតា អត់មានជម្រើស
-                    if ($product->stock < $item->quantity) {
-                        throw new \Exception("ទំនិញ {$product->name} មិនមានស្តុកគ្រប់គ្រាន់ទេ!");
-                    }
-                    $product->decrement('stock', $item->quantity); // កាត់ស្តុក Product មេ
-                }
-
-                $totalAmount += ($price * $item->quantity);
-
-                // រៀបចំទិន្នន័យសម្រាប់ Insert ចូល OrderItem
-                $orderItemsData[] = [
-                    'product_id' => $product->id,
-                    'product_variant_id' => $item->product_variant_id ?? null,
-                    'quantity' => $item->quantity,
-                    'price' => $price,
-                ];
+            if ($cartItems->isEmpty()) {
+                return response()->json(['message' => 'កន្ត្រករបស់អ្នកទទេស្អាត!'], 400);
             }
 
-            // បង្កើតវិក្កយបត្រមេ (Order)
+            $totalAmount = 0;
+            foreach ($cartItems as $item) {
+                $totalAmount += $item->product->price * $item->quantity;
+            }
+
+            // ២. បង្កើត Order
             $order = Order::create([
                 'user_id' => $user->id,
-                'address_id' => $request->address_id,
                 'total_amount' => $totalAmount,
-                'payment_method' => $request->payment_method ?? 'COD',
+                'payment_method' => 'COD', // ឬយកចេញពី $request
                 'status' => 'pending',
             ]);
 
-            // បញ្ចូលទំនិញលម្អិតទៅក្នុង Order Items
-            foreach ($orderItemsData as $data) {
-                $order->items()->create($data);
+            // ៣. បង្កើត Order Items និងកាត់ស្តុក
+            foreach ($cartItems as $item) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item->product_id,
+                    'quantity' => $item->quantity,
+                    'price' => $item->product->price,
+                ]);
+
+                $item->product->decrement('stock', $item->quantity);
             }
 
-            // លុបទំនិញទាំងអស់ចេញពីកន្ត្រក (Clear Cart) បន្ទាប់ពីទិញរួចរាល់
+            // ៤. លុបកន្ត្រក
             Cart::where('user_id', $user->id)->delete();
 
-            DB::commit(); // អនុម័តរក្សាទុកទិន្នន័យចូល Database
+            DB::commit();
+
+            // ៥. បាញ់សារចូល Telegram (បន្ទាប់ពី Commit ជោគជ័យ)
+            $telegramToken = env('TELEGRAM_BOT_TOKEN');
+            $chatId = env('TELEGRAM_CHAT_ID');
+
+            if ($telegramToken && $chatId) {
+                $message = "🛍️ <b>មានការបញ្ជាទិញថ្មី!</b>\n\n";
+                $message .= "🧾 <b>លេខវិក្កយបត្រ:</b> #{$order->id}\n";
+                $message .= "💰 <b>ទឹកប្រាក់សរុប:</b> $" . number_format($totalAmount, 2) . "\n";
+                $message .= "💳 <b>វិធីបង់ប្រាក់:</b> COD\n\n";
+                $message .= "👉 <i>សូមចូលទៅកាន់ Dashboard ដើម្បីរៀបចំឥវ៉ាន់!</i>";
+
+                @Http::post("https://api.telegram.org/bot{$telegramToken}/sendMessage", [
+                    'chat_id' => $chatId,
+                    'text' => $message,
+                    'parse_mode' => 'HTML'
+                ]);
+            }
 
             return response()->json([
-                'message' => 'ការបញ្ជាទិញទទួលបានជោគជ័យ!',
-                'order_id' => $order->id,
-                'total_paid' => $totalAmount
+                'message' => 'ការបញ្ជាទិញជោគជ័យ!',
+                'order_id' => $order->id
             ], 201);
 
         } catch (\Exception $e) {
-            DB::rollBack(); // បោះបង់ប្រតិបត្តិការទាំងអស់ ប្រសិនបើមានបញ្ហាអស់ស្តុក
-            return response()->json(['message' => $e->getMessage()], 400);
+            DB::rollBack();
+            return response()->json(['message' => 'មានបញ្ហា!', 'error' => $e->getMessage()], 500);
         }
     }
 
-    // 📦 ២. សម្រាប់ User: មើលប្រវត្តិការទិញរបស់ខ្លួនឯង
+    // ១. សម្រាប់ User: មើលប្រវត្តិការទិញរបស់ខ្លួនឯង (My Orders)
     public function myOrders(Request $request)
     {
         $orders = Order::where('user_id', $request->user()->id)
-            ->with(['items.product', 'items.variant']) // ទាញយកទាំងឈ្មោះ Product និងឈ្មោះ Variant
+            ->with('items.product') // ទាញទំនិញដែលបានទិញមកជាមួយ
             ->latest()
             ->get();
 
         return response()->json($orders);
     }
 
-    // 📊 ៣. សម្រាប់ Admin: ទាញយកវិក្កយបត្រទាំងអស់
+    // ២. សម្រាប់ Admin: ទាញយកវិក្កយបត្រទាំងអស់
     public function index()
     {
-        $orders = Order::with(['user', 'items.product', 'items.variant'])->latest()->paginate(10);
+        // ទាញយក Orders ទាំងអស់ ព្រមទាំងឈ្មោះអ្នកទិញ (user) និងទំនិញ (items)
+        $orders = Order::with(['user', 'items.product'])->latest()->paginate(10);
         return response()->json($orders);
     }
 
-    // 🔄 ៤. សម្រាប់ Admin: ប្តូរស្ថានភាពវិក្កយបត្រ (Pending -> Shipped -> Delivered)
+    // ៣. សម្រាប់ Admin: ប្តូរស្ថានភាពវិក្កយបត្រ (ឧ. ពី pending ទៅ completed)
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:pending,processing,shipped,delivered,cancelled'
+            'status' => 'required|in:pending,completed,cancelled'
         ]);
 
         $order = Order::findOrFail($id);
         $order->update(['status' => $request->status]);
 
         return response()->json([
-            'message' => "ស្ថានភាពវិក្កយបត្រត្រូវបានប្តូរទៅជា {$request->status} ជោគជ័យ!",
+            'message' => 'ស្ថានភាពវិក្កយបត្រត្រូវបានផ្លាស់ប្តូរជោគជ័យ!',
             'order' => $order
         ]);
     }
+    
 }
