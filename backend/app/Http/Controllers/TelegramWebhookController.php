@@ -24,7 +24,7 @@ class TelegramWebhookController extends Controller
             $chatId = $update['message']['chat']['id'];
             
             // ១. ដាក់ Token ផ្ទាល់សិន ដើម្បីប្រាកដថាវាដើរ (អាចប្តូរទៅ env វិញនៅពេលក្រោយ)
-            $botToken = "8895814464:AAFS4-02QXSMKgy4nuuxs-thJL4UYpVRmkg";
+            $botToken = env('TELEGRAM_BOT_TOKEN');
             $apiUrl = "https://api.telegram.org/bot{$botToken}/sendMessage";
 
             // ----------------------------------------------------
