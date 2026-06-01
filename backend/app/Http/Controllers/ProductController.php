@@ -9,10 +9,11 @@ use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
     // ១. ទាញយកទំនិញទាំងអស់ (មានមុខងារ Search, Filter, Pagination និង Category)
+    // ១. ទាញយកទំនិញទាំងអស់ (មានមុខងារ Search, Filter, Pagination និង Category)
     public function index(Request $request)
     {
-        // ភ្ជាប់ជាមួយ category ដើម្បីទាញឈ្មោះប្រភេទមកជាមួយទំនិញ
-        $query = Product::with('category'); 
+        // ភ្ជាប់ជាមួយ category និង variants ដើម្បីទាញយកមកព្រមគ្នា
+        $query = Product::with(['category', 'variants']);
 
         // ក. មុខងារស្វែងរកតាមឈ្មោះ
         if ($request->has('search')) {
@@ -33,12 +34,11 @@ class ProductController extends Controller
             $query->where('price', '<=', $request->max_price);
         }
 
-        // ឃ. បែងចែកទំព័រ (បង្ហាញត្រឹម ១០ ទំនិញក្នុង ១ ទំព័រ)
+        // ឃ. បែងចែកទំព័រ (ប្រើកូដ paginate ដើមរបស់អ្នកវិញទើបត្រូវ)
         $products = $query->latest()->paginate(10);
 
         return response()->json($products);
-    }
-
+    }   
     // ២. បញ្ចូលទំនិញថ្មី (សម្រាប់ Admin)
     public function store(Request $request)
     {
@@ -72,9 +72,12 @@ class ProductController extends Controller
     }
 
     // ៣. មើលទំនិញតែមួយមុខលម្អិត
+    // ៣. មើលទំនិញតែមួយមុខលម្អិត
     public function show($id)
     {
-        $product = Product::with('category')->findOrFail($id);
+        // កន្លែងនេះទើបយើងប្រើ findOrFail($id) ដោយភ្ជាប់ category និង variants មកជាមួយ
+        $product = Product::with(['category', 'variants'])->findOrFail($id);
+        
         return response()->json($product);
     }
 
@@ -130,4 +133,4 @@ class ProductController extends Controller
 
         return response()->json(['message' => 'លុបទំនិញជោគជ័យ!']);
     }
-}
+ }

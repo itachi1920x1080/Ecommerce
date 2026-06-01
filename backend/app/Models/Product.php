@@ -47,4 +47,18 @@ class Product extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+    /**
+     * ទំនាក់ទំនង៖ ទំនិញនេះមានមតិយោបល់ (Reviews) អ្វីខ្លះ?
+     */
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+    /**
+     * ទំនាក់ទំនង៖ ទំនិញមួយអាចមានច្រើនជម្រើស (Variants)
+     */
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
 }
