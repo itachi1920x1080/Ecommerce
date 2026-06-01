@@ -4,7 +4,7 @@
     <div v-if="loading">Loading...</div>
     <div class="products-grid">
       <div v-for="product in products" :key="product.id" class="product-card">
-        <img :src="product.image || 'https://placehold.co/300x300?text=Skincare'" :alt="product.name" />
+        <img :src="product.image_url || 'https://placehold.co/300x300?text=Skincare'" :alt="product.name" />
         <h3>{{ product.name }}</h3>
         <p class="price">${{ product.price }}</p>
         <router-link :to="'/products/' + product.id" class="btn-primary">View</router-link>
@@ -23,7 +23,7 @@ const loading = ref(true)
 onMounted(async () => {
   try {
     const res = await api.get('/products')
-    products.value = res.data
+    products.value = res.data.data || res.data
   } catch (e) {
     console.error(e)
   } finally {
