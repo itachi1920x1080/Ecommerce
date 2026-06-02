@@ -1,3 +1,7 @@
+/**
+ * RUPP Shop — Main Entry Point
+ * Initializes Vue 3 app with Pinia (state) and Vue Router (navigation).
+ */
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'

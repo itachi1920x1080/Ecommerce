@@ -25,6 +25,10 @@ Route::get('/products/{product}/variants', [\App\Http\Controllers\ProductVariant
 // Telegram Webhook
 Route::post('/webhook', [TelegramWebhookController::class, 'handle']);
 
+// Payment & Order Status Checking (Public)
+Route::post('/payment/webhook', [\App\Http\Controllers\PaymentController::class, 'webhook']);
+Route::get('/orders/{id}/status', [\App\Http\Controllers\OrderController::class, 'checkStatus']);
+
 // ២. បង្កើតគណនី (Register API)
 Route::post('/register', function (Request $request) {
     $request->validate([

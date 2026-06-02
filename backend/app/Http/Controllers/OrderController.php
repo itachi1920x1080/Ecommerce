@@ -132,7 +132,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:pending,completed,cancelled'
+            'status' => 'required|in:pending,processing,paid,completed,delivered,cancelled'
         ]);
 
         $order = Order::findOrFail($id);
@@ -143,6 +143,11 @@ class OrderController extends Controller
             'order' => $order
         ]);
     }
-    
-    
+
+    // ៤. សម្រាប់ Frontend ឆែកមើលថាបង់លុយរួចឬនៅ
+    public function checkStatus($id)
+    {
+        $order = Order::findOrFail($id);
+        return response()->json(['status' => $order->status]);
+    }
 }
