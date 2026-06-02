@@ -110,10 +110,10 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // 📊 ទាញយករបាយការណ៍ Dashboard
     Route::get('/dashboard/analytics', [\App\Http\Controllers\DashboardController::class, 'getAnalytics']);
 
-    // 👥 🟢 គ្រប់គ្រងអ្នកប្រើប្រាស់ (Admin Manage Users)
-    Route::get('/users', [UserController::class, 'index']);
-    Route::put('/users/{id}', [UserController::class, 'update']);
-    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+   // 👥 🟢 គ្រប់គ្រងអ្នកប្រើប្រាស់ (Admin Manage Users)
+    Route::get('/admin/users', [UserController::class, 'index']);
+    Route::put('/admin/users/{id}', [UserController::class, 'update']);
+    Route::delete('/admin/users/{id}', [UserController::class, 'destroy']);
 
     // 🛍️ គ្រប់គ្រងទំនិញ (Products)
     Route::post('/products', [ProductController::class, 'store']);
