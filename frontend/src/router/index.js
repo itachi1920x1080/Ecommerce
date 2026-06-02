@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import AdminView from '@/views/admin/AdminView.vue'
 
 const routes = [
     { path: '/', component: () => import('../views/shop/HomeView.vue') },
@@ -10,11 +11,26 @@ const routes = [
     { path: '/cart', component: () => import('../views/shop/CartView.vue'), meta: { auth: true } },
     { path: '/checkout', component: () => import('../views/shop/CheckoutView.vue'), meta: { auth: true } },
     { path: '/admin', component: () => import('../views/admin/AdminView.vue'), meta: { auth: true, admin: true } },
+    
+    { 
+        path: '/admin', 
+        component: AdminView,
+        meta: { requiresAuth: true, requiresAdmin: true }
+    },
 ]
 
 const router = createRouter({
     history: createWebHistory(),
     routes
+})
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+  const user  = JSON.parse(localStorage.getItem('user') || 'null')
+
+  if (to.meta.requiresAdmin && user?.role !== 'admin') return next('/login')
+  if (to.meta.requiresAuth && !token) return next('/login')
+  next()
 })
 
 router.beforeEach((to, from, next) => {

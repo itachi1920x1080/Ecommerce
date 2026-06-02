@@ -1,1 +1,32 @@
 @import "tailwindcss";
+
+/* Admin Dashboard */
+.admin-layout { display: grid; grid-template-columns: 210px 1fr; min-height: 100vh; }
+.sidebar { background: var(--color-background-primary, #fff); border-right: 0.5px solid #e5e7eb; padding: 1.5rem 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.logo { padding: 0 1.25rem 1.5rem; font-size: 15px; font-weight: 500; display: flex; align-items: center; gap: 8px; border-bottom: 0.5px solid #e5e7eb; margin-bottom: 1rem; }
+.nav-section { font-size: 11px; color: #9ca3af; padding: .75rem 1.25rem .25rem; text-transform: uppercase; letter-spacing: .08em; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: .6rem 1.25rem; font-size: 13px; color: #6b7280; cursor: pointer; border-left: 2px solid transparent; }
+.nav-item:hover { background: #f9fafb; color: #111; }
+.nav-item.active { color: #4a7c59; border-left-color: #4a7c59; background: #e8f5e950; }
+.nav-item i { font-size: 16px; }
+.admin-main { padding: 1.5rem; background: #f9fafb; }
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.topbar h1 { font-size: 18px; font-weight: 500; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+.stat { background: #fff; border-radius: 10px; padding: 1rem; border: 0.5px solid #e5e7eb; }
+.stat-label { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+.stat-value { font-size: 24px; font-weight: 500; color: #111; }
+.card { background: #fff; border-radius: 12px; border: 0.5px solid #e5e7eb; padding: 1.25rem; margin-bottom: 1.5rem; }
+.card-title { font-size: 14px; font-weight: 500; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+.order-row { display: flex; align-items: center; justify-content: space-between; padding: .6rem 0; border-bottom: 0.5px solid #f3f4f6; font-size: 13px; }
+.order-row:last-child { border: none; }
+.order-id { font-size: 11px; color: #9ca3af; }
+.order-amount { font-weight: 500; color: #4a7c59; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th { text-align: left; padding: .6rem .75rem; font-size: 12px; color: #6b7280; font-weight: 500; border-bottom: 0.5px solid #e5e7eb; }
+.data-table td { padding: .75rem; border-bottom: 0.5px solid #f3f4f6; color: #111; }
+.data-table tr:last-child td { border: none; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-grid input { padding: .6rem .75rem; border: 0.5px solid #d1d5db; border-radius: 8px; font-size: 13px; width: 100%; }
+.badge-purple { background: #EEEDFE; color: #3C3489; }
+.btn-danger { background: #FCEBEB; color: #791F1F; border-color: #F09595; }
