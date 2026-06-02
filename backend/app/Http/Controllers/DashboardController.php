@@ -13,7 +13,8 @@ class DashboardController extends Controller
     public function getAnalytics()
     {
         // ១. គណនាប្រាក់ចំណូលសរុប (យកតែវិក្កយបត្រដែល completed)
-        $totalRevenue = Order::where('status', 'completed')->sum('total_amount');
+        // កែមកបែបនេះវិញ៖
+        $totalRevenue = Order::where('status', 'delivered')->sum('total_amount');   
 
         // ២. រាប់ចំនួនការបញ្ជាទិញសរុបទាំងអស់
         $totalOrders = Order::count();

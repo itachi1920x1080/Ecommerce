@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Http\Controllers\TelegramWebhookController;
+use App\Http\Controllers\OrderController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,7 +23,8 @@ Route::get('/products/{product}/reviews', [\App\Http\Controllers\ReviewControlle
 // មើលជម្រើសផ្សេងៗរបស់ទំនិញ (Variants)
 Route::get('/products/{product}/variants', [\App\Http\Controllers\ProductVariantController::class, 'index']);
 
-Route::post('/telegram/webhook', [TelegramWebhookController::class, 'handle']);
+// 🟢 នេះគឺជាចំណុចដែលបានកែសម្រួល (កែឈ្មោះឱ្យត្រូវជាមួយ Telegram Webhook)
+Route::post('/webhook', [TelegramWebhookController::class, 'handle']);
 
 // ២. បង្កើតគណនី (Register API)
 Route::post('/register', function (Request $request) {
@@ -102,6 +104,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 // ៥. ក្រុមទី ២៖ សម្រាប់តែម្ចាស់ហាងប៉ុណ្ណោះ (Admin Routes) 🛡️
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::get('/admin/orders', [OrderController::class, 'index']);
     // គ្រប់គ្រង Categories
     Route::post('/categories', [\App\Http\Controllers\CategoryController::class, 'store']);
     Route::delete('/categories/{id}', [\App\Http\Controllers\CategoryController::class, 'destroy']);
@@ -122,5 +125,5 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // គ្រប់គ្រងជម្រើសទំនិញ (Variants)
     Route::post('/products/{product}/variants', [\App\Http\Controllers\ProductVariantController::class, 'store']);
     Route::delete('/variants/{id}', [\App\Http\Controllers\ProductVariantController::class, 'destroy']);
-
+    
 });
