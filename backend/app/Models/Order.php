@@ -8,7 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'address_id', 'driver_id', 'total_price', 'status', 'payment_method'];
+    protected $fillable = ['user_id', 'address_id', 'driver_id', 'total_price', 'status', 'payment_method', 'delivery_photo_url'];
+    protected $appends = ['full_delivery_photo_url'];
+
+    public function getFullDeliveryPhotoUrlAttribute()
+    {
+        return $this->delivery_photo_url ? asset('storage/' . $this->delivery_photo_url) : null;
+    }
 
     public function items() {
         return $this->hasMany(OrderItem::class);

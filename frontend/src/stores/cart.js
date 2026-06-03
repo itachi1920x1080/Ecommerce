@@ -78,6 +78,24 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
 
+  async function updateQuantity(id, qty) {
+    const item = items.value.find(i => i.id === id)
+    if (!item) return
+
+    // Optimistic local update
+    item.quantity = qty
+
+    // Sync with backend
+    if (item.cart_id) {
+      try {
+        await api.put(`/cart/${item.cart_id}`, { quantity: qty })
+      } catch (e) {
+        console.error('Failed to update quantity on server:', e)
+        await fetchCart() // Revert on failure
+      }
+    }
+  }
+
   return { 
     items, 
     loading, 
@@ -85,6 +103,7 @@ export const useCartStore = defineStore('cart', () => {
     cartTotal, 
     fetchCart, 
     addToCart, 
-    removeFromCart 
+    removeFromCart,
+    updateQuantity
   }
 })

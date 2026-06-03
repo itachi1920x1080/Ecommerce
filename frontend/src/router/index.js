@@ -13,6 +13,11 @@ const routes = [
     component: () => import('@/pages/Home.vue')
   },
   {
+    path: '/products/:id',
+    name: 'product-detail',
+    component: () => import('@/pages/ProductDetail.vue')
+  },
+  {
     path: '/contact',
     name: 'contact',
     component: () => import('@/pages/Contact.vue')
@@ -57,6 +62,18 @@ const routes = [
     component: () => import('@/pages/Invoice.vue'),
     meta: { auth: true }
   },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: () => import('@/pages/Profile.vue'),
+    meta: { auth: true }
+  },
+  {
+    path: '/driver',
+    name: 'driver-dashboard',
+    component: () => import('@/pages/DriverDashboard.vue'),
+    meta: { auth: true, driver: true }
+  },
 
   // ── Admin Routes (require admin role) ──
   {
@@ -85,6 +102,18 @@ const routes = [
     path: '/admin/users',
     name: 'admin-users',
     component: () => import('@/pages/AdminUsers.vue'),
+    meta: { auth: true, admin: true }
+  },
+  {
+    path: '/admin/categories',
+    name: 'admin-categories',
+    component: () => import('@/pages/AdminCategories.vue'),
+    meta: { auth: true, admin: true }
+  },
+  {
+    path: '/admin/coupons',
+    name: 'admin-coupons',
+    component: () => import('@/pages/AdminCoupons.vue'),
     meta: { auth: true, admin: true }
   },
 
@@ -120,6 +149,11 @@ router.beforeEach((to, from, next) => {
 
   // Admin routes: redirect to home if not admin
   if (to.meta.admin && !auth.isAdmin) {
+    return next('/')
+  }
+
+  // Driver routes: redirect to home if not driver
+  if (to.meta.driver && !auth.isDriver) {
     return next('/')
   }
 

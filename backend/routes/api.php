@@ -89,8 +89,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // កន្ត្រកទិញទំនិញ និង គិតលុយ
     Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index']);
     Route::post('/cart', [\App\Http\Controllers\CartController::class, 'store']);
+    Route::put('/cart/{id}', [\App\Http\Controllers\CartController::class, 'update']);
+    Route::post('/cart/checkout', [OrderController::class, 'checkout']);
     Route::delete('/cart/{id}', [\App\Http\Controllers\CartController::class, 'destroy']);
-    Route::post('/cart/checkout', [\App\Http\Controllers\OrderController::class, 'checkout']);
     
     // បញ្ចូលការវាយតម្លៃទំនិញ (តម្រូវឱ្យ Login)
     Route::post('/products/{product}/reviews', [\App\Http\Controllers\ReviewController::class, 'store']);
@@ -148,6 +149,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 // ៦. ក្រុមទី ៣៖ សម្រាប់តែអ្នកដឹកជញ្ជូន (Driver Routes) 🛵
 Route::middleware(['auth:sanctum', 'driver'])->group(function () {
     Route::get('/driver/available-orders', [\App\Http\Controllers\DriverController::class, 'getAvailableOrders']);
+    Route::get('/driver/active-orders', [\App\Http\Controllers\DriverController::class, 'getActiveDeliveries']);
     Route::post('/driver/orders/{id}/accept', [\App\Http\Controllers\DriverController::class, 'acceptOrder']);
     Route::put('/driver/orders/{id}/status', [\App\Http\Controllers\DriverController::class, 'updateStatus']);
 });

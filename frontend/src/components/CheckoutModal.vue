@@ -57,9 +57,62 @@
                 <p class="text-sm text-slate-400 mt-0.5">Choose your payment method</p>
               </div>
 
-              <div class="p-6 space-y-4">
+              <div class="p-6 space-y-6">
+                <!-- Address Selection -->
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <label class="text-sm font-semibold text-slate-700">Delivery Address</label>
+                    <button v-if="!showAddAddress" @click="showAddAddress = true" class="text-xs font-semibold text-primary-600 hover:text-primary-700">Add New</button>
+                    <button v-else @click="showAddAddress = false" class="text-xs font-semibold text-slate-500 hover:text-slate-700">Cancel</button>
+                  </div>
+
+                  <div v-if="showAddAddress" class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <input v-model="addressForm.receiver_name" type="text" placeholder="Receiver Name" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20" />
+                      <input v-model="addressForm.phone_number" type="text" placeholder="Phone Number" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20" />
+                    </div>
+                    <textarea v-model="addressForm.full_address" placeholder="Full Address" rows="2" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20"></textarea>
+                    <button @click="saveAddress" :disabled="savingAddress || !addressForm.receiver_name || !addressForm.phone_number || !addressForm.full_address" class="w-full py-2 bg-slate-800 text-white text-sm font-semibold rounded-lg hover:bg-slate-900 transition-colors disabled:opacity-50">
+                      {{ savingAddress ? 'Saving...' : 'Save Address' }}
+                    </button>
+                  </div>
+
+                  <template v-else>
+                    <div v-if="addressesLoading" class="h-12 skeleton rounded-xl"></div>
+                    <select v-else-if="addresses.length" v-model="selectedAddressId"
+                      class="w-full px-4 py-3 rounded-xl text-sm bg-slate-50 border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/20 cursor-pointer">
+                      <option v-for="addr in addresses" :key="addr.id" :value="addr.id">
+                        {{ addr.receiver_name }} ({{ addr.phone_number }}) - {{ addr.full_address }}
+                      </option>
+                    </select>
+                    <div v-else class="p-4 rounded-xl border border-amber-200 bg-amber-50 text-amber-700 text-sm">
+                      No delivery addresses found. Please add a new address above.
+                    </div>
+                  </template>
+                </div>
+
+                <!-- Coupon -->
+                <div class="space-y-3">
+                  <label class="text-sm font-semibold text-slate-700">Discount Coupon</label>
+                  <div class="flex gap-2">
+                    <input v-model="couponCode" type="text" placeholder="Enter code" :disabled="couponApplied"
+                      class="flex-1 px-4 py-3 rounded-xl text-sm bg-slate-50 border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/20 uppercase" />
+                    <button v-if="!couponApplied" @click="verifyCoupon" :disabled="!couponCode || verifyingCoupon"
+                      class="px-5 py-3 bg-slate-800 text-white text-sm font-semibold rounded-xl hover:bg-slate-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                      {{ verifyingCoupon ? '...' : 'Apply' }}
+                    </button>
+                    <button v-else @click="removeCoupon"
+                      class="px-5 py-3 bg-red-100 text-red-600 text-sm font-semibold rounded-xl hover:bg-red-200 transition-colors">
+                      Remove
+                    </button>
+                  </div>
+                  <p v-if="couponSuccess" class="text-xs font-semibold text-emerald-600">{{ couponSuccess }}</p>
+                  <p v-if="couponError" class="text-xs text-red-500">{{ couponError }}</p>
+                </div>
+
                 <!-- Payment Options -->
                 <div class="space-y-3">
+                  <label class="text-sm font-semibold text-slate-700">Payment Method</label>
                   <label
                     class="flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all"
                     :class="method === 'KHQR' ? 'border-blue-500 bg-blue-50' : 'border-slate-200 hover:border-slate-300'"
@@ -141,7 +194,79 @@ const showQR  = ref(false)
 const qrCode  = ref('')
 const orderResult = ref(null)
 
+const addresses = ref([])
+const addressesLoading = ref(false)
+const selectedAddressId = ref(null)
+const showAddAddress = ref(false)
+const savingAddress = ref(false)
+const addressForm = ref({ receiver_name: '', phone_number: '', full_address: '' })
+
+const couponCode = ref('')
+const couponApplied = ref(null) // the coupon object if valid
+const verifyingCoupon = ref(false)
+const couponError = ref('')
+const couponSuccess = ref('')
+
 let pollInterval = null
+
+// Fetch addresses
+async function fetchAddresses() {
+  addressesLoading.value = true
+  try {
+    const res = await api.get('/addresses')
+    addresses.value = res.data.data || res.data || []
+    if (addresses.value.length > 0) {
+      selectedAddressId.value = addresses.value[0].id
+    }
+  } catch (e) {
+    console.error('Failed to load addresses', e)
+  } finally {
+    addressesLoading.value = false
+  }
+}
+
+// Add new address
+async function saveAddress() {
+  savingAddress.value = true
+  try {
+    const res = await api.post('/addresses', addressForm.value)
+    const newAddr = res.data.data || res.data.address || res.data
+    addresses.value.push(newAddr)
+    selectedAddressId.value = newAddr.id
+    showAddAddress.value = false
+    addressForm.value = { receiver_name: '', phone_number: '', full_address: '' }
+    toast('Address added!', 'success')
+  } catch (e) {
+    toast(e.response?.data?.message || 'Failed to add address', 'error')
+  } finally {
+    savingAddress.value = false
+  }
+}
+
+// Verify coupon
+async function verifyCoupon() {
+  if (!couponCode.value) return
+  verifyingCoupon.value = true
+  couponError.value = ''
+  couponSuccess.value = ''
+  try {
+    const res = await api.post('/coupons/verify', { code: couponCode.value.toUpperCase() })
+    couponApplied.value = res.data.data || res.data.coupon || res.data
+    couponSuccess.value = 'Coupon applied successfully!'
+  } catch (e) {
+    couponError.value = e.response?.data?.message || 'Invalid or expired coupon'
+    couponApplied.value = null
+  } finally {
+    verifyingCoupon.value = false
+  }
+}
+
+function removeCoupon() {
+  couponCode.value = ''
+  couponApplied.value = null
+  couponSuccess.value = ''
+  couponError.value = ''
+}
 
 // Reset state when modal opens/closes
 watch(() => props.show, (newVal) => {
@@ -153,6 +278,8 @@ watch(() => props.show, (newVal) => {
     showQR.value = false
     qrCode.value = ''
     orderResult.value = null
+    removeCoupon()
+    fetchAddresses()
   } else {
     stopPolling()
   }
@@ -195,13 +322,24 @@ function handleClose() {
 }
 
 async function handleCheckout() {
+  if (!selectedAddressId.value) {
+    error.value = 'Please select a delivery address.'
+    return
+  }
+
   error.value   = ''
   loading.value = true
   
   try {
-    // 1. Call Backend API POST /api/cart/checkout with payload { payment_method: "KHQR" }
-    // The axios interceptor handles the Bearer token automatically
-    const res = await api.post('/cart/checkout', { payment_method: method.value })
+    const payload = {
+      payment_method: method.value,
+      address_id: selectedAddressId.value,
+    }
+    if (couponApplied.value) {
+      payload.coupon_id = couponApplied.value.id || couponApplied.value.code
+    }
+
+    const res = await api.post('/cart/checkout', payload)
     const data = res.data
 
     orderResult.value = data.order || data

@@ -19,6 +19,18 @@ class DriverController extends Controller
         return response()->json($orders);
     }
 
+    // 1.5 Get driver's active deliveries
+    public function getActiveDeliveries(Request $request)
+    {
+        $orders = Order::with(['user', 'address', 'items.product'])
+            ->where('driver_id', $request->user()->id)
+            ->whereIn('status', ['driver_assigned', 'at_restaurant', 'delivering'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($orders);
+    }
+
     // 2. Accept an order
     public function acceptOrder(Request $request, $id)
     {
@@ -50,7 +62,8 @@ class DriverController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:at_restaurant,delivering,delivered'
+            'status' => 'required|in:at_restaurant,delivering,delivered',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120' // up to 5MB
         ]);
 
         $order = Order::with('user')->find($id);
@@ -63,7 +76,14 @@ class DriverController extends Controller
             return response()->json(['message' => 'អ្នកមិនមែនជាអ្នកដឹកជញ្ជូនសម្រាប់វិក្កយបត្រនេះទេ (Unauthorized)'], 403);
         }
 
-        $order->update(['status' => $request->status]);
+        $updateData = ['status' => $request->status];
+
+        if ($request->hasFile('image') && $request->status === 'delivered') {
+            $imagePath = $request->file('image')->store('deliveries', 'public');
+            $updateData['delivery_photo_url'] = $imagePath;
+        }
+
+        $order->update($updateData);
 
         // ផ្ញើសារទៅ Telegram ពេលស្ថានភាពប្រែប្រួល
         $statusEmoji = $request->status === 'delivered' ? '✅' : '🛵';

@@ -1,133 +1,238 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════
-   RUPP Shop — Global Design System (Blue + Gray Palette)
+   RUPP Shop — Design System v2 (Blue/Indigo Premium Palette)
+   Vue 3 + Tailwind CSS v4
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── Base Styles ── */
-* {
+/* ── Tailwind v4 Theme Tokens ── */
+@theme {
+  --color-primary-50:  #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --color-primary-800: #3730a3;
+  --color-primary-900: #312e81;
+
+  --color-accent-50:  #f0f9ff;
+  --color-accent-100: #e0f2fe;
+  --color-accent-200: #bae6fd;
+  --color-accent-300: #7dd3fc;
+  --color-accent-400: #38bdf8;
+  --color-accent-500: #0ea5e9;
+  --color-accent-600: #0284c7;
+
+  --color-surface:    #f8fafc;
+  --color-surface-2:  #f1f5f9;
+  --color-surface-3:  #e2e8f0;
+
+  --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --animate-fade-in: fade-in 0.5s ease-out both;
+  --animate-slide-up: slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-slide-down: slide-down 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-scale-in: scale-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-soft: pulse-soft 2s ease-in-out infinite;
+  --animate-shimmer: shimmer 2s linear infinite;
+}
+
+/* ── Base Reset ── */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background: #f8fafc;
-  color: #1e293b;
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* ── Scrollbar Styling ── */
+body {
+  font-family: var(--font-family-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--color-surface);
+  color: #1e293b;
+  line-height: 1.6;
+}
+
+/* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-/* ── Skeleton Loading Animation ── */
-@keyframes skeleton-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-.skeleton {
-  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
-  background-size: 200% 100%;
-  animation: skeleton-slide 1.5s ease-in-out infinite;
-  border-radius: 8px;
-}
-@keyframes skeleton-slide {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+/* ══════════════════════════════════════════
+   Keyframe Animations
+   ══════════════════════════════════════════ */
 
-/* ── Slide-up Animation ── */
-@keyframes slide-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.animate-slide-up {
-  animation: slide-up 0.5s ease-out both;
-}
-
-/* ── Fade-in Animation ── */
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-.animate-fade-in {
-  animation: fade-in 0.3s ease-out both;
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Toast Notifications ── */
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes bounce-once {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.25); }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(100%) scale(0.9); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to   { opacity: 0; transform: translateX(100%) scale(0.9); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ══════════════════════════════════════════
+   Utility Classes
+   ══════════════════════════════════════════ */
+
+/* Staggered animation delay helpers */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+.animate-bounce-once { animation: bounce-once 0.4s ease; }
+
+/* Skeleton shimmer loader */
+.skeleton {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s linear infinite;
+  border-radius: 12px;
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ══════════════════════════════════════════
+   Toast Notifications
+   ══════════════════════════════════════════ */
+
 .toast-container {
   position: fixed;
-  top: 1rem;
-  right: 1rem;
+  top: 1.25rem;
+  right: 1.25rem;
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.625rem;
   pointer-events: none;
 }
+
 .toast {
   pointer-events: auto;
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.875rem 1.25rem;
-  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
   font-size: 0.875rem;
   font-weight: 500;
-  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(12px);
-  animation: toast-in 0.35s cubic-bezier(0.21, 1.02, 0.73, 1) both;
-  max-width: 380px;
+  animation: toast-in 0.4s cubic-bezier(0.21, 1.02, 0.73, 1) both;
+  max-width: 400px;
 }
+
 .toast-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
 .toast-error   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
 .toast-info    { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
-@keyframes toast-in {
-  from { opacity: 0; transform: translateX(100%) scale(0.9); }
-  to   { opacity: 1; transform: translateX(0) scale(1); }
-}
-@keyframes toast-out {
-  from { opacity: 1; transform: translateX(0) scale(1); }
-  to   { opacity: 0; transform: translateX(100%) scale(0.9); }
-}
-.toast-exit {
-  animation: toast-out 0.25s ease-in both;
-}
+.toast-exit    { animation: toast-out 0.3s ease-in both; }
 
-/* ── Page Transition ── */
-.page-enter-active { transition: all 0.3s ease-out; }
+/* ══════════════════════════════════════════
+   Vue Transitions
+   ══════════════════════════════════════════ */
+
+/* Page transition */
+.page-enter-active { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
 .page-leave-active { transition: all 0.2s ease-in; }
-.page-enter-from { opacity: 0; transform: translateY(8px); }
-.page-leave-to   { opacity: 0; transform: translateY(-8px); }
+.page-enter-from   { opacity: 0; transform: translateY(12px); }
+.page-leave-to     { opacity: 0; transform: translateY(-8px); }
 
-/* ── Modal Backdrop ── */
-.backdrop-enter-active, .backdrop-leave-active { transition: opacity 0.25s ease; }
-.backdrop-enter-from, .backdrop-leave-to { opacity: 0; }
+/* Fade */
+.fade-enter-active, .fade-leave-active { transition: opacity 0.25s ease; }
+.fade-enter-from, .fade-leave-to       { opacity: 0; }
 
-/* ── Modal Content ── */
-.modal-enter-active { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+/* Modal backdrop */
+.backdrop-enter-active, .backdrop-leave-active { transition: opacity 0.3s ease; }
+.backdrop-enter-from, .backdrop-leave-to       { opacity: 0; }
+
+/* Modal content */
+.modal-enter-active { transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .modal-leave-active { transition: all 0.2s ease-in; }
-.modal-enter-from { opacity: 0; transform: scale(0.9) translateY(20px); }
-.modal-leave-to   { opacity: 0; transform: scale(0.95) translateY(10px); }
+.modal-enter-from   { opacity: 0; transform: scale(0.9) translateY(20px); }
+.modal-leave-to     { opacity: 0; transform: scale(0.95) translateY(10px); }
 
-/* ── Drawer Slide ── */
-.drawer-enter-active { transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
-.drawer-leave-active { transition: transform 0.25s ease-in; }
-.drawer-enter-from { transform: translateX(100%); }
-.drawer-leave-to   { transform: translateX(100%); }
+/* Drawer slide */
+.drawer-enter-active { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.drawer-leave-active { transition: transform 0.3s ease-in; }
+.drawer-enter-from   { transform: translateX(100%); }
+.drawer-leave-to     { transform: translateX(100%); }
 
-/* ── Fade ── */
-.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
+/* Slide-up for dropdowns */
+.slide-enter-active { transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+.slide-leave-active { transition: all 0.15s ease-in; }
+.slide-enter-from   { opacity: 0; transform: translateY(-8px) scale(0.96); }
+.slide-leave-to     { opacity: 0; transform: translateY(-4px) scale(0.98); }
 
-/* ── Admin Layout ── */
+/* ══════════════════════════════════════════
+   Admin Layout
+   ══════════════════════════════════════════ */
+
 .admin-layout {
   display: flex;
   min-height: 100vh;
-  background: #f8fafc;
+  background: var(--color-surface);
 }

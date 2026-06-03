@@ -17,17 +17,39 @@
     </div>
 
     <!-- Product Table -->
-    <ProductTable
-      :products="products"
-      :categories="categories"
-      :loading="loading"
-      @edit="openEditModal"
-      @delete="handleDelete"
-    />
+    <div class="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
+      <div v-if="loading" class="p-6 space-y-3">
+        <div v-for="i in 5" :key="i" class="h-14 skeleton rounded-xl"></div>
+      </div>
+      <table v-else class="w-full text-sm">
+        <thead class="bg-slate-50 text-left text-xs uppercase text-slate-500 tracking-wider">
+          <tr>
+            <th class="px-5 py-3">Product</th>
+            <th class="px-5 py-3">Price</th>
+            <th class="px-5 py-3">Stock</th>
+            <th class="px-5 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr v-for="p in products" :key="p.id" class="hover:bg-slate-50 transition-colors">
+            <td class="px-5 py-3 flex items-center gap-3">
+              <img :src="p.full_image_url || p.image || 'https://placehold.co/40'" class="w-10 h-10 rounded-lg object-cover bg-slate-100" :alt="p.name" />
+              <span class="font-medium text-slate-700">{{ p.name }}</span>
+            </td>
+            <td class="px-5 py-3 text-slate-600">${{ Number(p.price).toFixed(2) }}</td>
+            <td class="px-5 py-3 text-slate-600">{{ p.stock ?? '—' }}</td>
+            <td class="px-5 py-3 text-right space-x-2">
+              <button @click="openEditModal(p)" class="text-blue-600 hover:underline text-xs font-medium">Edit</button>
+              <button @click="handleDelete(p)" class="text-red-600 hover:underline text-xs font-medium">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- Add/Edit Modal -->
     <AddProductModal
-      :show="showModal"
+      v-if="showModal"
       :editing="editingProduct"
       :categories="categories"
       :saving="saving"
@@ -68,8 +90,7 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue'
 import api from '@/api/axios.js'
-import ProductTable from '@/components/ProductTable.vue'
-import AddProductModal from '@/components/AddProductModal.vue'
+import AddProductModal from '@/components/admin/ProductModal.vue'
 
 const toast = inject('toast')
 
@@ -113,11 +134,17 @@ function closeModal() {
 }
 
 // Submit (create or update) — uses FormData for image upload
-async function handleSubmit(formData) {
+async function handleSubmit(data) {
   saving.value = true
   try {
+    // ProductModal emits a plain object; convert to FormData for image upload support
+    const formData = data instanceof FormData ? data : (() => {
+      const fd = new FormData()
+      Object.entries(data).forEach(([k, v]) => { if (v !== '' && v !== null && v !== undefined) fd.append(k, v) })
+      return fd
+    })()
+
     if (editingProduct.value) {
-      // PUT doesn't support FormData well in Laravel, use POST with _method
       formData.append('_method', 'PUT')
       await api.post(`/products/${editingProduct.value.id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }

@@ -114,7 +114,7 @@ class OrderController extends Controller
 
             return response()->json([
                 'message' => 'ការបញ្ជាទិញទទួលបានជោគជ័យ!',
-                'order_id' => $order->id,
+                'order' => $order,
                 'qr_code' => $qrCodeBase64 // បញ្ជូនកូដ QR ទៅឱ្យអតិថិជនមើល
             ], 201);
 
