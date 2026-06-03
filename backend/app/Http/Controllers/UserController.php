@@ -21,7 +21,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         
         $request->validate([
-            'role' => 'required|in:admin,user',
+            'role' => 'required|in:admin,user,driver',
         ]);
 
         $user->update([

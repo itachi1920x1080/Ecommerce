@@ -1,64 +1,49 @@
 <template>
-  <div>
-    <section class="py-16 px-6 bg-white min-h-[70vh]">
-      <div class="max-w-7xl mx-auto">
-        <div class="flex items-center justify-between mb-10">
-          <div>
-            <h1 class="text-2xl font-bold text-slate-800">My Wishlist</h1>
-            <p class="text-sm text-slate-400 mt-1">{{ items.length }} item{{ items.length !== 1 ? 's' : '' }} saved</p>
-          </div>
-        </div>
-
-        <!-- Loading -->
-        <div v-if="loading" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div v-for="i in 4" :key="i" class="bg-white rounded-2xl overflow-hidden border border-slate-100">
-            <div class="aspect-square skeleton"></div>
-            <div class="p-4 space-y-3">
-              <div class="h-4 w-3/4 skeleton"></div>
-              <div class="h-8 w-20 skeleton rounded-xl"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Wishlist Grid -->
-        <div v-else-if="items.length" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div v-for="item in items" :key="item.id" class="group relative bg-white rounded-2xl overflow-hidden border border-slate-100 hover:border-primary-200/50 transition-all duration-500 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1 animate-slide-up">
-            <div class="relative aspect-square overflow-hidden bg-slate-100">
-              <img :src="item.product?.full_image_url || item.product?.image || 'https://placehold.co/400'" :alt="item.product?.name" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
-              <button @click="removeFromWishlist(item)" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
-              </button>
-            </div>
-            <div class="p-4">
-              <h3 class="text-sm font-semibold text-slate-800 line-clamp-1">{{ item.product?.name }}</h3>
-              <div class="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
-                <span class="text-lg font-bold text-primary-600">${{ Number(item.product?.price || 0).toFixed(2) }}</span>
-                <button @click="moveToCart(item)" class="px-4 py-2 bg-primary-50 hover:bg-primary-600 text-primary-600 hover:text-white text-xs font-semibold rounded-xl transition-all duration-300 active:scale-95">
-                  Add to Cart
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Empty -->
-        <div v-else class="text-center py-24">
-          <div class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-slate-100 flex items-center justify-center">
-            <svg class="w-10 h-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-            </svg>
-          </div>
-          <h3 class="text-lg font-semibold text-slate-700 mb-2">Your wishlist is empty</h3>
-          <p class="text-sm text-slate-400 mb-6">Save your favorite products here for later</p>
-          <router-link to="/" class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all">
-            Browse Products
-          </router-link>
+  <div class="min-h-screen bg-white dark:bg-zinc-950 pt-32 pb-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Header -->
+      <div class="mb-12 border-b border-zinc-200 dark:border-zinc-800 pb-8 flex items-end justify-between">
+        <div>
+          <h1 class="text-4xl sm:text-5xl font-display font-medium text-zinc-900 dark:text-white tracking-tight mb-4">My Wishlist</h1>
+          <p class="text-zinc-500 dark:text-zinc-400 text-lg">
+            {{ items.length }} item{{ items.length !== 1 ? 's' : '' }} saved
+          </p>
         </div>
       </div>
-    </section>
-    <Footer />
+
+      <!-- Loading -->
+      <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <SkeletonCard v-for="i in 4" :key="i" />
+      </div>
+
+      <!-- Wishlist Grid -->
+      <div v-else-if="items.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <ProductCard 
+          v-for="item in items" 
+          :key="item.id"
+          :product="item.product"
+          :isWishlisted="true"
+          @addToCart="moveToCart"
+          @toggleWishlist="removeFromWishlist(item)"
+          @click="$router.push(`/products/${item.product?.id}`)"
+          class="cursor-pointer"
+        />
+      </div>
+
+      <!-- Empty -->
+      <div v-else class="text-center py-32">
+        <div class="w-24 h-24 mx-auto mb-8 bg-zinc-50 dark:bg-zinc-900 rounded-full flex items-center justify-center">
+          <HeartIcon class="w-10 h-10 text-zinc-300 dark:text-zinc-700" />
+        </div>
+        <h3 class="text-2xl font-display font-medium text-zinc-900 dark:text-zinc-50 mb-3">Your wishlist is empty</h3>
+        <p class="text-zinc-500 dark:text-zinc-400 mb-10 max-w-sm mx-auto font-light">Save your favorite products here to easily find them later when you're ready to purchase.</p>
+        <router-link to="/shop" class="btn-primary px-10 py-4 text-base inline-flex items-center justify-center">
+          Browse Collection
+        </router-link>
+      </div>
+
+    </div>
   </div>
 </template>
 
@@ -66,7 +51,9 @@
 import { ref, onMounted, inject } from 'vue'
 import api from '@/api/axios.js'
 import { useCartStore } from '@/stores/cart'
-import Footer from '@/components/shop/Footer.vue'
+import ProductCard from '@/components/shop/ProductCard.vue'
+import SkeletonCard from '@/components/ui/SkeletonCard.vue'
+import { Heart as HeartIcon } from '@lucide/vue'
 
 const cart = useCartStore()
 const toast = inject('toast')
@@ -95,10 +82,10 @@ async function removeFromWishlist(item) {
   }
 }
 
-async function moveToCart(item) {
+async function moveToCart(product) {
   try {
-    await cart.addToCart(item.product)
-    toast(`${item.product?.name} added to cart!`, 'success')
+    await cart.addToCart(product)
+    toast(`${product?.name} added to cart!`, 'success')
   } catch (e) {
     toast('Failed to add to cart', 'error')
   }

@@ -13,6 +13,11 @@ const routes = [
     component: () => import('@/pages/Home.vue')
   },
   {
+    path: '/shop',
+    name: 'shop',
+    component: () => import('@/pages/Shop.vue')
+  },
+  {
     path: '/products/:id',
     name: 'product-detail',
     component: () => import('@/pages/ProductDetail.vue')
@@ -66,6 +71,12 @@ const routes = [
     path: '/profile',
     name: 'profile',
     component: () => import('@/pages/Profile.vue'),
+    meta: { auth: true }
+  },
+  {
+    path: '/checkout',
+    name: 'checkout',
+    component: () => import('@/pages/Checkout.vue'),
     meta: { auth: true }
   },
   {

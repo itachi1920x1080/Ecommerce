@@ -1,315 +1,188 @@
 <template>
-  <div>
-    <!-- Hero -->
+  <div class="min-h-screen bg-white dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-50 selection:bg-zinc-900 selection:text-white dark:selection:bg-white dark:selection:text-zinc-900 overflow-x-hidden">
+    
     <HeroSection />
 
-    <!-- Features -->
-    <section id="features" class="py-20 px-6 bg-white">
-      <div class="max-w-5xl mx-auto">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
-          <div
-            v-for="(feature, i) in features"
-            :key="feature.title"
-            class="text-center p-8 rounded-2xl hover:bg-slate-50 transition-all duration-300 group animate-slide-up"
-            :style="{ animationDelay: i * 100 + 'ms' }"
-          >
-            <div class="w-16 h-16 mx-auto mb-5 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-1" :class="feature.bg">
-              <span class="text-3xl">{{ feature.emoji }}</span>
-            </div>
-            <h3 class="text-base font-semibold text-slate-800 mb-2">{{ feature.title }}</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">{{ feature.desc }}</p>
-          </div>
-        </div>
+    <!-- Marquee -->
+    <div class="border-y border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-4 overflow-hidden flex whitespace-nowrap">
+      <div class="animate-marquee inline-block text-[10px] font-semibold tracking-[0.2em] uppercase text-zinc-500 dark:text-zinc-400">
+        <span class="mx-8">• FREE SHIPPING OVER $40</span>
+        <span class="mx-8">• COMPLIMENTARY SAMPLES</span>
+        <span class="mx-8">• 30-DAY RETURNS</span>
+        <span class="mx-8">• SECURE CHECKOUT</span>
+        <span class="mx-8">• CRUELTY FREE</span>
+        <span class="mx-8">• SUSTAINABLE PACKAGING</span>
+        <span class="mx-8">• FREE SHIPPING OVER $40</span>
+        <span class="mx-8">• COMPLIMENTARY SAMPLES</span>
+        <span class="mx-8">• 30-DAY RETURNS</span>
+        <span class="mx-8">• SECURE CHECKOUT</span>
+        <span class="mx-8">• CRUELTY FREE</span>
+        <span class="mx-8">• SUSTAINABLE PACKAGING</span>
       </div>
-    </section>
+    </div>
 
-    <!-- Products Section -->
-    <section id="products" class="py-20 px-6 bg-surface">
-      <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-12">
-          <span class="inline-block px-3 py-1 bg-primary-50 text-primary-600 text-xs font-semibold rounded-full mb-3 uppercase tracking-wider">Our Collection</span>
-          <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-3">Featured Products</h2>
-          <p class="text-sm text-slate-400 max-w-md mx-auto">Browse our curated collection of premium products crafted for quality and style</p>
-        </div>
-
-        <!-- Search & Filters -->
-        <div class="flex flex-col sm:flex-row gap-3 mb-10 max-w-2xl mx-auto">
-          <div class="relative flex-1">
-            <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-            </svg>
-            <input
-              v-model="search"
-              type="text"
-              placeholder="Search products..."
-              class="w-full pl-10 pr-12 py-3 rounded-xl text-sm bg-white border border-slate-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-400 transition-all shadow-sm"
-              id="home-search"
-            />
-            <button
-              @click="openScanner"
-              class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
-              title="Image Search"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"/>
-              </svg>
-            </button>
-          </div>
-          <select
-            v-model="category"
-            class="px-4 py-3 rounded-xl text-sm bg-white border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all shadow-sm cursor-pointer"
-            id="home-category-filter"
-          >
-            <option value="">All Categories</option>
-            <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-          </select>
-          <div class="flex gap-2">
-            <input v-model.number="minPrice" type="number" placeholder="Min $" min="0"
-              class="w-24 px-3 py-3 rounded-xl text-sm bg-white border border-slate-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all shadow-sm"
-              id="home-min-price" />
-            <input v-model.number="maxPrice" type="number" placeholder="Max $" min="0"
-              class="w-24 px-3 py-3 rounded-xl text-sm bg-white border border-slate-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all shadow-sm"
-              id="home-max-price" />
-          </div>
-        </div>
-
-        <!-- Product Grid -->
-        <ProductGrid
-          :products="filteredProducts"
-          :loading="loading"
-          :wishlisted-ids="wishlistedIds"
-          @addToCart="handleAddToCart"
-          @toggleWishlist="handleToggleWishlist"
-        />
-
-        <!-- Pagination -->
-        <div v-if="totalPages > 1" class="flex justify-center gap-2 mt-12">
-          <button
-            v-for="p in totalPages"
-            :key="p"
-            @click="currentPage = p; fetchProducts()"
-            :class="p === currentPage
-              ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/25'
-              : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-primary-200'"
-            class="w-10 h-10 rounded-xl text-sm font-medium transition-all duration-200"
-          >
-            {{ p }}
-          </button>
-        </div>
+    <!-- The Essentials (Bento Grid) -->
+    <section class="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="mb-16">
+        <h2 class="text-4xl sm:text-5xl font-display font-medium tracking-tight mb-4">The Essentials</h2>
+        <p class="text-zinc-500 dark:text-zinc-400 max-w-xl">Curated collections to form the foundation of your daily ritual.</p>
       </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="py-24 px-6 bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 text-center relative overflow-hidden">
-      <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-white/5"></div>
-        <div class="absolute -left-8 -bottom-20 w-48 h-48 rounded-full bg-white/5"></div>
-      </div>
-      <div class="relative max-w-2xl mx-auto">
-        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Start Shopping?</h2>
-        <p class="text-primary-200 mb-10 text-lg">Create an account today and enjoy exclusive deals and fast delivery.</p>
-        <router-link
-          v-if="!auth.isLoggedIn"
-          to="/register"
-          class="group inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-700 font-semibold rounded-2xl hover:shadow-2xl hover:shadow-primary-900/30 transition-all duration-300 hover:-translate-y-1"
-        >
-          Create Account
-          <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-          </svg>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[300px] sm:auto-rows-[400px]">
+        <!-- Bento Item 1 -->
+        <router-link to="/shop?category=skincare" class="group relative md:col-span-2 overflow-hidden bg-zinc-100 dark:bg-zinc-900 block">
+          <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80&w=1000" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-1000 ease-out" alt="Skincare" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <div class="absolute bottom-8 left-8">
+            <p class="text-white/80 text-xs font-semibold tracking-[0.2em] uppercase mb-2">Category</p>
+            <h3 class="text-3xl font-display font-medium text-white">Skincare</h3>
+          </div>
+        </router-link>
+        
+        <!-- Bento Item 2 -->
+        <router-link to="/shop?category=body" class="group relative overflow-hidden bg-zinc-100 dark:bg-zinc-900 block">
+          <img src="https://images.unsplash.com/photo-1608248593842-83b6cb593c6e?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-1000 ease-out" alt="Body" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <div class="absolute bottom-8 left-8">
+            <p class="text-white/80 text-xs font-semibold tracking-[0.2em] uppercase mb-2">Category</p>
+            <h3 class="text-3xl font-display font-medium text-white">Body</h3>
+          </div>
+        </router-link>
+        
+        <!-- Bento Item 3 -->
+        <router-link to="/shop?category=makeup" class="group relative overflow-hidden bg-zinc-100 dark:bg-zinc-900 block">
+          <img src="https://images.unsplash.com/photo-1596462502278-27bf85033e5a?auto=format&fit=crop&q=80&w=600" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-1000 ease-out" alt="Makeup" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <div class="absolute bottom-8 left-8">
+            <p class="text-white/80 text-xs font-semibold tracking-[0.2em] uppercase mb-2">Category</p>
+            <h3 class="text-3xl font-display font-medium text-white">Makeup</h3>
+          </div>
+        </router-link>
+        
+        <!-- Bento Item 4 -->
+        <router-link to="/shop?sale=true" class="group relative md:col-span-2 overflow-hidden bg-zinc-900 dark:bg-zinc-100 block">
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
+            <p class="text-zinc-400 dark:text-zinc-500 text-xs font-semibold tracking-[0.2em] uppercase mb-4">Limited Time</p>
+            <h3 class="text-4xl md:text-5xl font-display font-medium text-white dark:text-zinc-900 mb-6 group-hover:scale-105 transition-transform duration-700">The Summer Archive</h3>
+            <span class="border-b border-white dark:border-zinc-900 text-white dark:text-zinc-900 pb-1 text-sm font-medium">Explore Archive</span>
+          </div>
         </router-link>
       </div>
     </section>
 
-    <!-- Footer -->
-    <Footer />
-
-    <!-- Scanner Modal -->
-    <div v-if="showScanner" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in" @click.self="closeScanner">
-      <div class="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-in flex flex-col">
-        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-          <h3 class="font-bold text-slate-800 flex items-center gap-2">
-            <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-            Product Scanner
-          </h3>
-          <button @click="closeScanner" class="text-slate-400 hover:text-red-500 transition-colors p-1 rounded-lg hover:bg-red-50" :disabled="ocrLoading">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-          </button>
+    <!-- New Arrivals (Horizontal Scroll) -->
+    <section class="py-24 sm:py-32 bg-zinc-50 dark:bg-zinc-900/30 overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 flex flex-col sm:flex-row justify-between items-end gap-6">
+        <div>
+          <h2 class="text-3xl sm:text-4xl font-display font-medium tracking-tight mb-3">Latest Additions</h2>
+          <p class="text-zinc-500 dark:text-zinc-400">Discover what's new in our catalog.</p>
         </div>
+        <router-link to="/shop" class="group flex items-center gap-2 text-sm font-medium border-b border-zinc-900 dark:border-white pb-1">
+          Shop Collection <ArrowRightIcon class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </router-link>
+      </div>
 
-        <!-- Tabs -->
-        <div class="flex border-b border-slate-100">
-          <button @click="switchScannerMode('image')" :class="scannerMode === 'image' ? 'border-b-2 border-primary-600 text-primary-600 font-semibold' : 'text-slate-500 hover:text-slate-700'" class="flex-1 py-3 text-sm transition-all" :disabled="ocrLoading">
-            Image Search
-          </button>
-          <button @click="switchScannerMode('barcode')" :class="scannerMode === 'barcode' ? 'border-b-2 border-primary-600 text-primary-600 font-semibold' : 'text-slate-500 hover:text-slate-700'" class="flex-1 py-3 text-sm transition-all" :disabled="ocrLoading">
-            Scan Barcode
-          </button>
-        </div>
-
-        <div class="p-6 text-center">
-          <div v-show="scannerMode === 'image'">
-            <div v-if="ocrLoading" class="py-10">
-              <div class="w-12 h-12 mx-auto border-4 border-slate-200 border-t-primary-600 rounded-full animate-spin mb-4"></div>
-              <p class="text-sm font-semibold text-slate-700">Analyzing image...</p>
-              <p class="text-xs text-slate-400 mt-1">Extracting text from product</p>
-            </div>
-            <div v-else>
-              <div class="w-20 h-20 mx-auto bg-primary-50 rounded-full flex items-center justify-center mb-4">
-                <svg class="w-10 h-10 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/>
-                </svg>
-              </div>
-              <p class="text-sm text-slate-600 mb-6">Upload or take a photo of a product to search for it automatically.</p>
-              <label class="block w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-4 rounded-xl cursor-pointer transition-colors shadow-sm">
-                <span>Take Photo / Upload Image</span>
-                <input type="file" accept="image/*" class="hidden" @change="handleImageUpload">
-              </label>
-            </div>
+      <div class="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative">
+        <div class="flex overflow-x-auto gap-6 sm:gap-8 pb-12 snap-x snap-mandatory no-scrollbar" style="scroll-padding-left: 24px;">
+          <div v-if="loading" v-for="i in 4" :key="'skel'+i" class="w-[280px] sm:w-[320px] shrink-0 snap-start">
+            <SkeletonCard />
           </div>
-          <div v-show="scannerMode === 'barcode'">
-            <div id="reader" class="w-full rounded-xl overflow-hidden border-2 border-slate-200"></div>
-            <p class="text-xs text-center text-slate-500 mt-4">Point your camera at a barcode or QR code to search</p>
+          
+          <div v-else v-for="product in featuredProducts" :key="product.id" class="w-[280px] sm:w-[320px] shrink-0 snap-start">
+            <ProductCard 
+              :product="product"
+              :isWishlisted="wishlistedIds.includes(product.id)"
+              @addToCart="handleAddToCart"
+              @toggleWishlist="handleToggleWishlist"
+              @click="$router.push(`/products/${product.id}`)"
+              class="cursor-pointer"
+            />
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Immersive Editorial Section -->
+    <section class="bg-black text-white py-32 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-8 items-center">
+        <div class="order-2 lg:order-1 relative aspect-[3/4] w-full max-w-md mx-auto lg:mx-0 overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1599305090598-fe179d501227?auto=format&fit=crop&q=80&w=800" alt="Editorial" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity duration-700" />
+        </div>
+        
+        <div class="order-1 lg:order-2 lg:pl-16">
+          <p class="text-white/50 text-xs font-semibold tracking-[0.2em] uppercase mb-6">Our Philosophy</p>
+          <h2 class="text-4xl sm:text-5xl lg:text-6xl font-display font-medium leading-[1.1] mb-8">
+            Formulated for <br/> <span class="italic font-light text-white/70">Longevity.</span>
+          </h2>
+          <p class="text-white/70 text-lg font-light leading-relaxed mb-10 max-w-lg">
+            We believe that true beauty comes from taking care of the skin you are in. Our products are formulated with scientifically proven ingredients to support your skin's natural balance.
+          </p>
+          <router-link to="/brand" class="inline-flex px-8 py-4 bg-white text-black text-sm font-medium rounded-full hover:bg-zinc-200 transition-colors">
+            Read Our Story
+          </router-link>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deep Integration Newsletter -->
+    <section class="py-32 px-4 sm:px-6 lg:px-8 bg-zinc-100 dark:bg-zinc-900">
+      <div class="max-w-3xl mx-auto text-center">
+        <p class="text-zinc-500 text-xs font-semibold tracking-[0.2em] uppercase mb-4">The Journal</p>
+        <h2 class="text-4xl md:text-5xl font-display font-medium mb-12 tracking-tight">Stay ahead of the curve.</h2>
+        
+        <form @submit.prevent="toast('Subscribed successfully!', 'success')" class="relative max-w-lg mx-auto">
+          <input 
+            type="email" 
+            placeholder="Email address" 
+            required
+            class="w-full bg-transparent border-b-2 border-zinc-300 dark:border-zinc-700 text-center text-lg py-4 px-12 focus:outline-none focus:border-zinc-900 dark:focus:border-white transition-colors placeholder-zinc-400"
+          />
+          <button type="submit" class="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-zinc-900 dark:text-white hover:text-zinc-500 transition-colors">
+            <ArrowRightIcon class="w-6 h-6" />
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <Footer />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, inject } from 'vue'
+import { ref, computed, onMounted, inject } from 'vue'
+import { useRouter } from 'vue-router'
 import api from '@/api/axios.js'
 import { useAuthStore } from '@/stores/auth'
 import { useCartStore } from '@/stores/cart'
-import HeroSection from '@/components/shop/HeroSection.vue'
-import ProductGrid from '@/components/shop/ProductGrid.vue'
 import Footer from '@/components/shop/Footer.vue'
-import { Html5QrcodeScanner } from 'html5-qrcode'
-import Tesseract from 'tesseract.js'
+import HeroSection from '@/components/shop/HeroSection.vue'
+import ProductCard from '@/components/shop/ProductCard.vue'
+import SkeletonCard from '@/components/ui/SkeletonCard.vue'
+import { ArrowRight as ArrowRightIcon } from '@lucide/vue'
 
-const auth  = useAuthStore()
-const cart  = useCartStore()
+const auth = useAuthStore()
+const cart = useCartStore()
 const toast = inject('toast')
+const router = useRouter()
 
-// Scanner State
-const showScanner = ref(false)
-const scannerMode = ref('image')
-const ocrLoading = ref(false)
-let html5QrcodeScanner = null
-
-function openScanner() {
-  showScanner.value = true
-  scannerMode.value = 'image'
-}
-
-function switchScannerMode(mode) {
-  if (ocrLoading.value) return
-  scannerMode.value = mode
-  if (mode === 'barcode') {
-    setTimeout(() => {
-      if (!html5QrcodeScanner) {
-        html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: { width: 250, height: 250 } }, false)
-      }
-      html5QrcodeScanner.render(onBarcodeScanSuccess, onBarcodeScanFailure)
-    }, 100)
-  } else {
-    stopBarcodeScanner()
-  }
-}
-
-function stopBarcodeScanner() {
-  if (html5QrcodeScanner) {
-    html5QrcodeScanner.clear().catch(error => console.error("Failed to clear scanner:", error))
-  }
-}
-
-function closeScanner() {
-  if (ocrLoading.value) return
-  showScanner.value = false
-  stopBarcodeScanner()
-}
-
-function onBarcodeScanSuccess(decodedText) {
-  search.value = decodedText
-  closeScanner()
-  toast(`Scanned Barcode: ${decodedText}`, 'success')
-}
-
-function onBarcodeScanFailure() {}
-
-async function handleImageUpload(event) {
-  const file = event.target.files[0]
-  if (!file) return
-  ocrLoading.value = true
-  try {
-    const result = await Tesseract.recognize(file, 'eng', { logger: m => console.log(m) })
-    let text = result.data.text.replace(/[^a-zA-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim()
-    if (text) {
-      search.value = text.substring(0, 30).trim()
-      toast(`Extracted: "${search.value}"`, 'success')
-      closeScanner()
-    } else {
-      toast('No readable text found on the image.', 'error')
-    }
-  } catch (e) {
-    console.error('OCR Error:', e)
-    toast('Failed to analyze the image.', 'error')
-  } finally {
-    ocrLoading.value = false
-    event.target.value = ''
-  }
-}
-
-// Data
-const products      = ref([])
-const categories    = ref([])
+const products = ref([])
+const categories = ref([])
 const wishlistedIds = ref([])
-const loading       = ref(true)
-const currentPage   = ref(1)
-const totalPages    = ref(1)
+const loading = ref(true)
 
-// Filters
-const search   = ref('')
-const category = ref('')
-const minPrice = ref(null)
-const maxPrice = ref(null)
+const featuredProducts = computed(() => products.value.slice(0, 8))
 
-// Features data
-const features = [
-  { emoji: '🚀', title: 'Fast Delivery',    desc: 'Get your orders delivered quickly with our express shipping options.', bg: 'bg-blue-100' },
-  { emoji: '🔒', title: 'Secure Payment',   desc: 'Your transactions are safe with our trusted payment methods.',     bg: 'bg-indigo-100' },
-  { emoji: '⭐', title: 'Premium Quality',  desc: 'Only the best products curated for our valued customers.',         bg: 'bg-violet-100' },
-]
-
-// Fetch products
 async function fetchProducts() {
   loading.value = true
   try {
-    const params = { page: currentPage.value }
-    if (search.value) params.search = search.value
-    if (minPrice.value) params.min_price = minPrice.value
-    if (maxPrice.value) params.max_price = maxPrice.value
-    const res = await api.get('/products', { params })
+    const res = await api.get('/products')
     products.value = res.data.data || res.data || []
-    totalPages.value = res.data.last_page || 1
   } catch (e) {
     console.error('Failed to fetch products:', e)
   } finally {
     loading.value = false
   }
 }
-
-const filteredProducts = computed(() => {
-  if (!category.value) return products.value
-  return products.value.filter(p => p.category_id == category.value)
-})
 
 async function fetchCategories() {
   try {
@@ -333,20 +206,22 @@ async function fetchWishlist() {
 
 async function handleAddToCart(product) {
   if (!auth.isLoggedIn) {
-    toast('Please login to add items to cart', 'info')
+    toast('Please login to add items to bag', 'info')
+    router.push('/login')
     return
   }
   try {
     await cart.addToCart(product)
-    toast(`${product.name} added to cart!`, 'success')
+    toast('Added to your bag', 'success')
   } catch (e) {
-    toast('Failed to add to cart', 'error')
+    toast('Failed to add to bag', 'error')
   }
 }
 
 async function handleToggleWishlist(productId) {
   if (!auth.isLoggedIn) {
     toast('Please login to use wishlist', 'info')
+    router.push('/login')
     return
   }
   try {
@@ -356,23 +231,12 @@ async function handleToggleWishlist(productId) {
       toast('Removed from wishlist', 'info')
     } else {
       wishlistedIds.value.push(productId)
-      toast('Added to wishlist!', 'success')
+      toast('Added to wishlist', 'success')
     }
   } catch (e) {
     toast('Failed to update wishlist', 'error')
   }
 }
-
-// Debounced search
-let searchTimeout
-watch(search, () => {
-  clearTimeout(searchTimeout)
-  searchTimeout = setTimeout(() => { currentPage.value = 1; fetchProducts() }, 400)
-})
-watch([minPrice, maxPrice], () => {
-  clearTimeout(searchTimeout)
-  searchTimeout = setTimeout(() => { currentPage.value = 1; fetchProducts() }, 600)
-})
 
 onMounted(() => {
   fetchProducts()
@@ -380,3 +244,23 @@ onMounted(() => {
   fetchWishlist()
 })
 </script>
+
+<style scoped>
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+  display: inline-flex;
+  min-width: 200%;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>

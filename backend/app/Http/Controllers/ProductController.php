@@ -34,7 +34,13 @@ class ProductController extends Controller
             $query->where('price', '<=', $request->max_price);
         }
 
-        // ឃ. បែងចែកទំព័រ (ប្រើកូដ paginate ដើមរបស់អ្នកវិញទើបត្រូវ)
+        // ង. បិទមិនបង្ហាញផលិតផលដែលអស់ស្តុក ហើយ admin កំណត់ថា hide
+        $query->where(function ($q) {
+            $q->where('stock', '>', 0)
+              ->orWhere('out_of_stock_status', '!=', 'hide');
+        });
+
+        // ច. បែងចែកទំព័រ (ប្រើកូដ paginate ដើមរបស់អ្នកវិញទើបត្រូវ)
         $products = $query->latest()->paginate(10);
 
         return response()->json($products);
@@ -50,6 +56,7 @@ class ProductController extends Controller
             'category_id' => 'nullable|exists:categories,id', // ឆែកថាតើ category_id នេះពិតជាមានក្នុងប្រព័ន្ធឬអត់
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'discount_percent' => 'nullable|numeric|min:0|max:100',
+            'out_of_stock_status' => 'nullable|string|in:show,hide,preorder',
         ]);
 
         $imagePath = null;
@@ -63,6 +70,7 @@ class ProductController extends Controller
             'price' => $request->price,
             'stock' => $request->stock,
             'category_id' => $request->category_id,
+            'out_of_stock_status' => $request->out_of_stock_status ?? 'show',
             'image_url' => $imagePath,
         ]);
 
@@ -94,6 +102,7 @@ class ProductController extends Controller
             'stock' => 'required|integer|min:0',
             'category_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'out_of_stock_status' => 'nullable|string|in:show,hide,preorder',
         ]);
 
         // បើមានរូបភាពថ្មី លុបរូបភាពចាស់ចោល រួចបញ្ចូលរូបភាពថ្មី
@@ -110,6 +119,7 @@ class ProductController extends Controller
             'price' => $request->price,
             'stock' => $request->stock,
             'category_id' => $request->category_id ?? $product->category_id,
+            'out_of_stock_status' => $request->out_of_stock_status ?? 'show',
         ]);
         
         $product->save();

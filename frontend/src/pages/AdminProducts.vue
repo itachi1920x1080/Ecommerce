@@ -1,54 +1,52 @@
 <template>
-  <div class="p-6 sm:p-8 space-y-6">
+  <div class="p-6 sm:p-8 space-y-8 bg-white dark:bg-zinc-950 min-h-[calc(100vh-64px)] transition-colors">
     <!-- Page Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-bold text-slate-800">Products</h1>
-        <p class="text-sm text-slate-400 mt-1">Manage your product catalog</p>
+        <h1 class="text-3xl font-display font-medium text-zinc-900 dark:text-white">Products</h1>
+        <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-2 font-light">Manage your product catalog</p>
       </div>
       <button @click="openAddModal"
-        class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all active:scale-95"
+        class="btn-primary flex items-center gap-2 px-6 py-3 text-xs"
         id="admin-add-product">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-        </svg>
+        <PlusIcon class="w-4 h-4 stroke-[2]" />
         Add Product
       </button>
     </div>
 
     <!-- Product Table -->
-    <div class="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
-      <div v-if="loading" class="p-6 space-y-3">
-        <div v-for="i in 5" :key="i" class="h-14 skeleton rounded-xl"></div>
+    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden transition-colors">
+      <div v-if="loading" class="p-8 space-y-4">
+        <div v-for="i in 5" :key="i" class="h-16 skeleton rounded-xl"></div>
       </div>
       <table v-else class="w-full text-sm">
-        <thead class="bg-slate-50 text-left text-xs uppercase text-slate-500 tracking-wider">
+        <thead class="bg-zinc-50 dark:bg-zinc-950/50 text-left text-[10px] font-semibold uppercase text-zinc-500 dark:text-zinc-400 tracking-widest border-b border-zinc-200 dark:border-zinc-800">
           <tr>
-            <th class="px-5 py-3">Product</th>
-            <th class="px-5 py-3">Price</th>
-            <th class="px-5 py-3">Stock</th>
-            <th class="px-5 py-3 text-right">Actions</th>
+            <th class="px-8 py-5">Product</th>
+            <th class="px-6 py-5">Price</th>
+            <th class="px-6 py-5">Stock</th>
+            <th class="px-8 py-5 text-right">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100">
-          <tr v-for="p in products" :key="p.id" class="hover:bg-slate-50 transition-colors">
-            <td class="px-5 py-3 flex items-center gap-3">
-              <img :src="p.full_image_url || p.image || 'https://placehold.co/40'" class="w-10 h-10 rounded-lg object-cover bg-slate-100" :alt="p.name" />
-              <span class="font-medium text-slate-700">{{ p.name }}</span>
+        <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800/50">
+          <tr v-for="p in products" :key="p.id" class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
+            <td class="px-8 py-5 flex items-center gap-4">
+              <img :src="p.full_image_url || p.image || 'https://placehold.co/40'" class="w-12 h-12 rounded-xl object-cover border border-zinc-200 dark:border-zinc-700" :alt="p.name" />
+              <span class="font-medium text-zinc-900 dark:text-zinc-50">{{ p.name }}</span>
             </td>
-            <td class="px-5 py-3 text-slate-600">
+            <td class="px-6 py-5">
               <div v-if="p.discount_percent > 0">
-                <span class="line-through text-slate-400 text-xs">${{ Number(p.price).toFixed(2) }}</span>
-                <div class="font-bold text-emerald-600">${{ (p.price - (p.price * p.discount_percent / 100)).toFixed(2) }} <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1 rounded">-{{ p.discount_percent }}%</span></div>
+                <span class="line-through text-zinc-400 text-[10px] font-semibold tracking-widest uppercase">${{ Number(p.price).toFixed(2) }}</span>
+                <div class="font-medium text-zinc-900 dark:text-zinc-50">${{ (p.price - (p.price * p.discount_percent / 100)).toFixed(2) }} <span class="text-[9px] bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-1.5 py-0.5 rounded border border-zinc-900 dark:border-zinc-100 uppercase tracking-widest ml-1">-{{ p.discount_percent }}%</span></div>
               </div>
-              <div v-else>
+              <div v-else class="font-medium text-zinc-900 dark:text-zinc-50">
                 ${{ Number(p.price).toFixed(2) }}
               </div>
             </td>
-            <td class="px-5 py-3 text-slate-600">{{ p.stock ?? '—' }}</td>
-            <td class="px-5 py-3 text-right space-x-2">
-              <button @click="openEditModal(p)" class="text-blue-600 hover:underline text-xs font-medium">Edit</button>
-              <button @click="handleDelete(p)" class="text-red-600 hover:underline text-xs font-medium">Delete</button>
+            <td class="px-6 py-5 font-medium text-zinc-500 dark:text-zinc-400">{{ p.stock ?? '—' }}</td>
+            <td class="px-8 py-5 text-right space-x-4">
+              <button @click="openEditModal(p)" class="text-[10px] font-semibold tracking-widest uppercase text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors border-b border-transparent hover:border-zinc-900 dark:hover:border-white pb-0.5">Edit</button>
+              <button @click="handleDelete(p)" class="text-[10px] font-semibold tracking-widest uppercase text-red-500 hover:text-red-600 transition-colors border-b border-transparent hover:border-red-500 pb-0.5">Delete</button>
             </td>
           </tr>
         </tbody>
@@ -68,23 +66,21 @@
     <!-- Delete Confirm -->
     <Teleport to="body">
       <Transition name="backdrop">
-        <div v-if="deleteTarget" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="deleteTarget = null"></div>
+        <div v-if="deleteTarget" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div class="absolute inset-0 bg-black/40 backdrop-blur-md" @click="deleteTarget = null"></div>
           <Transition name="modal">
-            <div v-if="deleteTarget" class="relative z-10 w-full max-w-sm rounded-2xl bg-white border border-slate-200 p-6 shadow-2xl">
-              <div class="flex flex-col items-center text-center gap-3">
-                <div class="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
-                  <svg class="w-7 h-7 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                  </svg>
+            <div v-if="deleteTarget" class="relative z-10 w-full max-w-sm rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-8 shadow-2xl">
+              <div class="flex flex-col items-center text-center gap-4">
+                <div class="w-16 h-16 rounded-full bg-red-50 dark:bg-red-500/10 flex items-center justify-center">
+                  <TrashIcon class="w-8 h-8 text-red-500 stroke-[1.5]" />
                 </div>
                 <div>
-                  <p class="text-base font-semibold text-slate-800">Delete Product?</p>
-                  <p class="text-sm text-slate-400 mt-1">"<span class="font-medium text-slate-600">{{ deleteTarget.name }}</span>" will be permanently removed.</p>
+                  <p class="text-xl font-display font-medium text-zinc-900 dark:text-white">Delete Product?</p>
+                  <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-2 font-light">"<span class="font-medium text-zinc-900 dark:text-white">{{ deleteTarget.name }}</span>" will be permanently removed.</p>
                 </div>
-                <div class="flex gap-3 w-full mt-2">
-                  <button @click="deleteTarget = null" class="flex-1 py-2.5 rounded-xl text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">Cancel</button>
-                  <button @click="confirmDelete" class="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-red-600 hover:bg-red-700 active:scale-95 transition-all">Delete</button>
+                <div class="flex gap-3 w-full mt-4">
+                  <button @click="deleteTarget = null" class="flex-1 py-3.5 rounded-full text-xs font-semibold uppercase tracking-widest text-zinc-600 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Cancel</button>
+                  <button @click="confirmDelete" class="flex-1 py-3.5 rounded-full text-xs font-semibold uppercase tracking-widest text-white bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/20 active:scale-95 transition-all">Delete</button>
                 </div>
               </div>
             </div>
@@ -99,6 +95,7 @@
 import { ref, onMounted, inject } from 'vue'
 import api from '@/api/axios.js'
 import AddProductModal from '@/components/admin/ProductModal.vue'
+import { Plus as PlusIcon, Trash2 as TrashIcon } from '@lucide/vue'
 
 const toast = inject('toast')
 

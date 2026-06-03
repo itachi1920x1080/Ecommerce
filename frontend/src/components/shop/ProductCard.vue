@@ -1,76 +1,86 @@
 <template>
-  <div class="group relative bg-white rounded-2xl overflow-hidden border border-slate-100 hover:border-primary-200/50 transition-all duration-500 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1">
+  <div class="group relative flex flex-col transition-all duration-500">
     <!-- Image Container -->
-    <div class="relative aspect-square overflow-hidden bg-slate-100">
+    <div class="relative w-full aspect-[3/4] overflow-hidden bg-zinc-100 dark:bg-zinc-900 mb-4">
       <img
-        :src="product.full_image_url || product.image || 'https://placehold.co/400x400/e2e8f0/94a3b8?text=Product'"
+        :src="product.full_image_url || product.image || 'https://placehold.co/400x500/f4f4f5/52525b?text=Product'"
         :alt="product.name"
-        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        class="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105"
         loading="lazy"
+        @error="$event.target.src='https://placehold.co/400x500/f4f4f5/52525b?text=Product'"
       />
 
-      <!-- Overlay on hover -->
-      <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+      <!-- Floating Action: Add to Bag -->
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-out z-10 w-3/4 max-w-[200px]">
+        <button
+          v-if="product.stock > 0"
+          @click.stop="$emit('addToCart', product)"
+          class="w-full py-3 bg-white/90 dark:bg-black/90 backdrop-blur-md text-zinc-900 dark:text-white text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white dark:hover:bg-black transition-colors"
+        >
+          Add to Bag
+        </button>
+        <button
+          v-else-if="product.out_of_stock_status === 'preorder'"
+          @click.stop="$emit('addToCart', product)"
+          class="w-full py-3 bg-white/90 dark:bg-black/90 backdrop-blur-md text-zinc-900 dark:text-white text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white dark:hover:bg-black transition-colors"
+        >
+          Pre-order
+        </button>
+        <button
+          v-else
+          disabled
+          class="w-full py-3 bg-zinc-200/90 dark:bg-zinc-800/90 backdrop-blur-md text-zinc-500 dark:text-zinc-400 text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2 cursor-not-allowed"
+        >
+          Out of Stock
+        </button>
+      </div>
 
       <!-- Wishlist Button -->
       <button
         @click.stop="$emit('toggleWishlist', product.id)"
-        class="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg"
+        class="absolute top-4 right-4 p-2 transition-all duration-300 z-10"
         :class="isWishlisted
-          ? 'bg-red-500 text-white scale-100'
-          : 'bg-white/90 backdrop-blur text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0'"
+          ? 'text-red-500 scale-100'
+          : 'text-zinc-400 hover:text-zinc-900 dark:hover:text-white opacity-0 group-hover:opacity-100 -translate-y-2 group-hover:translate-y-0'"
       >
-        <svg class="w-4 h-4" :fill="isWishlisted ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-        </svg>
+        <HeartIcon class="w-5 h-5 transition-transform" :class="isWishlisted ? 'animate-bounce-once' : ''" :fill="isWishlisted ? 'currentColor' : 'none'" />
       </button>
 
       <!-- Category & Sale Badges -->
-      <div class="absolute top-3 left-3 flex flex-col gap-2">
-        <span v-if="product.category?.name" class="px-2.5 py-1 bg-white/90 backdrop-blur text-xs font-semibold text-slate-600 rounded-lg shadow-sm">
-          {{ product.category.name }}
-        </span>
-        <span v-if="product.discount_percent > 0" class="px-2.5 py-1 bg-red-500 text-white text-xs font-bold rounded-lg shadow-sm flex items-center justify-center w-fit">
-          -{{ product.discount_percent }}% OFF
+      <div class="absolute top-4 left-4 flex flex-col gap-2 z-10">
+        <span v-if="product.discount_percent > 0" class="px-3 py-1 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[10px] uppercase tracking-wider font-semibold w-fit">
+          -{{ product.discount_percent }}%
         </span>
       </div>
     </div>
 
     <!-- Content -->
-    <div class="p-4">
-      <h3 class="text-sm font-semibold text-slate-800 line-clamp-1 group-hover:text-primary-600 transition-colors duration-300">
+    <div class="flex flex-col text-center px-2">
+      <span v-if="product.category?.name" class="text-[10px] uppercase tracking-widest font-semibold text-zinc-400 dark:text-zinc-500 mb-1">
+        {{ product.category.name }}
+      </span>
+      
+      <h3 class="text-sm font-medium text-zinc-900 dark:text-zinc-50 mb-1 group-hover:opacity-70 transition-opacity">
         {{ product.name }}
       </h3>
 
-      <p v-if="product.description" class="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
-        {{ product.description }}
-      </p>
-
-      <div class="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
-        <div class="flex flex-col">
-          <span v-if="product.discount_percent > 0" class="text-xs text-slate-400 line-through">
-            ${{ Number(product.price).toFixed(2) }}
-          </span>
-          <span class="text-lg font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
-            ${{ product.discount_percent > 0 ? (product.price - (product.price * product.discount_percent / 100)).toFixed(2) : Number(product.price).toFixed(2) }}
-          </span>
-        </div>
-
-        <button
-          @click.stop="$emit('addToCart', product)"
-          class="inline-flex items-center gap-1.5 px-4 py-2 bg-primary-50 hover:bg-primary-600 text-primary-600 hover:text-white text-xs font-semibold rounded-xl transition-all duration-300 active:scale-95"
-        >
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
-          </svg>
-          Add
-        </button>
+      <div class="flex items-center justify-center gap-2">
+        <span v-if="product.discount_percent > 0" class="text-xs text-zinc-400 line-through">
+          ${{ Number(product.price).toFixed(2) }}
+        </span>
+        <span class="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+          ${{ product.discount_percent > 0 ? (product.price - (product.price * product.discount_percent / 100)).toFixed(2) : Number(product.price).toFixed(2) }}
+        </span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { Heart as HeartIcon } from '@lucide/vue'
+
 defineProps({
   product: { type: Object, required: true },
   isWishlisted: { type: Boolean, default: false },

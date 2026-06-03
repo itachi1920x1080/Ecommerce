@@ -7,30 +7,78 @@
 
 /* ── Tailwind v4 Theme Tokens ── */
 @theme {
-  --color-primary-50:  #eef2ff;
-  --color-primary-100: #e0e7ff;
-  --color-primary-200: #c7d2fe;
-  --color-primary-300: #a5b4fc;
-  --color-primary-400: #818cf8;
-  --color-primary-500: #6366f1;
-  --color-primary-600: #4f46e5;
-  --color-primary-700: #4338ca;
-  --color-primary-800: #3730a3;
-  --color-primary-900: #312e81;
+  /* Ultra-Premium Neutrals (Apple / Stripe inspired) */
+  --color-zinc-50:  #fafafa;
+  --color-zinc-100: #f4f4f5;
+  --color-zinc-200: #e4e4e7;
+  --color-zinc-300: #d4d4d8;
+  --color-zinc-400: #a1a1aa;
+  --color-zinc-500: #71717a;
+  --color-zinc-600: #52525b;
+  --color-zinc-700: #3f3f46;
+  --color-zinc-800: #27272a;
+  --color-zinc-900: #18181b;
+  --color-zinc-950: #09090b;
 
-  --color-accent-50:  #f0f9ff;
-  --color-accent-100: #e0f2fe;
-  --color-accent-200: #bae6fd;
-  --color-accent-300: #7dd3fc;
-  --color-accent-400: #38bdf8;
-  --color-accent-500: #0ea5e9;
-  --color-accent-600: #0284c7;
+  /* Primary Accent: Deep Indigo / Cobalt (Stripe inspired) */
+  --color-primary-50:  #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
 
-  --color-surface:    #f8fafc;
-  --color-surface-2:  #f1f5f9;
-  --color-surface-3:  #e2e8f0;
+  /* Admin Legacy Colors - Updated to Black/Neutral */
+  --color-charcoal-50: #f9fafb;
+  --color-charcoal-100: #f3f4f6;
+  --color-charcoal-200: #e5e7eb;
+  --color-charcoal-300: #d1d5db;
+  --color-charcoal-400: #9ca3af;
+  --color-charcoal-500: #6b7280;
+  --color-charcoal-600: #4b5563;
+  --color-charcoal-700: #374151;
+  --color-charcoal-800: #111827;
+  --color-charcoal-900: #000000;
 
-  --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --color-cream-50: #fafaf9;
+  --color-cream-100: #f5f5f4;
+  --color-cream-200: #e7e5e4;
+  --color-cream-300: #d6d3d1;
+  --color-cream-400: #a8a29e;
+  --color-cream-500: #78716c;
+
+  --color-blush-50: #fef2f2;
+  --color-blush-100: #fee2e2;
+  --color-blush-200: #fecaca;
+  --color-blush-300: #fca5a5;
+  --color-blush-400: #f87171;
+  --color-blush-500: #ef4444;
+  --color-blush-600: #dc2626;
+
+  --color-sage-50: #ecfdf5;
+  --color-sage-100: #d1fae5;
+  --color-sage-200: #a7f3d0;
+  --color-sage-300: #6ee7b7;
+  --color-sage-400: #34d399;
+  --color-sage-500: #10b981;
+  --color-sage-600: #059669;
+
+  --color-surface:    #ffffff;
+  --color-surface-2:  #fafafa;
+  --color-surface-3:  #f4f4f5;
+  
+  --color-surface-dark:   #09090b;
+  --color-surface-dark-2: #18181b;
+  --color-surface-dark-3: #27272a;
+
+  --font-family-sans: 'DM Sans', system-ui, sans-serif;
+  --font-family-display: 'Cormorant Garamond', Georgia, serif;
+  --font-family-mono: 'DM Mono', monospace;
 
   --animate-fade-in: fade-in 0.5s ease-out both;
   --animate-slide-up: slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -42,11 +90,7 @@
 }
 
 /* ── Base Reset ── */
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* Tailwind already includes Preflight, so we don't need * { margin: 0 } */
 
 html {
   scroll-behavior: smooth;
@@ -58,8 +102,16 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: var(--color-surface);
-  color: #1e293b;
+  color: var(--color-zinc-900);
   line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: var(--color-surface-dark);
+    color: var(--color-zinc-50);
+  }
 }
 
 /* ── Scrollbar ── */
@@ -148,12 +200,39 @@ body {
   border-radius: 12px;
 }
 
-/* Glass effect */
+/* Glass effect - Apple inspired */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  .glass {
+    background: rgba(24, 24, 27, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Elegant soft shadows */
+.shadow-elegant {
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+}
+.shadow-elegant-hover:hover {
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.12);
+}
+
+/* Primary Button */
+.btn-primary {
+  @apply bg-zinc-900 text-white font-medium rounded-full hover:bg-zinc-800 transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-zinc-900/20;
+}
+@media (prefers-color-scheme: dark) {
+  .btn-primary {
+    @apply bg-white text-zinc-900 hover:bg-zinc-100 shadow-white/10;
+  }
 }
 
 /* ══════════════════════════════════════════

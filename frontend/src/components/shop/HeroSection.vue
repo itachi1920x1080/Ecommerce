@@ -1,77 +1,86 @@
 <template>
-  <section class="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 py-24 sm:py-32 lg:py-36 px-6">
-    <!-- Decorative elements -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute -right-20 -top-20 w-96 h-96 rounded-full bg-white/5 animate-float"></div>
-      <div class="absolute -left-12 -bottom-24 w-72 h-72 rounded-full bg-white/5 animate-float delay-200"></div>
-      <div class="absolute right-1/4 top-16 w-24 h-24 rounded-full bg-white/10 animate-pulse-soft"></div>
-      <div class="absolute left-1/3 bottom-20 w-16 h-16 rounded-full bg-primary-400/20 animate-float delay-400"></div>
-      <!-- Grid pattern overlay -->
-      <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+  <section class="relative h-screen w-full flex items-center justify-center overflow-hidden bg-black">
+    
+    <!-- Immersive Background -->
+    <div class="absolute inset-0 w-full h-full">
+      <img 
+        src="https://images.unsplash.com/photo-1615397323286-905c317ff6ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" 
+        alt="Hero Background" 
+        class="w-full h-full object-cover opacity-60 scale-105 animate-slow-pan"
+      />
+      <!-- Dramatic Gradient Overlay -->
+      <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80"></div>
     </div>
 
-    <div class="relative z-10 max-w-5xl mx-auto text-center">
-      <!-- Badge -->
-      <span class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm text-primary-100 text-xs font-semibold rounded-full mb-8 tracking-wide uppercase border border-white/10 animate-fade-in">
-        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse-soft"></span>
-        ✨ NEW COLLECTION {{ new Date().getFullYear() }}
-      </span>
-
-      <!-- Main Heading -->
-      <h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-6 leading-[1.1] tracking-tight animate-slide-up">
-        Discover<br/>
-        <span class="bg-gradient-to-r from-primary-200 via-accent-200 to-primary-200 bg-clip-text text-transparent">Amazing Products</span>
+    <!-- Content -->
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col items-center text-center mt-20">
+      
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold uppercase tracking-[0.2em] mb-8 animate-fade-in">
+        The 2026 Editorial
+      </div>
+      
+      <h1 class="text-6xl sm:text-7xl md:text-8xl lg:text-[8rem] font-display font-medium text-white tracking-tighter leading-[0.9] mb-8 animate-slide-up">
+        REDEFINE <br /> 
+        <span class="text-white/70 italic font-light">YOUR</span> REGIMEN.
       </h1>
-
-      <!-- Subtitle -->
-      <p class="text-base sm:text-lg text-primary-200/80 mb-10 max-w-xl mx-auto leading-relaxed animate-slide-up delay-100">
-        Shop the latest trends with the best prices. Fast delivery, secure payments, and premium quality guaranteed.
+      
+      <p class="text-lg sm:text-xl text-white/80 font-light max-w-2xl mx-auto mb-12 animate-slide-up delay-100">
+        Experience a new paradigm in luxury skincare and essentials. Curated for the modern aesthete.
       </p>
+      
+      <router-link
+        to="/shop"
+        class="group relative inline-flex items-center justify-center px-10 py-5 bg-white text-black overflow-hidden rounded-full font-medium tracking-wide transition-transform hover:scale-105 active:scale-95 animate-slide-up delay-200"
+      >
+        <span class="relative z-10 flex items-center gap-2">
+          Explore Collection
+          <ArrowRightIcon class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </span>
+      </router-link>
+      
+    </div>
 
-      <!-- CTA Buttons -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up delay-200">
-        <a
-          href="#products"
-          class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-primary-700 font-semibold rounded-2xl hover:shadow-2xl hover:shadow-primary-900/30 transition-all duration-300 hover:-translate-y-1 active:scale-95"
-        >
-          Shop Now
-          <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-          </svg>
-        </a>
-        <a
-          href="#features"
-          class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 border-2 border-white/20 text-white font-semibold rounded-2xl hover:bg-white/10 hover:border-white/30 transition-all duration-300"
-        >
-          Learn More
-        </a>
-      </div>
-
-      <!-- Stats Bar -->
-      <div class="flex items-center justify-center gap-8 sm:gap-12 mt-16 animate-slide-up delay-300">
-        <div v-for="stat in stats" :key="stat.label" class="text-center">
-          <p class="text-2xl sm:text-3xl font-extrabold text-white">{{ stat.value }}</p>
-          <p class="text-xs sm:text-sm text-primary-300/70 mt-1">{{ stat.label }}</p>
-        </div>
-      </div>
-
-      <!-- Scroll indicator -->
-      <div class="mt-12 animate-slide-up delay-500">
-        <a href="#products" class="inline-flex flex-col items-center gap-1 text-primary-300/50 hover:text-primary-200 transition-colors text-xs uppercase tracking-widest">
-          SCROLL
-          <svg class="w-4 h-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-          </svg>
-        </a>
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 animate-fade-in delay-500 z-10">
+      <span class="text-white/50 text-xs font-medium tracking-widest uppercase">Scroll</span>
+      <div class="w-px h-16 bg-white/20 relative overflow-hidden">
+        <div class="w-full h-1/2 bg-white absolute top-0 left-0 animate-scroll-line"></div>
       </div>
     </div>
+    
   </section>
 </template>
 
 <script setup>
-const stats = [
-  { value: '50K+', label: 'Customers' },
-  { value: '200+', label: 'Products' },
-  { value: '100%', label: 'Satisfaction' },
-]
+import { ArrowRight as ArrowRightIcon } from '@lucide/vue'
 </script>
+
+<style scoped>
+@keyframes slow-pan {
+  0% { transform: scale(1.05) translate(0, 0); }
+  100% { transform: scale(1.1) translate(-2%, -2%); }
+}
+.animate-slow-pan {
+  animation: slow-pan 20s ease-out forwards;
+}
+
+@keyframes scroll-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
+}
+.animate-scroll-line {
+  animation: scroll-line 2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up {
+  animation: slide-up 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-500 { animation-delay: 500ms; }
+</style>

@@ -18,6 +18,7 @@ class Product extends Model
         'price',
         'discount_percent',
         'stock',
+        'out_of_stock_status',
         'image_url',
         'category_id', // <--- បានបន្ថែមទីតាំងនេះសម្រាប់ភ្ជាប់ជាមួយ Category រួចរាល់
     ];
@@ -30,6 +31,10 @@ class Product extends Model
     public function getFullImageUrlAttribute()
     {
         if ($this->image_url) {
+            // Check if it's already an external link
+            if (\Illuminate\Support\Str::startsWith($this->image_url, ['http://', 'https://'])) {
+                return $this->image_url;
+            }
             // បង្កើត Link ពេញលេញ (ឧ. http://localhost:8000/storage/products/xxx.jpg)
             return asset('storage/' . $this->image_url);
         }

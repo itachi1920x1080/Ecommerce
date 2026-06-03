@@ -1,26 +1,24 @@
 <template>
-  <div class="p-6 sm:p-8 space-y-6">
+  <div class="p-6 sm:p-8 space-y-8 bg-white dark:bg-zinc-950 min-h-[calc(100vh-64px)] transition-colors">
     <!-- Header -->
     <div>
-      <h1 class="text-2xl font-bold text-slate-800">Orders</h1>
-      <p class="text-sm text-slate-400 mt-1">Manage and update customer orders</p>
+      <h1 class="text-3xl font-display font-medium text-zinc-900 dark:text-white">Orders</h1>
+      <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-2 font-light">Manage and update customer orders</p>
     </div>
 
     <!-- Loading -->
-    <div v-if="loading" class="space-y-3">
-      <div v-for="i in 6" :key="i" class="h-16 skeleton rounded-2xl"></div>
+    <div v-if="loading" class="space-y-4">
+      <div v-for="i in 6" :key="i" class="h-16 skeleton rounded-xl"></div>
     </div>
 
     <!-- Orders Table -->
-    <div v-else class="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
+    <div v-else class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden transition-colors">
       <!-- Search -->
-      <div class="px-6 py-4 border-b border-slate-100">
+      <div class="px-8 py-6 border-b border-zinc-200 dark:border-zinc-800">
         <div class="relative max-w-xs">
-          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-          </svg>
+          <SearchIcon class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
           <input v-model="search" type="text" placeholder="Search orders..."
-            class="w-full pl-10 pr-4 py-2 rounded-xl text-sm bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all"
+            class="w-full pl-11 pr-5 py-3 rounded-xl text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-200 dark:focus:ring-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-400 transition-all"
             id="admin-orders-search" />
         </div>
       </div>
@@ -28,48 +26,46 @@
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
-            <tr class="border-b border-slate-100 bg-slate-50/50">
-              <th class="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Order #</th>
-              <th class="text-left px-4 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Customer</th>
-              <th class="text-left px-4 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Total</th>
-              <th class="text-left px-4 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Payment</th>
-              <th class="text-left px-4 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Status</th>
-              <th class="text-left px-4 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Date</th>
-              <th class="text-right px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Action</th>
+            <tr class="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/50">
+              <th class="text-left px-8 py-5 text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Order #</th>
+              <th class="text-left px-4 py-5 text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Customer</th>
+              <th class="text-left px-4 py-5 text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Total</th>
+              <th class="text-left px-4 py-5 text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Payment</th>
+              <th class="text-left px-4 py-5 text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Status</th>
+              <th class="text-left px-4 py-5 text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Date</th>
+              <th class="text-right px-8 py-5 text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800/50">
             <tr v-for="order in filtered" :key="order.id"
-              class="border-b border-slate-50 hover:bg-blue-50/30 transition-colors">
-              <td class="px-6 py-4 font-medium text-slate-800">#{{ order.order_number || order.id }}</td>
-              <td class="px-4 py-4 text-slate-600">{{ order.user?.name || 'Unknown' }}</td>
-              <td class="px-4 py-4 font-semibold text-slate-700">
+              class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
+              <td class="px-8 py-5 font-medium text-zinc-900 dark:text-zinc-50">#{{ order.order_number || order.id }}</td>
+              <td class="px-4 py-5 font-medium text-zinc-500 dark:text-zinc-400">{{ order.user?.name || 'Unknown' }}</td>
+              <td class="px-4 py-5 font-medium text-zinc-900 dark:text-zinc-50">
                 ${{ Number(order.total_amount || order.total_price || 0).toFixed(2) }}
-                <span v-if="order.discount_amount > 0" class="block text-[10px] text-emerald-500 font-semibold">
+                <span v-if="order.discount_amount > 0" class="block text-[9px] font-semibold uppercase tracking-widest text-emerald-500 mt-1">
                   - ${{ Number(order.discount_amount).toFixed(2) }} discount
                 </span>
               </td>
-              <td class="px-4 py-4 text-slate-500">{{ order.payment_method || '—' }}</td>
-              <td class="px-4 py-4">
-                <span :class="statusBadge(order.status)" class="px-2.5 py-1 rounded-lg text-xs font-semibold capitalize">
+              <td class="px-4 py-5 text-[10px] font-semibold tracking-widest uppercase text-zinc-500 dark:text-zinc-400">{{ order.payment_method || '—' }}</td>
+              <td class="px-4 py-5">
+                <span :class="statusBadge(order.status)" class="text-[9px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full border inline-block">
                   {{ order.status }}
                 </span>
               </td>
-              <td class="px-4 py-4 text-slate-400">{{ formatDate(order.created_at) }}</td>
-              <td class="px-6 py-4">
-                <div class="flex justify-end gap-2 items-center">
-                  <a v-if="order.full_delivery_photo_url" :href="order.full_delivery_photo_url" target="_blank" class="text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 p-1.5 rounded-lg transition-colors" title="View Delivery Photo">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
+              <td class="px-4 py-5 text-[10px] font-semibold tracking-widest uppercase text-zinc-500 dark:text-zinc-400">{{ formatDate(order.created_at) }}</td>
+              <td class="px-8 py-5">
+                <div class="flex justify-end gap-3 items-center">
+                  <a v-if="order.full_delivery_photo_url" :href="order.full_delivery_photo_url" target="_blank" class="text-zinc-500 hover:text-zinc-900 dark:hover:text-white bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 p-2.5 rounded-full transition-colors" title="View Delivery Photo">
+                    <ImageIcon class="w-4 h-4 stroke-[2]" />
                   </a>
-                  <router-link :to="`/invoice/${order.id}`" class="text-blue-600 hover:text-blue-700 font-medium text-xs bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors">
+                  <router-link :to="`/invoice/${order.id}`" class="text-zinc-900 dark:text-white font-semibold uppercase tracking-widest text-[9px] bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 px-4 py-2.5 rounded-full transition-colors">
                     Invoice
                   </router-link>
                   <select
                     :value="order.status"
                     @change="updateStatus(order, $event.target.value)"
-                    class="px-3 py-1.5 rounded-lg text-xs bg-slate-50 border border-slate-200 text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/30 cursor-pointer transition-all"
+                    class="px-4 py-2.5 rounded-full text-[9px] font-semibold uppercase tracking-widest bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-zinc-200 dark:focus:ring-zinc-800 cursor-pointer transition-all appearance-none"
                     :id="`order-status-${order.id}`"
                   >
                     <option value="pending">Pending</option>
@@ -83,7 +79,7 @@
               </td>
             </tr>
             <tr v-if="filtered.length === 0">
-              <td colspan="7" class="px-6 py-16 text-center text-sm text-slate-400">No orders found</td>
+              <td colspan="7" class="px-8 py-20 text-center text-xs font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">No orders found</td>
             </tr>
           </tbody>
         </table>
@@ -95,6 +91,7 @@
 <script setup>
 import { ref, computed, onMounted, inject } from 'vue'
 import api from '@/api/axios.js'
+import { Search as SearchIcon, Image as ImageIcon } from '@lucide/vue'
 
 const toast   = inject('toast')
 const orders  = ref([])
@@ -116,14 +113,15 @@ function formatDate(dateStr) {
 }
 
 function statusBadge(status) {
-  return {
-    completed:  'bg-emerald-100 text-emerald-700',
-    paid:       'bg-emerald-100 text-emerald-700',
-    delivered:  'bg-indigo-100 text-indigo-700',
-    processing: 'bg-blue-100 text-blue-700',
-    pending:    'bg-amber-100 text-amber-700',
-    cancelled:  'bg-red-100 text-red-700',
-  }[status] || 'bg-slate-100 text-slate-600'
+  const map = {
+    completed:  'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100',
+    paid:       'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800',
+    delivered:  'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800',
+    processing: 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800',
+    pending:    'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-700',
+    cancelled:  'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800',
+  }
+  return map[status] || 'bg-white dark:bg-zinc-900 text-zinc-500 border-zinc-200 dark:border-zinc-700'
 }
 
 async function updateStatus(order, newStatus) {

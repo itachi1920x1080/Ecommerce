@@ -20,6 +20,9 @@ class ProductFactory extends Factory
             
             // បង្កើតការពិពណ៌នាខ្លីៗ
             'description' => $this->faker->paragraph(),
+
+            // Add random discount to some products (30% chance)
+            'discount_percent' => $this->faker->boolean(30) ? $this->faker->numberBetween(10, 50) : 0,
             
             // ទាញយករូបភាព Random ពី Internet យកមកធ្វើតេស្ត
             'image_url' => 'https://picsum.photos/400/400?random=' . $this->faker->unique()->numberBetween(1, 1000),

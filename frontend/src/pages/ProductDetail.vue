@@ -1,140 +1,221 @@
 <template>
-  <div>
-    <!-- Loading -->
-    <div v-if="loading" class="py-20 px-6">
-      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
-        <div class="aspect-square skeleton rounded-2xl"></div>
-        <div class="space-y-4">
-          <div class="h-6 w-1/3 skeleton"></div>
-          <div class="h-10 w-3/4 skeleton"></div>
-          <div class="h-4 w-full skeleton"></div>
-          <div class="h-4 w-2/3 skeleton"></div>
-          <div class="h-12 w-40 skeleton rounded-xl mt-6"></div>
+  <div class="bg-surface dark:bg-surface-dark min-h-screen pt-20">
+    <!-- Loading State -->
+    <div v-if="loading" class="py-12 px-6 max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <div class="aspect-[4/5] skeleton rounded-3xl"></div>
+        <div class="space-y-6 pt-10">
+          <div class="h-4 w-32 skeleton rounded-full"></div>
+          <div class="h-12 w-3/4 skeleton rounded-full"></div>
+          <div class="h-8 w-24 skeleton rounded-full"></div>
+          <div class="h-24 w-full skeleton rounded-2xl mt-8"></div>
         </div>
       </div>
     </div>
 
     <template v-else-if="product">
-      <!-- Product Hero -->
-      <section class="py-12 px-6 bg-white">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
-          <!-- Image -->
-          <div class="relative aspect-square rounded-2xl overflow-hidden bg-slate-100 group">
-            <img :src="product.full_image_url || product.image || 'https://placehold.co/600'" :alt="product.name"
-              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-            <div class="absolute top-4 left-4 flex flex-col gap-2">
-              <span v-if="product.category?.name" class="px-3 py-1.5 bg-white/90 backdrop-blur text-xs font-semibold text-slate-600 rounded-lg shadow-sm">
-                {{ product.category.name }}
-              </span>
-              <span v-if="product.discount_percent > 0" class="px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg shadow-sm flex items-center justify-center w-fit">
-                -{{ product.discount_percent }}% OFF
-              </span>
+      <!-- Breadcrumbs -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex items-center gap-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+          <router-link to="/" class="hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors">Home</router-link>
+          <span>/</span>
+          <router-link to="/shop" class="hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors">Shop</router-link>
+          <span>/</span>
+          <span class="text-zinc-900 dark:text-zinc-50 truncate">{{ product.name }}</span>
+        </div>
+      </div>
+
+      <!-- Split Layout Hero -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+        <div class="flex flex-col lg:flex-row gap-12 lg:gap-20 items-start">
+          
+          <!-- Left: Sticky Gallery -->
+          <div class="w-full lg:w-1/2 lg:sticky lg:top-32 flex flex-col gap-4">
+            <div class="relative aspect-[4/5] bg-zinc-100 dark:bg-zinc-900 rounded-[2.5rem] overflow-hidden border border-zinc-200/50 dark:border-zinc-800/50 group">
+              <img :src="activeImage" :alt="product.name" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+              
+              <div class="absolute top-6 left-6 flex flex-col gap-2 z-10">
+                <span v-if="product.discount_percent > 0" class="px-4 py-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-xs uppercase tracking-widest font-bold rounded-full shadow-lg">
+                  -{{ product.discount_percent }}% OFF
+                </span>
+              </div>
+            </div>
+
+            <!-- Thumbnails -->
+            <div class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+              <button 
+                v-for="(img, idx) in productImages" 
+                :key="idx"
+                @click="activeImage = img"
+                class="w-20 aspect-square rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border-2 transition-all duration-300 shrink-0"
+                :class="activeImage === img ? 'border-primary-500 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'"
+              >
+                <img :src="img" :alt="`${product.name} view ${idx + 1}`" class="w-full h-full object-cover" />
+              </button>
             </div>
           </div>
 
-          <!-- Info -->
-          <div class="flex flex-col justify-center">
-            <span class="text-xs font-semibold text-primary-600 uppercase tracking-wider mb-2">{{ product.category?.name || 'Product' }}</span>
-            <h1 class="text-3xl sm:text-4xl font-bold text-slate-800 mb-4">{{ product.name }}</h1>
-            <p class="text-slate-400 leading-relaxed mb-6">{{ product.description || 'No description available.' }}</p>
+          <!-- Right: Scrollable Details -->
+          <div class="w-full lg:w-1/2 flex flex-col pt-4 lg:pt-10">
+            <span class="text-xs font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-widest mb-4">
+              {{ product.category?.name || 'Exclusive Collection' }}
+            </span>
+            
+            <h1 class="text-4xl sm:text-5xl font-display font-medium text-zinc-900 dark:text-zinc-50 mb-6 leading-tight">
+              {{ product.name }}
+            </h1>
+            
+            <div class="flex items-center gap-4 mb-8">
+              <div class="flex items-center gap-1 text-primary-500">
+                <StarIcon class="w-4 h-4 fill-current" v-for="s in 5" :key="s" />
+              </div>
+              <a href="#reviews" class="text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50 underline underline-offset-4 transition-colors">
+                {{ reviews.length }} Reviews
+              </a>
+            </div>
 
-            <div class="flex flex-col mb-6">
-              <span v-if="product.discount_percent > 0" class="text-lg text-slate-400 line-through">
+            <!-- Price -->
+            <div class="flex items-end gap-3 mb-10 pb-10 border-b border-zinc-200/50 dark:border-zinc-800/50">
+              <span class="text-3xl sm:text-4xl font-semibold text-zinc-900 dark:text-zinc-50">
+                ${{ product.discount_percent > 0 ? (product.price - (product.price * product.discount_percent / 100)).toFixed(2) : Number(product.price).toFixed(2) }}
+              </span>
+              <span v-if="product.discount_percent > 0" class="text-lg text-zinc-400 line-through mb-1">
                 ${{ Number(product.price).toFixed(2) }}
               </span>
-              <div class="text-3xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
-                ${{ product.discount_percent > 0 ? (product.price - (product.price * product.discount_percent / 100)).toFixed(2) : Number(product.price).toFixed(2) }}
-              </div>
             </div>
 
-            <!-- Variants -->
-            <div v-if="variants.length" class="mb-6">
-              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Variants</p>
-              <div class="flex flex-wrap gap-2">
-                <button v-for="v in variants" :key="v.id"
-                  @click="selectedVariant = v"
-                  :class="selectedVariant?.id === v.id ? 'border-primary-500 bg-primary-50 text-primary-700' : 'border-slate-200 text-slate-600 hover:border-slate-300'"
-                  class="px-4 py-2 rounded-xl text-sm font-medium border-2 transition-all duration-200">
-                  {{ v.name || v.type }} <span v-if="v.price" class="text-xs text-slate-400">+${{ Number(v.price).toFixed(2) }}</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Stock -->
-            <p v-if="product.stock !== undefined && product.stock !== null" class="text-sm mb-6"
-              :class="product.stock > 0 ? 'text-emerald-600' : 'text-red-500'">
-              {{ product.stock > 0 ? `✓ ${product.stock} in stock` : '✕ Out of stock' }}
+            <!-- Description -->
+            <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-10 font-light">
+              {{ product.description || 'Experience the ultimate luxury. Crafted with premium ingredients to elevate your daily routine.' }}
             </p>
 
             <!-- Actions -->
-            <div class="flex gap-3">
-              <button @click="addToCart"
-                :disabled="product.stock === 0"
-                class="flex-1 sm:flex-none px-8 py-3.5 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-primary-500/25 transition-all duration-300 hover:-translate-y-0.5 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
-                </svg>
-                Add to Cart
+            <div class="flex flex-col sm:flex-row gap-4 mb-12">
+              <button 
+                v-if="product.stock > 0"
+                @click="addToCart"
+                class="btn-primary flex-1 py-4 text-sm"
+              >
+                <ShoppingBagIcon class="w-5 h-5" />
+                Add to Bag
               </button>
-              <button @click="toggleWishlist"
-                :class="isWishlisted ? 'bg-red-50 text-red-500 border-red-200' : 'bg-slate-50 text-slate-400 border-slate-200 hover:text-red-500 hover:border-red-200'"
-                class="w-12 h-12 rounded-xl border-2 flex items-center justify-center transition-all duration-300">
-                <svg class="w-5 h-5" :fill="isWishlisted ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
+              <button 
+                v-else-if="product.out_of_stock_status === 'preorder'"
+                @click="addToCart"
+                class="btn-primary flex-1 py-4 text-sm bg-zinc-800"
+              >
+                <ShoppingBagIcon class="w-5 h-5" />
+                Pre-order
               </button>
+              <button 
+                v-else
+                disabled
+                class="btn-primary flex-1 py-4 text-sm opacity-50 cursor-not-allowed"
+              >
+                <ShoppingBagIcon class="w-5 h-5" />
+                Out of Stock
+              </button>
+              
+              <button 
+                @click="toggleWishlist"
+                class="px-6 py-4 rounded-full border flex items-center justify-center transition-all duration-300"
+                :class="isWishlisted 
+                  ? 'border-primary-500 text-primary-600 bg-primary-50 dark:bg-primary-500/10' 
+                  : 'border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-50 hover:bg-zinc-50 dark:hover:bg-zinc-800'"
+              >
+                <HeartIcon class="w-5 h-5 transition-transform" :class="isWishlisted ? 'fill-current scale-110' : ''" />
+              </button>
+            </div>
+
+            <!-- Accordions -->
+            <div class="flex flex-col border-t border-zinc-200/50 dark:border-zinc-800/50">
+              <!-- Details Accordion -->
+              <details class="group" open>
+                <summary class="flex justify-between items-center font-medium cursor-pointer list-none py-6 text-zinc-900 dark:text-zinc-50">
+                  <span>Product Details</span>
+                  <span class="transition group-open:rotate-180">
+                    <ChevronDownIcon class="w-5 h-5 text-zinc-400" />
+                  </span>
+                </summary>
+                <div class="text-sm text-zinc-600 dark:text-zinc-400 font-light pb-6 leading-relaxed">
+                  Carefully formulated to provide an exquisite experience. Every detail of this product was considered to ensure it meets our highest standards of luxury and efficacy. Discover the perfect addition to your daily ritual.
+                  <ul class="mt-4 space-y-2 list-disc list-inside">
+                    <li>Premium quality materials</li>
+                    <li>Ethically sourced</li>
+                    <li>Designed for longevity</li>
+                  </ul>
+                </div>
+              </details>
+              
+              <div class="h-px bg-zinc-200/50 dark:bg-zinc-800/50 w-full"></div>
+
+              <!-- Shipping Accordion -->
+              <details class="group">
+                <summary class="flex justify-between items-center font-medium cursor-pointer list-none py-6 text-zinc-900 dark:text-zinc-50">
+                  <span>Shipping & Returns</span>
+                  <span class="transition group-open:rotate-180">
+                    <ChevronDownIcon class="w-5 h-5 text-zinc-400" />
+                  </span>
+                </summary>
+                <div class="text-sm text-zinc-600 dark:text-zinc-400 font-light pb-6 leading-relaxed">
+                  Enjoy complimentary express shipping on all orders over $40. If you are not completely satisfied with your purchase, you may return it within 30 days for a full refund.
+                </div>
+              </details>
             </div>
           </div>
         </div>
       </section>
 
       <!-- Reviews Section -->
-      <section class="py-16 px-6 bg-surface">
-        <div class="max-w-4xl mx-auto">
-          <div class="flex items-center justify-between mb-8">
-            <div>
-              <h2 class="text-xl font-bold text-slate-800">Customer Reviews</h2>
-              <p class="text-sm text-slate-400 mt-1">{{ reviews.length }} review{{ reviews.length !== 1 ? 's' : '' }}</p>
-            </div>
+      <section id="reviews" class="bg-zinc-50/50 dark:bg-zinc-900/30 border-t border-zinc-200/50 dark:border-zinc-800/50 py-24">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex items-center justify-between mb-12">
+            <h2 class="text-3xl font-display font-medium text-zinc-900 dark:text-zinc-50">Customer Reviews</h2>
+            <span class="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 rounded-full text-xs font-semibold text-zinc-900 dark:text-zinc-50">{{ reviews.length }} Reviews</span>
           </div>
 
           <!-- Write Review -->
-          <div v-if="auth.isLoggedIn" class="bg-white rounded-2xl border border-slate-100 p-6 mb-8">
-            <h3 class="text-sm font-semibold text-slate-700 mb-4">Write a Review</h3>
-            <div class="flex gap-1 mb-3">
-              <button v-for="star in 5" :key="star" @click="reviewForm.rating = star"
-                class="text-2xl transition-transform hover:scale-110"
-                :class="star <= reviewForm.rating ? 'text-amber-400' : 'text-slate-200'">
+          <div v-if="auth.isLoggedIn" class="bg-white dark:bg-zinc-900 rounded-3xl p-8 shadow-sm border border-zinc-200/50 dark:border-zinc-800/50 mb-16">
+            <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-50 mb-6">Write a Review</h3>
+            <div class="flex gap-2 mb-6">
+              <button v-for="star in 5" :key="star" @click="reviewForm.rating = star" class="text-2xl transition-transform hover:scale-110" :class="star <= reviewForm.rating ? 'text-primary-500' : 'text-zinc-200 dark:text-zinc-700'">
                 ★
               </button>
             </div>
-            <textarea v-model="reviewForm.comment" rows="3" placeholder="Share your experience..."
-              class="w-full px-4 py-3 rounded-xl text-sm bg-slate-50 border border-slate-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-400 transition-all resize-none mb-3"></textarea>
-            <button @click="submitReview" :disabled="reviewSubmitting"
-              class="px-6 py-2.5 bg-primary-600 text-white text-sm font-semibold rounded-xl hover:bg-primary-700 transition-colors disabled:opacity-50">
-              {{ reviewSubmitting ? 'Submitting...' : 'Submit Review' }}
-            </button>
+            <textarea v-model="reviewForm.comment" rows="4" placeholder="Share your thoughts on this product..."
+              class="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border-none rounded-xl text-sm text-zinc-900 dark:text-zinc-50 placeholder-zinc-400 focus:ring-2 focus:ring-primary-500 focus:outline-none transition-all resize-none mb-6"></textarea>
+            <div class="flex justify-end">
+              <button @click="submitReview" :disabled="reviewSubmitting"
+                class="btn-primary px-8 py-3 text-sm disabled:opacity-50">
+                {{ reviewSubmitting ? 'Submitting...' : 'Post Review' }}
+              </button>
+            </div>
           </div>
 
-          <!-- Review List -->
-          <div v-if="reviews.length" class="space-y-4">
-            <div v-for="review in reviews" :key="review.id" class="bg-white rounded-2xl border border-slate-100 p-5 animate-slide-up">
-              <div class="flex items-center gap-3 mb-3">
-                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white text-xs font-bold">
+          <!-- Reviews List -->
+          <div class="space-y-6">
+            <div v-for="review in reviews" :key="review.id" class="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-900 dark:text-zinc-50 font-medium">
                   {{ (review.user?.name || 'U').charAt(0).toUpperCase() }}
                 </div>
                 <div>
-                  <p class="text-sm font-semibold text-slate-700">{{ review.user?.name || 'Anonymous' }}</p>
-                  <div class="flex items-center gap-1">
-                    <span v-for="s in 5" :key="s" class="text-sm" :class="s <= review.rating ? 'text-amber-400' : 'text-slate-200'">★</span>
-                    <span class="text-xs text-slate-400 ml-2">{{ formatDate(review.created_at) }}</span>
+                  <p class="font-medium text-zinc-900 dark:text-zinc-50">{{ review.user?.name || 'Anonymous' }}</p>
+                  <div class="flex items-center gap-3 mt-1">
+                    <div class="flex text-primary-500 text-xs">
+                      <span v-for="s in 5" :key="s" :class="s <= review.rating ? 'opacity-100' : 'opacity-20'">★</span>
+                    </div>
+                    <span class="text-xs text-zinc-500">{{ formatDate(review.created_at) }}</span>
                   </div>
                 </div>
               </div>
-              <p class="text-sm text-slate-500 leading-relaxed">{{ review.comment }}</p>
+              <p class="text-zinc-600 dark:text-zinc-400 font-light leading-relaxed">{{ review.comment }}</p>
+            </div>
+            
+            <div v-if="!reviews.length" class="text-center py-16 text-zinc-500 font-light">
+              No reviews yet. Be the first to share your experience.
             </div>
           </div>
-          <div v-else class="text-center py-12 text-sm text-slate-400">No reviews yet. Be the first to review!</div>
         </div>
       </section>
     </template>
@@ -144,14 +225,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, inject } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onMounted, inject, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import api from '@/api/axios.js'
 import { useAuthStore } from '@/stores/auth'
 import { useCartStore } from '@/stores/cart'
 import Footer from '@/components/shop/Footer.vue'
+import { Star as StarIcon, ShoppingBag as ShoppingBagIcon, Heart as HeartIcon, ChevronDown as ChevronDownIcon } from '@lucide/vue'
 
 const route = useRoute()
+const router = useRouter()
 const auth  = useAuthStore()
 const cart  = useCartStore()
 const toast = inject('toast')
@@ -159,11 +242,18 @@ const toast = inject('toast')
 const product         = ref(null)
 const variants        = ref([])
 const reviews         = ref([])
-const selectedVariant = ref(null)
 const isWishlisted    = ref(false)
 const loading         = ref(true)
 const reviewSubmitting = ref(false)
 const reviewForm      = ref({ rating: 5, comment: '' })
+
+const activeImage = ref('')
+
+const productImages = computed(() => {
+  if (!product.value) return []
+  const mainImage = product.value.full_image_url || product.value.image || 'https://placehold.co/800x1000/f4f4f5/52525b?text=Product'
+  return [mainImage]
+})
 
 async function fetchProduct() {
   loading.value = true
@@ -176,6 +266,10 @@ async function fetchProduct() {
     product.value  = pRes.data.data || pRes.data
     variants.value = vRes.data.data || vRes.data || []
     reviews.value  = rRes.data.data || rRes.data || []
+    
+    if (productImages.value.length > 0) {
+      activeImage.value = productImages.value[0]
+    }
 
     if (auth.isLoggedIn) {
       try {
@@ -186,6 +280,7 @@ async function fetchProduct() {
     }
   } catch (e) {
     toast('Failed to load product', 'error')
+    router.push('/shop')
   } finally {
     loading.value = false
   }
@@ -222,8 +317,25 @@ async function submitReview() {
 
 function formatDate(d) {
   if (!d) return ''
-  return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+  return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
 onMounted(fetchProduct)
 </script>
+
+<style scoped>
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+</style>

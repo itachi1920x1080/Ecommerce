@@ -42,6 +42,12 @@ class OrderController extends Controller
 
             // គណនាតម្លៃសរុបរង (Subtotal)
             foreach ($cartItems as $item) {
+                // ឆែកមើលស្តុកទំនិញ (អនុញ្ញាតបើមានស្តុក ឬកំណត់ថាជា Pre-order)
+                if ($item->product->stock < $item->quantity && $item->product->out_of_stock_status !== 'preorder') {
+                    DB::rollBack();
+                    return response()->json(['message' => 'សុំទោស! ទំនិញ ' . $item->product->name . ' មិនមានស្តុកគ្រប់គ្រាន់ទេ!'], 400);
+                }
+
                 $productPrice = $item->product->price;
                 if ($item->product->discount_percent > 0) {
                     $productPrice = $productPrice - ($productPrice * $item->product->discount_percent / 100);
@@ -93,6 +99,9 @@ class OrderController extends Controller
                     'quantity' => $item->quantity,
                     'price' => $productPrice, // រក្សាទុកតម្លៃដែលបានបញ្ចុះរួច
                 ]);
+
+                // កាត់ស្តុកចេញពី Product
+                $item->product->decrement('stock', $item->quantity);
             }
 
             // ៦. លុបទំនិញក្នុងកន្ត្រកចោល ព្រោះទិញរួចហើយ

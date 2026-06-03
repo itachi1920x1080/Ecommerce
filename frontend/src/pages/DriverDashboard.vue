@@ -1,102 +1,109 @@
 <template>
-  <div>
-    <section class="py-16 px-6 bg-slate-50 min-h-screen">
-      <div class="max-w-4xl mx-auto">
-        <h1 class="text-2xl font-bold text-slate-800 mb-2">Driver Dashboard</h1>
-        <p class="text-sm text-slate-400 mb-10">Manage and deliver customer orders</p>
+  <div class="min-h-screen bg-white dark:bg-zinc-950 pt-32 pb-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      
+      <!-- Header -->
+      <div class="border-b border-zinc-200 dark:border-zinc-800 pb-8">
+        <h1 class="text-4xl sm:text-5xl font-display font-medium text-zinc-900 dark:text-white tracking-tight mb-4">Driver Dashboard</h1>
+        <p class="text-zinc-500 dark:text-zinc-400 text-lg font-light">
+          Manage and deliver customer orders
+        </p>
+      </div>
 
-        <!-- Active Deliveries -->
-        <div class="mb-12">
-          <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <svg class="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-            My Active Deliveries
-          </h2>
-
-          <div v-if="loadingActive" class="space-y-4">
-            <div v-for="i in 2" :key="i" class="h-24 skeleton rounded-2xl"></div>
+      <!-- Active Deliveries -->
+      <div>
+        <h2 class="text-2xl font-display font-medium text-zinc-900 dark:text-white mb-6 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center shrink-0 border border-zinc-200/50 dark:border-zinc-800/50 text-zinc-900 dark:text-zinc-50">
+            <PackageIcon class="w-5 h-5 stroke-[1.5]" />
           </div>
-          <div v-else-if="activeOrders.length" class="space-y-4">
-            <div v-for="order in activeOrders" :key="order.id" class="bg-white rounded-2xl border border-emerald-100 p-5 shadow-sm shadow-emerald-500/5">
-              <div class="flex justify-between items-start mb-4">
-                <div>
-                  <h3 class="font-bold text-slate-800">Order #{{ order.id }}</h3>
-                  <p class="text-xs text-slate-500 mt-1">{{ order.address?.full_address || 'No address' }}</p>
-                </div>
-                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full uppercase tracking-wider">
-                  {{ order.status.replace(/_/g, ' ') }}
-                </span>
+          My Active Deliveries
+        </h2>
+
+        <div v-if="loadingActive" class="space-y-4">
+          <div v-for="i in 2" :key="i" class="h-32 skeleton rounded-3xl"></div>
+        </div>
+        
+        <div v-else-if="activeOrders.length" class="space-y-6">
+          <div v-for="order in activeOrders" :key="order.id" class="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50 p-8 shadow-sm">
+            <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
+              <div>
+                <h3 class="font-medium text-lg text-zinc-900 dark:text-zinc-50">Order #{{ order.id }}</h3>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">{{ order.address?.full_address || 'No address' }}</p>
               </div>
-              
-              <div class="flex gap-2">
-                <button v-if="order.status === 'driver_assigned'" @click="updateStatus(order, 'at_restaurant')" :disabled="updating"
-                  class="flex-1 py-2.5 bg-blue-50 text-blue-600 hover:bg-blue-100 font-semibold text-sm rounded-xl transition-colors">
-                  Arrived at Restaurant
-                </button>
-                <button v-if="order.status === 'at_restaurant'" @click="updateStatus(order, 'delivering')" :disabled="updating"
-                  class="flex-1 py-2.5 bg-violet-50 text-violet-600 hover:bg-violet-100 font-semibold text-sm rounded-xl transition-colors">
-                  Start Delivering
-                </button>
-                <label v-if="order.status === 'delivering'"
-                  class="flex-1 py-2.5 bg-emerald-600 text-white hover:bg-emerald-700 font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition-all cursor-pointer text-center flex items-center justify-center gap-2"
-                  :class="{ 'opacity-50 pointer-events-none': updating }">
-                  <input type="file" accept="image/*" capture="environment" class="hidden" @change="uploadDeliveryPhoto($event, order)" />
-                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  Snap & Deliver
-                </label>
-              </div>
+              <span class="px-4 py-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 text-xs font-medium rounded-full uppercase tracking-wider">
+                {{ order.status.replace(/_/g, ' ') }}
+              </span>
             </div>
-          </div>
-          <div v-else class="bg-white rounded-2xl border border-slate-100 p-8 text-center text-slate-400 text-sm">
-            You have no active deliveries.
+            
+            <div class="flex flex-col sm:flex-row gap-4">
+              <button v-if="order.status === 'driver_assigned'" @click="updateStatus(order, 'at_restaurant')" :disabled="updating"
+                class="btn-primary flex-1 py-3 text-sm disabled:opacity-50">
+                Arrived at Restaurant
+              </button>
+              
+              <button v-if="order.status === 'at_restaurant'" @click="updateStatus(order, 'delivering')" :disabled="updating"
+                class="btn-primary flex-1 py-3 text-sm disabled:opacity-50">
+                Start Delivering
+              </button>
+              
+              <label v-if="order.status === 'delivering'"
+                class="btn-primary flex-1 py-3 text-sm cursor-pointer flex items-center justify-center gap-2"
+                :class="{ 'opacity-50 pointer-events-none': updating }">
+                <input type="file" accept="image/*" capture="environment" class="hidden" @change="uploadDeliveryPhoto($event, order)" />
+                <CameraIcon class="w-4 h-4" />
+                Snap & Deliver
+              </label>
+            </div>
           </div>
         </div>
-
-        <!-- Available Orders -->
-        <div>
-          <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-            </svg>
-            Available Orders
-          </h2>
-
-          <div v-if="loadingAvailable" class="space-y-4">
-            <div v-for="i in 3" :key="i" class="h-24 skeleton rounded-2xl"></div>
-          </div>
-          <div v-else-if="availableOrders.length" class="space-y-4">
-            <div v-for="order in availableOrders" :key="order.id" class="bg-white rounded-2xl border border-slate-100 p-5 hover:border-blue-200 transition-colors">
-              <div class="flex justify-between items-center">
-                <div>
-                  <h3 class="font-bold text-slate-800">Order #{{ order.id }}</h3>
-                  <p class="text-xs text-slate-500 mt-1 max-w-sm truncate">{{ order.address?.full_address || 'No address provided' }}</p>
-                  <p class="text-sm font-semibold text-primary-600 mt-2">${{ Number(order.total_price).toFixed(2) }}</p>
-                </div>
-                <button @click="acceptOrder(order)" :disabled="updating"
-                  class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-md transition-all active:scale-95 disabled:opacity-50">
-                  Accept Order
-                </button>
-              </div>
-            </div>
-          </div>
-          <div v-else class="bg-white rounded-2xl border border-slate-100 p-8 text-center text-slate-400 text-sm">
-            No orders waiting for a driver right now.
-          </div>
+        
+        <div v-else class="bg-zinc-50 dark:bg-zinc-900 rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50 p-12 text-center text-zinc-500 dark:text-zinc-400 text-sm font-medium tracking-wide">
+          You have no active deliveries.
         </div>
       </div>
-    </section>
-    <Footer />
+
+      <!-- Available Orders -->
+      <div>
+        <h2 class="text-2xl font-display font-medium text-zinc-900 dark:text-white mb-6 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center shrink-0 border border-zinc-200/50 dark:border-zinc-800/50 text-zinc-900 dark:text-zinc-50">
+            <ClipboardListIcon class="w-5 h-5 stroke-[1.5]" />
+          </div>
+          Available Orders
+        </h2>
+
+        <div v-if="loadingAvailable" class="space-y-4">
+          <div v-for="i in 3" :key="i" class="h-24 skeleton rounded-3xl"></div>
+        </div>
+        
+        <div v-else-if="availableOrders.length" class="space-y-6">
+          <div v-for="order in availableOrders" :key="order.id" class="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50 p-8 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors shadow-sm">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+              <div>
+                <h3 class="font-medium text-lg text-zinc-900 dark:text-zinc-50">Order #{{ order.id }}</h3>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm truncate">{{ order.address?.full_address || 'No address provided' }}</p>
+                <p class="text-base font-medium text-zinc-900 dark:text-zinc-50 mt-2">${{ Number(order.total_price).toFixed(2) }}</p>
+              </div>
+              <button @click="acceptOrder(order)" :disabled="updating"
+                class="btn-primary px-8 py-3 text-sm disabled:opacity-50 shrink-0 w-full sm:w-auto">
+                Accept Order
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div v-else class="bg-zinc-50 dark:bg-zinc-900 rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50 p-12 text-center text-zinc-500 dark:text-zinc-400 text-sm font-medium tracking-wide">
+          No orders waiting for a driver right now.
+        </div>
+      </div>
+      
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, inject } from 'vue'
 import api from '@/api/axios.js'
-import Footer from '@/components/shop/Footer.vue'
+import { Package as PackageIcon, ClipboardList as ClipboardListIcon, Camera as CameraIcon } from '@lucide/vue'
 
 const toast = inject('toast')
 
