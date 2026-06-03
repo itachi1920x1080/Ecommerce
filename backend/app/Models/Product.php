@@ -16,6 +16,7 @@ class Product extends Model
         'name',
         'description',
         'price',
+        'discount_percent',
         'stock',
         'image_url',
         'category_id', // <--- បានបន្ថែមទីតាំងនេះសម្រាប់ភ្ជាប់ជាមួយ Category រួចរាល់

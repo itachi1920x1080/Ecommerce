@@ -49,6 +49,7 @@ class ProductController extends Controller
             'stock' => 'required|integer|min:0',
             'category_id' => 'nullable|exists:categories,id', // ឆែកថាតើ category_id នេះពិតជាមានក្នុងប្រព័ន្ធឬអត់
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'discount_percent' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $imagePath = null;

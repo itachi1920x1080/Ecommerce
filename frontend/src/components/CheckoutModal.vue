@@ -163,7 +163,7 @@
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
                   </svg>
-                  {{ loading ? 'Processing...' : 'Confirm Payment' }}
+                  {{ loading ? 'Processing...' : `Pay $${finalTotal.toFixed(2)}` }}
                 </button>
               </div>
             </div>
@@ -175,7 +175,7 @@
 </template>
 
 <script setup>
-import { ref, inject, watch, onUnmounted } from 'vue'
+import { ref, computed, inject, watch, onUnmounted } from 'vue'
 import api from '@/api/axios.js'
 import { useCartStore } from '@/stores/cart'
 
@@ -206,6 +206,16 @@ const couponApplied = ref(null) // the coupon object if valid
 const verifyingCoupon = ref(false)
 const couponError = ref('')
 const couponSuccess = ref('')
+
+const finalTotal = computed(() => {
+  let subtotal = cart.cartTotal;
+  if (!couponApplied.value) return subtotal;
+  
+  if (couponApplied.value.type === 'percent') {
+    return Math.max(0, subtotal - (subtotal * couponApplied.value.value) / 100);
+  }
+  return Math.max(0, subtotal - couponApplied.value.value);
+})
 
 let pollInterval = null
 
@@ -336,7 +346,7 @@ async function handleCheckout() {
       address_id: selectedAddressId.value,
     }
     if (couponApplied.value) {
-      payload.coupon_id = couponApplied.value.id || couponApplied.value.code
+      payload.coupon_code = couponCode.value.toUpperCase()
     }
 
     const res = await api.post('/cart/checkout', payload)

@@ -19,7 +19,8 @@ class OrderController extends Controller
         // ១. ត្រួតពិនិត្យថាមានបោះ ID ទីតាំងមកឬអត់
         $request->validate([
             'address_id' => 'required|exists:addresses,id',
-            'payment_method' => 'sometimes|string'
+            'payment_method' => 'sometimes|string',
+            'coupon_code' => 'nullable|string'
         ]);
 
         $user = $request->user();
@@ -37,17 +38,45 @@ class OrderController extends Controller
         DB::beginTransaction();
 
         try {
-            $totalPrice = 0;
+            $subtotal = 0;
 
-            // គណនាតម្លៃសរុបជាមុនសិន
+            // គណនាតម្លៃសរុបរង (Subtotal)
             foreach ($cartItems as $item) {
-                $totalPrice += $item->product->price * $item->quantity;
+                $productPrice = $item->product->price;
+                if ($item->product->discount_percent > 0) {
+                    $productPrice = $productPrice - ($productPrice * $item->product->discount_percent / 100);
+                }
+                $subtotal += $productPrice * $item->quantity;
             }
+
+            $discountAmount = 0;
+            $couponId = null;
+
+            // ឆែកមើលបើមាន Coupon Code
+            if ($request->has('coupon_code') && $request->coupon_code) {
+                $coupon = \App\Models\Coupon::where('code', $request->coupon_code)
+                            ->where('is_active', true)
+                            ->first();
+
+                if ($coupon && (!$coupon->expires_at || \Carbon\Carbon::now()->lessThanOrEqualTo($coupon->expires_at))) {
+                    $couponId = $coupon->id;
+                    if ($coupon->type === 'percent') {
+                        $discountAmount = ($subtotal * $coupon->value) / 100;
+                    } else {
+                        $discountAmount = $coupon->value;
+                    }
+                }
+            }
+
+            $totalPrice = max(0, $subtotal - $discountAmount);
 
             // ៤. បង្កើតវិក្កយបត្រ (Order) ថ្មី
             $order = Order::create([
                 'user_id' => $user->id,
                 'address_id' => $request->address_id,
+                'subtotal' => $subtotal,
+                'discount_amount' => $discountAmount,
+                'coupon_id' => $couponId,
                 'total_price' => $totalPrice,
                 'status' => 'pending',
                 'payment_method' => $request->payment_method ?? 'cod',
@@ -55,10 +84,14 @@ class OrderController extends Controller
 
             // ៥. ផ្ទេរទំនិញពី Cart ចូលទៅកាន់ Order Items
             foreach ($cartItems as $item) {
+                $productPrice = $item->product->price;
+                if ($item->product->discount_percent > 0) {
+                    $productPrice = $productPrice - ($productPrice * $item->product->discount_percent / 100);
+                }
                 $order->items()->create([
                     'product_id' => $item->product_id,
                     'quantity' => $item->quantity,
-                    'price' => $item->product->price, // រក្សាទុកតម្លៃដើមនៅពេលទិញ
+                    'price' => $productPrice, // រក្សាទុកតម្លៃដែលបានបញ្ចុះរួច
                 ]);
             }
 
@@ -91,6 +124,8 @@ class OrderController extends Controller
                 $message .= "💳 <b>វិធីបង់ប្រាក់:</b> {$paymentMethod}\n\n";
                 $message .= "👉 <i>សូមជ្រើសរើសសកម្មភាពខាងក្រោម៖</i>";
 
+                // ប្រើ Callback Data បញ្ជូនលេខ Order ID ទៅកាន់ backend
+                
                 $keyboard = [
                     'inline_keyboard' => [
                         [
@@ -115,6 +150,7 @@ class OrderController extends Controller
             return response()->json([
                 'message' => 'ការបញ្ជាទិញទទួលបានជោគជ័យ!',
                 'order' => $order,
+                'order_id' => $order->id,
                 'qr_code' => $qrCodeBase64 // បញ្ជូនកូដ QR ទៅឱ្យអតិថិជនមើល
             ], 201);
 

@@ -43,7 +43,12 @@
               class="border-b border-slate-50 hover:bg-blue-50/30 transition-colors">
               <td class="px-6 py-4 font-medium text-slate-800">#{{ order.order_number || order.id }}</td>
               <td class="px-4 py-4 text-slate-600">{{ order.user?.name || 'Unknown' }}</td>
-              <td class="px-4 py-4 font-semibold text-slate-700">${{ Number(order.total_amount || order.total_price || 0).toFixed(2) }}</td>
+              <td class="px-4 py-4 font-semibold text-slate-700">
+                ${{ Number(order.total_amount || order.total_price || 0).toFixed(2) }}
+                <span v-if="order.discount_amount > 0" class="block text-[10px] text-emerald-500 font-semibold">
+                  - ${{ Number(order.discount_amount).toFixed(2) }} discount
+                </span>
+              </td>
               <td class="px-4 py-4 text-slate-500">{{ order.payment_method || '—' }}</td>
               <td class="px-4 py-4">
                 <span :class="statusBadge(order.status)" class="px-2.5 py-1 rounded-lg text-xs font-semibold capitalize">

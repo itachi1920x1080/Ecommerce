@@ -45,7 +45,12 @@
                   class="px-3 py-1 rounded-full text-xs font-semibold capitalize">
                   {{ order.status?.replace(/_/g, ' ') }}
                 </span>
-                <span class="text-lg font-bold text-slate-800">${{ Number(order.total_price || 0).toFixed(2) }}</span>
+                <span class="text-lg font-bold text-slate-800">
+                  ${{ Number(order.total_price || 0).toFixed(2) }}
+                  <span v-if="order.discount_amount > 0" class="block text-[10px] text-emerald-500 font-semibold text-right">
+                    - ${{ Number(order.discount_amount).toFixed(2) }} discount
+                  </span>
+                </span>
                 <router-link :to="`/invoice/${order.id}`"
                   class="px-4 py-2 bg-slate-100 hover:bg-primary-50 hover:text-primary-600 text-slate-600 text-xs font-semibold rounded-xl transition-all">
                   View
