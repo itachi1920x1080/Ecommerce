@@ -24,6 +24,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->group('admin', [
             \App\Http\Middleware\IsAdmin::class,
         ]);
+        $middleware->group('driver', [
+            \App\Http\Middleware\DriverMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

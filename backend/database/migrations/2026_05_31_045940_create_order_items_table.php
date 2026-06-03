@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->constrained()->onDelete('cascade'); // ស្ថិតក្នុងវិក្កយបត្រមួយណា?
-            $table->foreignId('product_id')->constrained()->onDelete('cascade'); // ទិញទំនិញអ្វី?
-            $table->integer('quantity'); // ចំនួនប៉ុន្មាន?
-            $table->decimal('price', 10, 2); // តម្លៃទំនិញនៅពេលកំពុងទិញ (ការពារថ្ងៃក្រោយទំនិញឡើងថ្លៃ)
+            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->integer('quantity');
+            $table->decimal('price', 10, 2); // តម្លៃទំនិញនៅពេលទិញ (ការពារថ្ងៃក្រោយទំនិញឡើងថ្លៃ ក៏មិនប៉ះពាល់វិក្កយបត្រចាស់)
             $table->timestamps();
         });
     }
