@@ -38,25 +38,36 @@ class TelegramWebhookController extends Controller
                 $orderId = $parts[1] ?? null;
 
                 if ($orderId) {
-                    $order = Order::find($orderId);
+                    $order = Order::with(['user', 'address'])->find($orderId);
                     if ($order) {
                         // កែប្រែស្ថានភាព
                         $statusText = '';
+                        $deliveryInfo = '';
+                        
                         if ($action === 'approve') {
-                            // 🟢 ប្តូរពី 'completed' ទៅ 'processing' ដើម្បីឱ្យត្រូវនឹង Database របស់អ្នក
-                            $order->update(['status' => 'processing']);
-                            $statusText = "✅ បានយល់ព្រម (Processing)";
+                            // 🟢 ប្តូរពី 'completed' ទៅ 'finding_driver' ដើម្បីឱ្យ Driver អាចឃើញ
+                            $order->update(['status' => 'finding_driver']);
+                            $statusText = "✅ បានយល់ព្រម (កំពុងស្វែងរកអ្នកដឹកជញ្ជូន...)";
+
+                            // បន្ថែមព័ត៌មានដឹកជញ្ជូន
+                            if ($order->address) {
+                                $deliveryInfo .= "\n\n📦 <b>ព័ត៌មានអ្នកទទួល (Delivery Info):</b>\n";
+                                $deliveryInfo .= "👤 ឈ្មោះ: {$order->address->receiver_name}\n";
+                                $deliveryInfo .= "📞 លេខទូរស័ព្ទ: {$order->address->phone_number}\n";
+                                $deliveryInfo .= "🏠 ទីតាំង: {$order->address->full_address}, {$order->address->city}";
+                            }
                         } elseif ($action === 'reject') {
                             $order->update(['status' => 'cancelled']);
                             $statusText = "❌ បានបដិសេធ (Cancelled)";
                         }
 
                         // កែប្រែសារចាស់ ដើម្បីលុបប៊ូតុងចោល និងបង្ហាញស្ថានភាពថ្មី
-                        $newText = $originalText . "\n\n👉 ស្ថានភាពបច្ចុប្បន្ន: " . $statusText;
+                        $newText = $originalText . "\n\n👉 ស្ថានភាពបច្ចុប្បន្ន: " . $statusText . $deliveryInfo;
                         Http::post("https://api.telegram.org/bot{$botToken}/editMessageText", [
                             'chat_id' => $chatId,
                             'message_id' => $messageId,
-                            'text' => $newText
+                            'text' => $newText,
+                            'parse_mode' => 'HTML'
                         ]);
                     }
                 }

@@ -44,4 +44,42 @@ class UserController extends Controller
         $user->delete();
         return response()->json(['message' => 'លុបអ្នកប្រើប្រាស់ជោគជ័យ!']);
     }
+    public function updateProfile(Request $request){
+        $user = auth()->user();
+
+        $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|unique:users,email,' . $user->id,
+            'password' => 'sometimes|string|min:6|confirmed',
+            'address' => 'sometimes|string|max:255',
+            'avatar' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048', // បន្ថែម validation សម្រាប់រូបភាព
+        ]);
+
+        $data = [
+            'name' => $request->name ?? $user->name,
+            'email' => $request->email ?? $user->email,
+        ];
+
+        if ($request->has('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        if ($request->has('address')) {
+            $data['address'] = $request->address;
+        }
+
+        if ($request->hasFile('avatar')) {
+            // លុបរូបចាស់បើមាន
+            if ($user->avatar && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->avatar)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->avatar);
+            }
+            // រក្សាទុករូបថ្មី
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $data['avatar'] = $path;
+        }
+
+        $user->update($data);
+
+        return response()->json(['message' => 'បន្ថែមព័ត៌មានអ្នកប្រើប្រាស់ជោគជ័យ!', 'user' => $user]);
+    }
 }

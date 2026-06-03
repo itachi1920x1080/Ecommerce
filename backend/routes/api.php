@@ -101,7 +101,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // ❤️ ប្រព័ន្ធទំនិញចំណូលចិត្ត (Wishlist)
     Route::get('/wishlists', [\App\Http\Controllers\WishlistController::class, 'index']);
     Route::post('/wishlists/{productId}/toggle', [\App\Http\Controllers\WishlistController::class, 'toggle']);
-    
+    // សម្រាប់អ្នកប្រើប្រាស់កែប្រែប្រវត្តិរូបខ្លួនឯង
+    Route::put('/user/profile', [\App\Http\Controllers\UserController::class, 'updateProfile']);
     // 📍 គ្រប់គ្រងអាសយដ្ឋានដឹកជញ្ជូន
     Route::get('/addresses', [\App\Http\Controllers\AddressController::class, 'index']);
     Route::post('/addresses', [\App\Http\Controllers\AddressController::class, 'store']);
@@ -142,4 +143,11 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/coupons', [\App\Http\Controllers\CouponController::class, 'store']);
     Route::delete('/coupons/{id}', [\App\Http\Controllers\CouponController::class, 'destroy']);
     
+});
+
+// ៦. ក្រុមទី ៣៖ សម្រាប់តែអ្នកដឹកជញ្ជូន (Driver Routes) 🛵
+Route::middleware(['auth:sanctum', 'driver'])->group(function () {
+    Route::get('/driver/available-orders', [\App\Http\Controllers\DriverController::class, 'getAvailableOrders']);
+    Route::post('/driver/orders/{id}/accept', [\App\Http\Controllers\DriverController::class, 'acceptOrder']);
+    Route::put('/driver/orders/{id}/status', [\App\Http\Controllers\DriverController::class, 'updateStatus']);
 });

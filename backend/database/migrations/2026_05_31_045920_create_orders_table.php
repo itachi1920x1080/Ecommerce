@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->decimal('total_amount', 10, 2); // <--- ត្រូវប្រាកដថាមានបន្ទាត់នេះ
-            $table->string('status')->default('pending');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('address_id')->nullable()->constrained('addresses')->nullOnDelete(); // ទីតាំងដឹកជញ្ជូន
+            $table->decimal('total_price', 10, 2); // តម្លៃសរុប
+            $table->string('status')->default('pending'); // ស្ថានភាព: pending, processing, shipped, delivered, cancelled
+            $table->string('payment_method')->default('cod'); // cod (Cash on Delivery) ឬ aba
             $table->timestamps();
         });
     }
