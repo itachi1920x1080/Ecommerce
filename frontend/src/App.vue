@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-slate-50">
-    <!-- Header for non-admin routes -->
-    <Header v-if="!isAdminRoute" />
+  <div class="min-h-screen bg-surface">
+    <!-- Shop Layout: Navbar -->
+    <Navbar v-if="!isAdminRoute" />
 
     <!-- Toast Notifications -->
     <div class="toast-container">
@@ -11,7 +11,6 @@
           :key="toast.id"
           :class="['toast', `toast-${toast.type}`, toast.exiting ? 'toast-exit' : '']"
         >
-          <!-- Icon -->
           <svg v-if="toast.type === 'success'" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
@@ -29,7 +28,7 @@
     <!-- Cart Drawer -->
     <CartDrawer v-if="!isAdminRoute" :open="cartOpen" @close="cartOpen = false" />
 
-    <!-- Main Content with admin sidebar layout or regular layout -->
+    <!-- Admin Layout -->
     <div v-if="isAdminRoute" class="admin-layout">
       <Sidebar />
       <main class="flex-1 min-w-0">
@@ -41,12 +40,15 @@
       </main>
     </div>
 
-    <div v-else :class="auth.isLoggedIn ? '' : ''">
-      <router-view v-slot="{ Component }">
-        <Transition name="page" mode="out-in">
-          <component :is="Component" />
-        </Transition>
-      </router-view>
+    <!-- Shop Layout -->
+    <div v-else class="flex flex-col min-h-[calc(100vh-4rem)]">
+      <main class="flex-1">
+        <router-view v-slot="{ Component }">
+          <Transition name="page" mode="out-in">
+            <component :is="Component" />
+          </Transition>
+        </router-view>
+      </main>
     </div>
   </div>
 </template>
@@ -55,7 +57,7 @@
 import { computed, ref, provide } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import Header from '@/components/Header.vue'
+import Navbar from '@/components/shop/Navbar.vue'
 import Sidebar from '@/components/Sidebar.vue'
 import CartDrawer from '@/components/CartDrawer.vue'
 

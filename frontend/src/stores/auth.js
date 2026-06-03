@@ -14,6 +14,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   // Computed getters
   const isAdmin    = computed(() => user.value?.role === 'admin')
+  const isDriver   = computed(() => user.value?.role === 'driver')
   const isLoggedIn = computed(() => !!token.value)
   const userName   = computed(() => user.value?.name || '')
 
@@ -54,5 +55,5 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('user')
   }
 
-  return { token, user, isAdmin, isLoggedIn, userName, login, register, logout }
+  return { token, user, isAdmin, isDriver, isLoggedIn, userName, login, register, logout }
 })

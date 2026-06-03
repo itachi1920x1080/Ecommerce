@@ -58,6 +58,30 @@ class CartController extends Controller
         ], 200);
     }
 
+    // Update cart item quantity (Method: PUT)
+    public function update($id, Request $request)
+    {
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $cartItem = Cart::where('user_id', $request->user()->id)
+            ->where('id', $id)
+            ->first();
+
+        if (!$cartItem) {
+            return response()->json(['message' => 'រកមិនឃើញទំនិញនេះក្នុងកន្ត្រកទេ'], 404);
+        }
+
+        $cartItem->quantity = $request->quantity;
+        $cartItem->save();
+
+        return response()->json([
+            'message' => 'បានកែប្រែចំនួនទំនិញជោគជ័យ!',
+            'data' => $cartItem->load('product')
+        ]);
+    }
+
     // ៣. លុបទំនិញចេញពីកន្ត្រក (Method: DELETE)
     public function destroy($id, Request $request)
     {

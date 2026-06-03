@@ -11,11 +11,11 @@
       <!-- Header -->
       <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
         <div class="flex items-center gap-2.5">
-          <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
           </svg>
           <h2 class="text-lg font-semibold text-slate-800">Shopping Cart</h2>
-          <span v-if="cart.totalItems > 0" class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
+          <span v-if="cart.totalItems > 0" class="px-2 py-0.5 bg-primary-100 text-primary-700 text-xs font-semibold rounded-full">
             {{ cart.totalItems }}
           </span>
         </div>
@@ -46,7 +46,7 @@
         </div>
         <h3 class="text-base font-semibold text-slate-600 mb-1">Your cart is empty</h3>
         <p class="text-sm text-slate-400 mb-5">Add items to get started</p>
-        <button @click="$emit('close')" class="px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors">
+        <button @click="$emit('close')" class="px-5 py-2.5 bg-primary-600 text-white text-sm font-semibold rounded-xl hover:bg-primary-700 transition-colors">
           Browse Products
         </button>
       </div>
@@ -66,7 +66,7 @@
           <div class="flex-1 min-w-0">
             <h4 class="text-sm font-medium text-slate-800 truncate">{{ item.name }}</h4>
             <p class="text-xs text-slate-400 mt-0.5">Qty: {{ item.quantity }}</p>
-            <p class="text-sm font-semibold text-blue-600 mt-1">${{ (item.price * item.quantity).toFixed(2) }}</p>
+            <p class="text-sm font-semibold text-primary-600 mt-1">${{ (item.price * item.quantity).toFixed(2) }}</p>
           </div>
           
           <!-- Remove -->
@@ -86,7 +86,7 @@
           <span class="text-xl font-bold text-slate-800">${{ cart.cartTotal.toFixed(2) }}</span>
         </div>
         <button @click="showCheckoutModal = true"
-          class="block w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-xl text-center hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200 active:scale-[0.98]"
+          class="block w-full py-3 bg-gradient-to-r from-primary-600 to-primary-500 text-white text-sm font-semibold rounded-xl text-center hover:shadow-lg hover:shadow-primary-500/25 transition-all duration-200 active:scale-[0.98]"
           id="checkout-btn">
           Checkout
         </button>

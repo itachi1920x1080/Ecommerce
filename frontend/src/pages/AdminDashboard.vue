@@ -7,7 +7,15 @@
     </div>
 
     <!-- Dashboard Cards -->
-    <DashboardCards :analytics="analytics" :loading="loading" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div v-if="loading" v-for="i in 4" :key="i" class="h-28 skeleton rounded-2xl"></div>
+      <template v-else>
+        <div v-for="card in dashCards" :key="card.label" class="bg-white rounded-2xl border border-slate-200/60 p-5 shadow-sm">
+          <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">{{ card.label }}</p>
+          <p class="text-2xl font-bold text-slate-800 mt-2">{{ card.value }}</p>
+        </div>
+      </template>
+    </div>
 
     <!-- Recent Orders & Quick Actions -->
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
@@ -77,7 +85,16 @@
 <script setup>
 import { ref, computed, onMounted, inject } from 'vue'
 import api from '@/api/axios.js'
-import DashboardCards from '@/components/DashboardCards.vue'
+
+const dashCards = computed(() => {
+  const d = analytics.value?.data || analytics.value || {}
+  return [
+    { label: 'Total Revenue', value: '$' + Number(d.total_revenue || 0).toFixed(2) },
+    { label: 'Total Orders', value: d.total_orders || 0 },
+    { label: 'Total Products', value: d.total_products || 0 },
+    { label: 'Total Users', value: d.total_users || 0 },
+  ]
+})
 
 const toast     = inject('toast')
 const analytics = ref(null)
