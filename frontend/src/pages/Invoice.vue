@@ -52,13 +52,13 @@
             <span>សរុបរង (Subtotal):</span>
             <span class="font-medium">${{ subtotal.toFixed(2) }}</span>
           </div>
-          <div class="flex justify-between text-gray-600 border-b border-gray-200 pb-3">
+          <div v-if="order.discount_amount > 0" class="flex justify-between text-gray-600">
             <span>បញ្ចុះតម្លៃ (Discount):</span>
-            <span class="font-medium text-red-500">-$0.00</span>
+            <span class="font-medium text-emerald-500">-${{ order.discount_amount.toFixed(2) }}</span>
           </div>
-          <div class="flex justify-between text-xl font-bold text-gray-900 pt-1">
+          <div class="flex justify-between text-xl font-bold text-gray-900 pt-1 border-t border-gray-200 mt-2">
             <span>សរុបរួម (Total):</span>
-            <span class="text-blue-600">${{ subtotal.toFixed(2) }}</span>
+            <span class="text-blue-600">${{ total.toFixed(2) }}</span>
           </div>
         </div>
       </div>
@@ -89,6 +89,8 @@ const currentDate = new Date().toLocaleDateString('en-GB');
 
 // ទិន្នន័យសាកល្បង (អ្នកអាចប្តូរវាឱ្យទាញយកពី API របស់ Laravel តាមរយៈ Order ID បាននៅពេលក្រោយ)
 const order = ref({
+  subtotal: 66.00,
+  discount_amount: 5.00,
   items: [
     { name: 'អាវយឺត RUPP CS ពណ៌ខៀវ', qty: 2, price: 12.50 },
     { name: 'កាតាបស្ពាយ Laptop (ASUS TUF Edition)', qty: 1, price: 35.00 },
@@ -98,7 +100,11 @@ const order = ref({
 
 // គណនាតម្លៃសរុបដោយស្វ័យប្រវត្តិ
 const subtotal = computed(() => {
-  return order.value.items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  return order.value.subtotal || order.value.items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+});
+
+const total = computed(() => {
+  return Math.max(0, subtotal.value - (order.value.discount_amount || 0));
 });
 
 // មុខងារហៅផ្ទាំង Print របស់កុំព្យូទ័រ

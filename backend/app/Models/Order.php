@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'address_id', 'driver_id', 'total_price', 'status', 'payment_method', 'delivery_photo_url'];
+    protected $fillable = ['user_id', 'address_id', 'driver_id', 'subtotal', 'discount_amount', 'total_price', 'status', 'payment_method', 'delivery_photo_url', 'coupon_id'];
     protected $appends = ['full_delivery_photo_url'];
 
     public function getFullDeliveryPhotoUrlAttribute()
@@ -27,5 +27,8 @@ class Order extends Model
     }
     public function driver() {
         return $this->belongsTo(User::class, 'driver_id');
+    }
+    public function coupon() {
+        return $this->belongsTo(Coupon::class);
     }
 }

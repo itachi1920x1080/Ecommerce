@@ -22,9 +22,14 @@
           <div class="relative aspect-square rounded-2xl overflow-hidden bg-slate-100 group">
             <img :src="product.full_image_url || product.image || 'https://placehold.co/600'" :alt="product.name"
               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-            <span v-if="product.category?.name" class="absolute top-4 left-4 px-3 py-1.5 bg-white/90 backdrop-blur text-xs font-semibold text-slate-600 rounded-lg shadow-sm">
-              {{ product.category.name }}
-            </span>
+            <div class="absolute top-4 left-4 flex flex-col gap-2">
+              <span v-if="product.category?.name" class="px-3 py-1.5 bg-white/90 backdrop-blur text-xs font-semibold text-slate-600 rounded-lg shadow-sm">
+                {{ product.category.name }}
+              </span>
+              <span v-if="product.discount_percent > 0" class="px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg shadow-sm flex items-center justify-center w-fit">
+                -{{ product.discount_percent }}% OFF
+              </span>
+            </div>
           </div>
 
           <!-- Info -->
@@ -33,8 +38,13 @@
             <h1 class="text-3xl sm:text-4xl font-bold text-slate-800 mb-4">{{ product.name }}</h1>
             <p class="text-slate-400 leading-relaxed mb-6">{{ product.description || 'No description available.' }}</p>
 
-            <div class="text-3xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent mb-6">
-              ${{ Number(product.price).toFixed(2) }}
+            <div class="flex flex-col mb-6">
+              <span v-if="product.discount_percent > 0" class="text-lg text-slate-400 line-through">
+                ${{ Number(product.price).toFixed(2) }}
+              </span>
+              <div class="text-3xl font-extrabold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
+                ${{ product.discount_percent > 0 ? (product.price - (product.price * product.discount_percent / 100)).toFixed(2) : Number(product.price).toFixed(2) }}
+              </div>
             </div>
 
             <!-- Variants -->

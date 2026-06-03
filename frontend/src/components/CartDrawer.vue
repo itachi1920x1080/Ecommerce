@@ -65,6 +65,9 @@
           <!-- Details -->
           <div class="flex-1 min-w-0">
             <h4 class="text-sm font-medium text-slate-800 truncate">{{ item.name }}</h4>
+            <div v-if="item.discount_percent > 0" class="inline-flex mt-0.5 px-1.5 py-0.5 bg-red-100 text-red-700 text-[10px] font-bold rounded">
+              -{{ item.discount_percent }}% OFF
+            </div>
             <p class="text-xs text-slate-400 mt-0.5">Qty: {{ item.quantity }}</p>
             <p class="text-sm font-semibold text-primary-600 mt-1">${{ (item.price * item.quantity).toFixed(2) }}</p>
           </div>

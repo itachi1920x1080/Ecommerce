@@ -36,7 +36,15 @@
               <img :src="p.full_image_url || p.image || 'https://placehold.co/40'" class="w-10 h-10 rounded-lg object-cover bg-slate-100" :alt="p.name" />
               <span class="font-medium text-slate-700">{{ p.name }}</span>
             </td>
-            <td class="px-5 py-3 text-slate-600">${{ Number(p.price).toFixed(2) }}</td>
+            <td class="px-5 py-3 text-slate-600">
+              <div v-if="p.discount_percent > 0">
+                <span class="line-through text-slate-400 text-xs">${{ Number(p.price).toFixed(2) }}</span>
+                <div class="font-bold text-emerald-600">${{ (p.price - (p.price * p.discount_percent / 100)).toFixed(2) }} <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1 rounded">-{{ p.discount_percent }}%</span></div>
+              </div>
+              <div v-else>
+                ${{ Number(p.price).toFixed(2) }}
+              </div>
+            </td>
             <td class="px-5 py-3 text-slate-600">{{ p.stock ?? '—' }}</td>
             <td class="px-5 py-3 text-right space-x-2">
               <button @click="openEditModal(p)" class="text-blue-600 hover:underline text-xs font-medium">Edit</button>

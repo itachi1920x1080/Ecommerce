@@ -6,10 +6,25 @@ export const useCartStore = defineStore('cart', () => {
 
   const items = ref([])
   const loading = ref(false)
+  
+  // Coupon state
+  const couponCode = ref(null)
+  const discountValue = ref(0)
+  const discountType = ref('fixed')
 
   // Getters
   const totalItems = computed(() => items.value.reduce((sum, item) => sum + item.quantity, 0))
   const cartTotal = computed(() => items.value.reduce((sum, item) => sum + (item.price * item.quantity), 0))
+  
+  const discountAmount = computed(() => {
+    if (!couponCode.value) return 0;
+    if (discountType.value === 'percent') {
+      return (cartTotal.value * discountValue.value) / 100;
+    }
+    return discountValue.value;
+  })
+
+  const finalTotal = computed(() => Math.max(0, cartTotal.value - discountAmount.value))
 
   async function fetchCart() {
     loading.value = true
@@ -18,14 +33,22 @@ export const useCartStore = defineStore('cart', () => {
       const serverCarts = res.data.cart || res.data.data || res.data || []
       
       // Map server carts to a flat structure so the UI works seamlessly
-      items.value = serverCarts.map(c => ({
-        cart_id: c.id,          // Needed to delete from backend
-        id: c.product_id,       // The actual product ID
-        name: c.product?.name || 'Unknown Product',
-        price: Number(c.product?.price || 0),
-        image: c.product?.full_image_url || c.product?.image || 'https://placehold.co/64x64/e2e8f0/94a3b8?text=Product',
-        quantity: c.quantity
-      }))
+      items.value = serverCarts.map(c => {
+        let finalPrice = Number(c.product?.price || 0)
+        if (c.product?.discount_percent > 0) {
+          finalPrice = finalPrice - (finalPrice * c.product.discount_percent / 100)
+        }
+        return {
+          cart_id: c.id,          // Needed to delete from backend
+          id: c.product_id,       // The actual product ID
+          name: c.product?.name || 'Unknown Product',
+          price: finalPrice,
+          original_price: Number(c.product?.price || 0),
+          discount_percent: c.product?.discount_percent || 0,
+          image: c.product?.full_image_url || c.product?.image || 'https://placehold.co/64x64/e2e8f0/94a3b8?text=Product',
+          quantity: c.quantity
+        }
+      })
     } catch (e) {
       console.error('Failed to fetch cart:', e)
     } finally {
@@ -39,11 +62,17 @@ export const useCartStore = defineStore('cart', () => {
     if (existing) {
       existing.quantity++
     } else {
+      let finalPrice = Number(product.price || 0)
+      if (product.discount_percent > 0) {
+        finalPrice = finalPrice - (finalPrice * product.discount_percent / 100)
+      }
       items.value.push({
         cart_id: null, // Will be populated after sync
         id: product.id,
         name: product.name,
-        price: Number(product.price || 0),
+        price: finalPrice,
+        original_price: Number(product.price || 0),
+        discount_percent: product.discount_percent || 0,
         image: product.full_image_url || product.image || 'https://placehold.co/64x64/e2e8f0/94a3b8?text=Product',
         quantity: 1
       })
@@ -101,6 +130,11 @@ export const useCartStore = defineStore('cart', () => {
     loading, 
     totalItems, 
     cartTotal, 
+    couponCode,
+    discountValue,
+    discountType,
+    discountAmount,
+    finalTotal,
     fetchCart, 
     addToCart, 
     removeFromCart,

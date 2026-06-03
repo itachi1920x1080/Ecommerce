@@ -73,8 +73,8 @@
                 </div>
               </div>
 
-              <!-- Price + Stock -->
-              <div class="grid grid-cols-2 gap-3">
+              <!-- Price + Discount + Stock -->
+              <div class="grid grid-cols-3 gap-3">
                 <div>
                   <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
                     Price ($) <span class="text-red-400">*</span>
@@ -85,6 +85,16 @@
                       class="w-full pl-7 pr-3.5 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-gray-800
                              border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-100
                              placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"/>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">Discount (%)</label>
+                  <div class="relative">
+                    <input v-model.number="form.discount_percent" type="number" min="0" max="100" placeholder="0"
+                      class="w-full pl-3.5 pr-7 py-2.5 rounded-xl text-sm bg-gray-50 dark:bg-gray-800
+                             border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-100
+                             placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all"/>
+                    <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-sm text-gray-400">%</span>
                   </div>
                 </div>
                 <div>
@@ -186,7 +196,7 @@ const isEdit = computed(() => !!props.editing?.id)
 
 const defaultForm = () => ({
   name: '', category_id: '', status: 'active',
-  price: '', stock: '', description: '', image: '',
+  price: '', discount_percent: '', stock: '', description: '', image: '',
 })
 
 const form = ref(defaultForm())
@@ -200,6 +210,7 @@ watch(() => props.editing, (val) => {
       category_id: val.category_id ?? '',
       status:      val.status      ?? 'active',
       price:       val.price       ?? '',
+      discount_percent: val.discount_percent ?? '',
       stock:       val.stock       ?? '',
       description: val.description ?? '',
       image:       val.image       ?? '',

@@ -32,17 +32,13 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password123'),
             'role' => 'user',
         ]);
-
-        // បង្កើតគណនី Driver
         User::create([
             'name' => 'Driver Test',
             'email' => 'driver@test.com',
             'password' => Hash::make('password123'),
             'role' => 'driver',
         ]);
-
         // ៣. បង្កើតទំនិញសាកល្បង ២០ មុខមកវិញ (បើមិនចង់បាន អាចលុបបន្ទាត់នេះចោលបាន)
-        // Product::factory(20)->create(); 
-        // លុប Product factory ចេញពីទីនេះ ព្រោះយើងបានបង្កើត ProductSeeder ផ្សេងហើយ
+        Product::factory(20)->create();
     }
 }

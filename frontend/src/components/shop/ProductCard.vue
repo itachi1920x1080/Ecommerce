@@ -25,10 +25,15 @@
         </svg>
       </button>
 
-      <!-- Category Badge -->
-      <span v-if="product.category?.name" class="absolute top-3 left-3 px-2.5 py-1 bg-white/90 backdrop-blur text-xs font-semibold text-slate-600 rounded-lg shadow-sm">
-        {{ product.category.name }}
-      </span>
+      <!-- Category & Sale Badges -->
+      <div class="absolute top-3 left-3 flex flex-col gap-2">
+        <span v-if="product.category?.name" class="px-2.5 py-1 bg-white/90 backdrop-blur text-xs font-semibold text-slate-600 rounded-lg shadow-sm">
+          {{ product.category.name }}
+        </span>
+        <span v-if="product.discount_percent > 0" class="px-2.5 py-1 bg-red-500 text-white text-xs font-bold rounded-lg shadow-sm flex items-center justify-center w-fit">
+          -{{ product.discount_percent }}% OFF
+        </span>
+      </div>
     </div>
 
     <!-- Content -->
@@ -42,9 +47,14 @@
       </p>
 
       <div class="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
-        <span class="text-lg font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
-          ${{ Number(product.price).toFixed(2) }}
-        </span>
+        <div class="flex flex-col">
+          <span v-if="product.discount_percent > 0" class="text-xs text-slate-400 line-through">
+            ${{ Number(product.price).toFixed(2) }}
+          </span>
+          <span class="text-lg font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
+            ${{ product.discount_percent > 0 ? (product.price - (product.price * product.discount_percent / 100)).toFixed(2) : Number(product.price).toFixed(2) }}
+          </span>
+        </div>
 
         <button
           @click.stop="$emit('addToCart', product)"
