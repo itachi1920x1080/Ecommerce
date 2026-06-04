@@ -2,173 +2,72 @@
 
 ## Overview
 
-Ecommerce Project is a full-stack web application that provides an online shopping platform with user authentication, product management, order processing, and role-based access control.
+Ecommerce Project is a full-stack web application built with:
 
-### Technologies Used
+* Frontend: Vue 3 + Vite + Tailwind CSS
+* Backend: Laravel 12
+* Database: MySQL
+* Containerization: Docker & Docker Compose
 
-**Frontend**
-
-* Vue 3 (Vite)
-* Tailwind CSS
-* JavaScript
-
-**Backend**
-
-* Laravel 12 (PHP)
-
-**Database**
-
-* MySQL
+This project is fully containerized using Docker. No manual installation of PHP, Composer, MySQL, or Node.js is required.
 
 ---
 
-## Database Setup
+## Prerequisites
 
-### Database Requirements
+Before running the project, install:
 
-* MySQL 8.0 or higher
+* Docker Desktop
+* Docker Compose
 
-### Create Database
-
-Create a database named:
-
-```sql
-CREATE DATABASE laravel;
-```
-
-### Configure Environment Variables
-
-Open the backend `.env` file and update the database configuration:
-
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=laravel
-DB_USERNAME=root
-DB_PASSWORD=
-```
-
-Adjust these values according to your MySQL configuration.
-
-### Initialize Database
-
-The project uses Laravel migrations and seeders. No manual SQL import is required.
-
-Run:
+Verify installation:
 
 ```bash
-php artisan migrate:fresh --seed
+docker --version
+docker compose version
 ```
-
-This command will:
-
-* Create all database tables
-* Generate sample data
-* Create default user accounts
 
 ---
 
-## Backend Installation
+## Running the Project
 
-### Step 1: Navigate to Backend Folder
+### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
+cd Ecommerce
+```
+
+### 2. Configure Environment
 
 ```bash
 cd backend
-```
-
-### Step 2: Install Dependencies
-
-```bash
-composer install
-```
-
-### Step 3: Create Environment File
-
-Linux/macOS:
-
-```bash
 cp .env.example .env
 ```
 
-Windows:
+### 3. Start Docker Containers
 
-```cmd
-copy .env.example .env
-```
-
-### Step 4: Generate Application Key
+Return to the project root directory and run:
 
 ```bash
-php artisan key:generate
+docker compose up -d --build
 ```
 
-### Step 5: Configure Database
-
-Update the `.env` file with your MySQL credentials.
-
-### Step 6: Run Migrations and Seeders
+### 4. Generate Application Key
 
 ```bash
-php artisan migrate:fresh --seed
+docker compose exec backend php artisan key:generate
 ```
 
-### Step 7: Start Backend Server
+### 5. Run Database Migrations and Seeders
 
 ```bash
-php artisan serve
-```
-
-Backend URL:
-
-```text
-http://localhost:8000
+docker compose exec backend php artisan migrate:fresh --seed
 ```
 
 ---
 
-## Frontend Installation
-
-Open a new terminal window.
-
-### Step 1: Navigate to Frontend Folder
-
-```bash
-cd frontend
-```
-
-### Step 2: Install Dependencies
-
-```bash
-npm install
-```
-
-### Step 3: Start Development Server
-
-```bash
-npm run dev
-```
-
-Frontend URL:
-
-```text
-http://localhost:5173
-```
-
----
-
-## Application Startup Order
-
-Follow the order below when running the project:
-
-1. Start MySQL Server
-2. Start Laravel Backend Server
-3. Start Vue Frontend Development Server
-4. Open the frontend URL in a browser
-
----
-
-## Default URLs
+## Access the Application
 
 | Service     | URL                   |
 | ----------- | --------------------- |
@@ -177,119 +76,72 @@ Follow the order below when running the project:
 
 ---
 
+## Test Accounts
+
+### Administrator
+
+Email: [admin@test.com](mailto:admin@test.com)
+
+Password: password123
+
+### User
+
+Email: [user@test.com](mailto:user@test.com)
+
+Password: password123
+
+### Driver
+
+Email: [driver@test.com](mailto:driver@test.com)
+
+Password: password123
+
+---
+
+## Useful Docker Commands
+
+### Start Containers
+
+```bash
+docker compose up -d
+```
+
+### Stop Containers
+
+```bash
+docker compose down
+```
+
+### View Logs
+
+```bash
+docker compose logs -f
+```
+
+### Access Backend Container
+
+```bash
+docker compose exec backend bash
+```
+
+---
+
 ## Project Structure
 
 ```text
 Ecommerce/
-│
-├── backend/          # Laravel API and database logic
-├── frontend/         # Vue.js application
-├── README.md         # Project documentation
-│
-└── database/
-    ├── migrations/
-    └── seeders/
+├── backend/
+├── frontend/
+├── docker-compose.yml
+└── README.md
 ```
-
----
-
-## Test Accounts
-
-After running:
-
-```bash
-php artisan migrate:fresh --seed
-```
-
-You can log in using the following accounts.
-
-### Administrator
-
-```text
-Email: admin@test.com
-Password: password123
-```
-
-### User
-
-```text
-Email: user@test.com
-Password: password123
-```
-
-### Driver
-
-```text
-Email: driver@test.com
-Password: password123
-```
-
----
-
-## Software Requirements
-
-* PHP 8.2+
-* Composer 2+
-* MySQL 8+
-* Node.js 18+
-* npm 9+
-
----
-
-## Troubleshooting
-
-### Database Connection Error
-
-* Verify MySQL is running.
-* Check database credentials in `.env`.
-* Ensure the database exists.
-
-### Port Already in Use
-
-Laravel:
-
-```bash
-php artisan serve --port=8001
-```
-
-Vite:
-
-```bash
-npm run dev
-```
-
-Check the terminal output for the correct URL.
-
-### Dependency Installation Issues
-
-Backend:
-
-```bash
-composer install
-```
-
-Frontend:
-
-```bash
-npm install
-```
-
-If necessary, delete:
-
-```text
-vendor/
-node_modules/
-```
-
-and reinstall dependencies.
 
 ---
 
 ## Author
 
 Student: Mao Visal
+
 University: Royal University of Phnom Penh (RUPP)
+
 Major: Computer Science
-
-
-ស៊ីគុយទាវមួយតុ ម៉ុកចេញលុយម្នាក់ឯង @MAOVISAL🗿
