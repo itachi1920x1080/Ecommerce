@@ -1,114 +1,295 @@
 # Ecommerce Project
 
-A full-stack Ecommerce web application featuring a robust API and an interactive user interface.
+## Overview
 
-## Technologies Used
+Ecommerce Project is a full-stack web application that provides an online shopping platform with user authentication, product management, order processing, and role-based access control.
 
-* **Frontend:** Vue 3 (Vite), Tailwind CSS
-* **Backend:** Laravel (PHP)
-* **Database:** SQLite
+### Technologies Used
+
+**Frontend**
+
+* Vue 3 (Vite)
+* Tailwind CSS
+* JavaScript
+
+**Backend**
+
+* Laravel 12 (PHP)
+
+**Database**
+
+* MySQL
+
+---
 
 ## Database Setup
 
-* **Database Used:** SQLite
-* **Creation & Import:** 
-  Since the project uses SQLite, a lightweight file-based database, no separate database server installation (like MySQL or PostgreSQL) is required.
-  * A pre-initialized database file is already included at `backend/database/database.sqlite`.
-  * If you wish to initialize the database from scratch (which creates the tables and imports sample data via seeders), you will run the `php artisan migrate:fresh --seed` command during the backend setup phase.
-* **Environment Variables:**
-  The `.env` file in the backend folder must have the following configuration to connect to SQLite:
-  ```env
-  DB_CONNECTION=sqlite
-  ```
+### Database Requirements
 
-## Backend Setup
+* MySQL 8.0 or higher
 
-Please follow these step-by-step instructions to set up the backend server:
+### Create Database
 
-1. Open your terminal.
-2. Navigate to the backend folder.
-3. Install PHP dependencies.
-4. Configure the environment variables.
-5. Generate the application key.
-6. Run database migrations and seeders (to create tables and insert sample data).
-7. Start the backend server.
+Create a database named:
 
-**Example commands:**
+```sql
+CREATE DATABASE laravel;
+```
+
+### Configure Environment Variables
+
+Open the backend `.env` file and update the database configuration:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Adjust these values according to your MySQL configuration.
+
+### Initialize Database
+
+The project uses Laravel migrations and seeders. No manual SQL import is required.
+
+Run:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+This command will:
+
+* Create all database tables
+* Generate sample data
+* Create default user accounts
+
+---
+
+## Backend Installation
+
+### Step 1: Navigate to Backend Folder
+
 ```bash
 cd backend
+```
+
+### Step 2: Install Dependencies
+
+```bash
 composer install
+```
+
+### Step 3: Create Environment File
+
+Linux/macOS:
+
+```bash
 cp .env.example .env
+```
+
+Windows:
+
+```cmd
+copy .env.example .env
+```
+
+### Step 4: Generate Application Key
+
+```bash
 php artisan key:generate
+```
+
+### Step 5: Configure Database
+
+Update the `.env` file with your MySQL credentials.
+
+### Step 6: Run Migrations and Seeders
+
+```bash
 php artisan migrate:fresh --seed
+```
+
+### Step 7: Start Backend Server
+
+```bash
 php artisan serve
 ```
-*(Note: If you are using Windows Command Prompt, use `copy .env.example .env` instead of `cp`)*
 
-## Frontend Setup
+Backend URL:
 
-Please follow these step-by-step instructions to set up the frontend client:
+```text
+http://localhost:8000
+```
 
-1. Open a **new** terminal window.
-2. Navigate to the frontend folder.
-3. Install Node.js dependencies.
-4. Start the development server.
+---
 
-**Example commands:**
+## Frontend Installation
+
+Open a new terminal window.
+
+### Step 1: Navigate to Frontend Folder
+
 ```bash
 cd frontend
+```
+
+### Step 2: Install Dependencies
+
+```bash
 npm install
+```
+
+### Step 3: Start Development Server
+
+```bash
 npm run dev
 ```
 
-## Execution Order
+Frontend URL:
 
-To run the application successfully, please follow this startup order:
+```text
+http://localhost:5173
+```
 
-1. **Start Database Server:** (Not applicable since SQLite is file-based and runs automatically)
-2. **Start Backend Server:** Run `php artisan serve` in the backend directory.
-3. **Start Frontend Application:** Run `npm run dev` in the frontend directory.
-4. **Open the application in the browser:** Navigate to the frontend URL.
+---
+
+## Application Startup Order
+
+Follow the order below when running the project:
+
+1. Start MySQL Server
+2. Start Laravel Backend Server
+3. Start Vue Frontend Development Server
+4. Open the frontend URL in a browser
+
+---
 
 ## Default URLs
 
-Once both servers are running, you can access the application here:
+| Service     | URL                   |
+| ----------- | --------------------- |
+| Frontend    | http://localhost:5173 |
+| Backend API | http://localhost:8000 |
 
-* **Frontend Application:** http://localhost:5173
-* **Backend API:** http://localhost:8000
+---
 
 ## Project Structure
 
 ```text
 Ecommerce/
-├── backend/          # Contains the Laravel API, migrations, and database
-├── frontend/         # Contains the Vue 3 Vite application and UI components
-├── README.md         # Project documentation and setup instructions
+│
+├── backend/          # Laravel API and database logic
+├── frontend/         # Vue.js application
+├── README.md         # Project documentation
+│
+└── database/
+    ├── migrations/
+    └── seeders/
 ```
 
-## Additional Notes
+---
 
-### Required Software
-Ensure you have the following installed on your machine before setting up the project:
-* **PHP** (v8.2 or higher recommended)
-* **Composer** (PHP dependency manager)
-* **Node.js** (v18 or higher recommended) and **npm**
+## Test Accounts
 
-### Default Login Credentials
-If you ran the database seeders (`php artisan migrate:fresh --seed`), the following test accounts are available:
+After running:
 
-* **Admin Account:**
-  * Email: `admin@test.com`
-  * Password: `password123`
-* **User Account:**
-  * Email: `user@test.com`
-  * Password: `password123`
-* **Driver Account:**
-  * Email: `driver@test.com`
-  * Password: `password123`
+```bash
+php artisan migrate:fresh --seed
+```
 
-### Troubleshooting Tips
-* **Database errors on backend start:** Ensure the `database/database.sqlite` file exists inside the `backend` folder. If it does not exist, create an empty file named `database.sqlite` inside the `backend/database` folder before running `php artisan migrate`.
-* **Port already in use:** If port 8000 is occupied, Laravel might start on `http://localhost:8001`. Always check the terminal output for the correct URL. Similarly, Vite might start on `http://localhost:5174` if 5173 is busy.
+You can log in using the following accounts.
+
+### Administrator
+
+```text
+Email: admin@test.com
+Password: password123
+```
+
+### User
+
+```text
+Email: user@test.com
+Password: password123
+```
+
+### Driver
+
+```text
+Email: driver@test.com
+Password: password123
+```
+
+---
+
+## Software Requirements
+
+* PHP 8.2+
+* Composer 2+
+* MySQL 8+
+* Node.js 18+
+* npm 9+
+
+---
+
+## Troubleshooting
+
+### Database Connection Error
+
+* Verify MySQL is running.
+* Check database credentials in `.env`.
+* Ensure the database exists.
+
+### Port Already in Use
+
+Laravel:
+
+```bash
+php artisan serve --port=8001
+```
+
+Vite:
+
+```bash
+npm run dev
+```
+
+Check the terminal output for the correct URL.
+
+### Dependency Installation Issues
+
+Backend:
+
+```bash
+composer install
+```
+
+Frontend:
+
+```bash
+npm install
+```
+
+If necessary, delete:
+
+```text
+vendor/
+node_modules/
+```
+
+and reinstall dependencies.
+
+---
+
+## Author
+
+Student: Mao Visal
+University: Royal University of Phnom Penh (RUPP)
+Major: Computer Science
 
 
 ស៊ីគុយទាវមួយតុ ម៉ុកចេញលុយម្នាក់ឯង @MAOVISAL🗿
