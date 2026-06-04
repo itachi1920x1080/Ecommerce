@@ -139,9 +139,20 @@ Ecommerce/
 ---
 
 ## Author
+## Team Members
 
-Student: Mao Visal
+| No. | Name         |
+| --- | ------------ |
+| 1   | Mao Visal    |
+| 2   | ម៉ាច ប៊ុនណេង |
 
-University: Royal University of Phnom Penh (RUPP)
+### University
 
-Major: Computer Science
+Royal University of Phnom Penh (RUPP)
+
+### Major
+
+Computer Science
+
+
+ស៊ីគុយទាវមួយតុ ម៉ុកចេញលុយម្នាក់ឯង @MAOVISAL🗿
