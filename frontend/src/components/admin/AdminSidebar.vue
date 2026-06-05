@@ -1,5 +1,5 @@
 <template>
-  <aside class="flex flex-col w-64 bg-surface dark:bg-surface-dark border-r border-zinc-200/50 dark:border-zinc-800/50 h-screen sticky top-0 transition-colors">
+  <aside class="flex flex-col w-64 bg-white dark:bg-zinc-950 border-r border-zinc-200/50 dark:border-zinc-800/50 h-screen sticky top-0 transition-colors">
     <!-- Brand -->
     <div class="px-6 py-8 border-b border-zinc-100 dark:border-zinc-800/50">
       <router-link to="/admin" class="flex items-center gap-3 group">
@@ -7,7 +7,7 @@
           <ShoppingBagIcon class="w-5 h-5" />
         </div>
         <div>
-          <span class="text-lg font-display font-bold text-zinc-900 dark:text-zinc-50 tracking-wide">RUPP</span>
+          <span class="text-lg font-display font-bold text-zinc-900 dark:text-zinc-50 tracking-wide">Tea Tik Kok</span>
           <span class="text-lg font-display font-medium text-primary-500 tracking-wide ml-1">Admin</span>
         </div>
       </router-link>

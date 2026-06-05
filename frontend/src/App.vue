@@ -1,9 +1,10 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-zinc-950">
-    <!-- Shop Layout: Navbar -->
+  <div class="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-300">
+
+    <!-- Navbar -->
     <Navbar v-if="!isAdminRoute" />
 
-    <!-- Toast Notifications -->
+    <!-- Toast -->
     <ToastProvider />
 
     <!-- Cart Drawer -->
@@ -12,7 +13,7 @@
     <!-- Admin Layout -->
     <div v-if="isAdminRoute" class="admin-layout">
       <Sidebar />
-      <main class="flex-1 min-w-0">
+      <main class="flex-1 min-w-0 bg-white dark:bg-zinc-950 transition-colors duration-300">
         <router-view v-slot="{ Component }">
           <Transition name="page" mode="out-in">
             <component :is="Component" />
@@ -22,7 +23,7 @@
     </div>
 
     <!-- Shop Layout -->
-    <div v-else class="flex flex-col min-h-[calc(100vh-4rem)]">
+    <div v-else class="flex flex-col min-h-[calc(100vh-4rem)] bg-white dark:bg-zinc-950 transition-colors duration-300">
       <main class="flex-1">
         <router-view v-slot="{ Component }">
           <Transition name="page" mode="out-in">
@@ -31,6 +32,7 @@
         </router-view>
       </main>
     </div>
+
   </div>
 </template>
 
@@ -47,14 +49,11 @@ import ToastProvider from '@/components/ui/ToastProvider.vue'
 const auth  = useAuthStore()
 const route = useRoute()
 
-// Detect admin routes to swap layout
 const isAdminRoute = computed(() => route.path.startsWith('/admin'))
 
-// Cart drawer state
 const cartOpen = ref(false)
 provide('toggleCart', () => { cartOpen.value = !cartOpen.value })
 
-// ── Global Toast Setup ──
 const { addToast } = useToast()
 provide('toast', (message, type = 'info', duration = 3500) => {
   addToast(message, type, duration)

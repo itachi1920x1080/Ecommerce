@@ -7,7 +7,7 @@
         <PackageIcon class="w-5 h-5 text-white dark:text-zinc-900" />
       </div>
       <span class="text-lg font-display font-bold text-zinc-900 dark:text-white tracking-tight">
-        RUPP <span class="font-normal text-zinc-500">Admin</span>
+        Tea Tik Kok <span class="font-normal text-zinc-500">Admin</span>
       </span>
     </div>
 

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@variant dark (&:where(.dark, .dark *));
 
 /* ═══════════════════════════════════════════════════════════════
    RUPP Shop — Design System v2 (Blue/Indigo Premium Palette)
@@ -71,7 +72,7 @@
   --color-surface:    #ffffff;
   --color-surface-2:  #fafafa;
   --color-surface-3:  #f4f4f5;
-  
+
   --color-surface-dark:   #09090b;
   --color-surface-dark-2: #18181b;
   --color-surface-dark-3: #27272a;
@@ -90,8 +91,6 @@
 }
 
 /* ── Base Reset ── */
-/* Tailwind already includes Preflight, so we don't need * { margin: 0 } */
-
 html {
   scroll-behavior: smooth;
   -webkit-tap-highlight-color: transparent;
@@ -107,11 +106,10 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
-    background: var(--color-surface-dark);
-    color: var(--color-zinc-50);
-  }
+/* ── Dark mode via .dark class (controlled by useTheme.js) ── */
+.dark body {
+  background: var(--color-surface-dark);
+  color: var(--color-zinc-50);
 }
 
 /* ── Scrollbar ── */
@@ -183,7 +181,6 @@ body {
    Utility Classes
    ══════════════════════════════════════════ */
 
-/* Staggered animation delay helpers */
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
 .delay-300 { animation-delay: 300ms; }
@@ -209,12 +206,10 @@ body {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
 }
 
-@media (prefers-color-scheme: dark) {
-  .glass {
-    background: rgba(24, 24, 27, 0.75);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-  }
+.dark .glass {
+  background: rgba(24, 24, 27, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
 /* Elegant soft shadows */
@@ -229,10 +224,9 @@ body {
 .btn-primary {
   @apply bg-zinc-900 text-white font-medium rounded-full hover:bg-zinc-800 transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-zinc-900/20;
 }
-@media (prefers-color-scheme: dark) {
-  .btn-primary {
-    @apply bg-white text-zinc-900 hover:bg-zinc-100 shadow-white/10;
-  }
+
+.dark .btn-primary {
+  @apply bg-white text-zinc-900 hover:bg-zinc-100 shadow-white/10;
 }
 
 /* ══════════════════════════════════════════
@@ -274,33 +268,27 @@ body {
    Vue Transitions
    ══════════════════════════════════════════ */
 
-/* Page transition */
 .page-enter-active { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
 .page-leave-active { transition: all 0.2s ease-in; }
 .page-enter-from   { opacity: 0; transform: translateY(12px); }
 .page-leave-to     { opacity: 0; transform: translateY(-8px); }
 
-/* Fade */
 .fade-enter-active, .fade-leave-active { transition: opacity 0.25s ease; }
 .fade-enter-from, .fade-leave-to       { opacity: 0; }
 
-/* Modal backdrop */
 .backdrop-enter-active, .backdrop-leave-active { transition: opacity 0.3s ease; }
 .backdrop-enter-from, .backdrop-leave-to       { opacity: 0; }
 
-/* Modal content */
 .modal-enter-active { transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .modal-leave-active { transition: all 0.2s ease-in; }
 .modal-enter-from   { opacity: 0; transform: scale(0.9) translateY(20px); }
 .modal-leave-to     { opacity: 0; transform: scale(0.95) translateY(10px); }
 
-/* Drawer slide */
 .drawer-enter-active { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 .drawer-leave-active { transition: transform 0.3s ease-in; }
 .drawer-enter-from   { transform: translateX(100%); }
 .drawer-leave-to     { transform: translateX(100%); }
 
-/* Slide-up for dropdowns */
 .slide-enter-active { transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
 .slide-leave-active { transition: all 0.15s ease-in; }
 .slide-enter-from   { opacity: 0; transform: translateY(-8px) scale(0.96); }

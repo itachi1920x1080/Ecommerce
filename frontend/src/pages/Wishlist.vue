@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-zinc-950 pt-32 pb-24">
+  <div class="min-h-screen bg-gradient-to-br from-white via-pink-50 to-pink-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 pt-32 pb-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
       <!-- Header -->
@@ -33,7 +33,7 @@
 
       <!-- Empty -->
       <div v-else class="text-center py-32">
-        <div class="w-24 h-24 mx-auto mb-8 bg-zinc-50 dark:bg-zinc-900 rounded-full flex items-center justify-center">
+        <div class="w-24 h-24 mx-auto mb-8 bg-white/60 dark:bg-zinc-900 backdrop-blur-sm rounded-full flex items-center justify-center">
           <HeartIcon class="w-10 h-10 text-zinc-300 dark:text-zinc-700" />
         </div>
         <h3 class="text-2xl font-display font-medium text-zinc-900 dark:text-zinc-50 mb-3">Your wishlist is empty</h3>

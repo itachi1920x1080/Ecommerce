@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-zinc-950 pt-32 pb-24">
+  <div class="min-h-screen bg-gradient-to-br from-white via-pink-50 to-pink-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 pt-32 pb-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
       <!-- Header -->
@@ -13,11 +13,11 @@
         
         <!-- Filter & Sort -->
         <div class="flex items-center gap-4">
-          <select v-model="selectedCategory" class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-sm rounded-full px-4 py-2 focus:outline-none focus:border-zinc-500 cursor-pointer">
+          <select v-model="selectedCategory" class="bg-white/70 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-sm rounded-full px-4 py-2 focus:outline-none focus:border-zinc-500 cursor-pointer backdrop-blur-sm">
             <option value="" class="bg-white dark:bg-zinc-950">All Categories</option>
             <option v-for="cat in categories" :key="cat.id" :value="cat.id" class="bg-white dark:bg-zinc-950">{{ cat.name }}</option>
           </select>
-          <select v-model="sortBy" class="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-sm rounded-full px-4 py-2 focus:outline-none focus:border-zinc-500 cursor-pointer">
+          <select v-model="sortBy" class="bg-white/70 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-sm rounded-full px-4 py-2 focus:outline-none focus:border-zinc-500 cursor-pointer backdrop-blur-sm">
             <option value="newest" class="bg-white dark:bg-zinc-950">Newest</option>
             <option value="price_asc" class="bg-white dark:bg-zinc-950">Price: Low to High</option>
             <option value="price_desc" class="bg-white dark:bg-zinc-950">Price: High to Low</option>
@@ -78,7 +78,6 @@ const sortBy = ref('newest')
 const filteredProducts = computed(() => {
   let result = products.value
 
-  // 1. Text Search (from query params)
   if (route.query.search) {
     const q = route.query.search.toLowerCase()
     result = result.filter(p => 
@@ -87,23 +86,19 @@ const filteredProducts = computed(() => {
     )
   }
 
-  // 2. Category Filter
   if (selectedCategory.value) {
     result = result.filter(p => String(p.category_id) === String(selectedCategory.value))
   }
 
-  // 3. Sale Filter
   if (route.query.sale === 'true') {
     result = result.filter(p => p.discount_percent > 0)
   }
 
-  // 4. Sorting
   if (sortBy.value === 'price_asc') {
     result = [...result].sort((a, b) => Number(a.price) - Number(b.price))
   } else if (sortBy.value === 'price_desc') {
     result = [...result].sort((a, b) => Number(b.price) - Number(a.price))
   } else {
-    // 'newest'
     result = [...result].sort((a, b) => Number(b.id) - Number(a.id))
   }
 

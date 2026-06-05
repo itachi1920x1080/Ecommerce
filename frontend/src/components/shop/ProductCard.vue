@@ -17,14 +17,14 @@
         <button
           v-if="product.stock > 0"
           @click.stop="$emit('addToCart', product)"
-          class="w-full py-3 bg-white/90 dark:bg-black/90 backdrop-blur-md text-zinc-900 dark:text-white text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white dark:hover:bg-black transition-colors"
+          class="w-full py-3 bg-white/95 dark:bg-black/90 backdrop-blur-md text-zinc-900 dark:text-white text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white dark:hover:bg-black transition-colors shadow-lg"
         >
           Add to Bag
         </button>
         <button
           v-else-if="product.out_of_stock_status === 'preorder'"
           @click.stop="$emit('addToCart', product)"
-          class="w-full py-3 bg-white/90 dark:bg-black/90 backdrop-blur-md text-zinc-900 dark:text-white text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white dark:hover:bg-black transition-colors"
+          class="w-full py-3 bg-white/95 dark:bg-black/90 backdrop-blur-md text-zinc-900 dark:text-white text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white dark:hover:bg-black transition-colors shadow-lg"
         >
           Pre-order
         </button>
@@ -57,7 +57,7 @@
     </div>
 
     <!-- Content -->
-    <div class="flex flex-col text-center px-2">
+    <div class="flex flex-col text-center px-2 py-3 rounded-2xl bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm border border-zinc-100/80 dark:border-zinc-800/50 transition-all duration-300 group-hover:bg-white/80 dark:group-hover:bg-zinc-900/80 group-hover:shadow-sm">
       <span v-if="product.category?.name" class="text-[10px] uppercase tracking-widest font-semibold text-zinc-400 dark:text-zinc-500 mb-1">
         {{ product.category.name }}
       </span>

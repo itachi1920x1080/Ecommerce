@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-surface dark:bg-surface-dark min-h-screen pt-20">
+  <div class="bg-gradient-to-br from-white via-pink-50 to-pink-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 min-h-screen pt-20">
     <!-- Loading State -->
     <div v-if="loading" class="py-12 px-6 max-w-7xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
@@ -31,7 +31,7 @@
           
           <!-- Left: Sticky Gallery -->
           <div class="w-full lg:w-1/2 lg:sticky lg:top-32 flex flex-col gap-4">
-            <div class="relative aspect-[4/5] bg-zinc-100 dark:bg-zinc-900 rounded-[2.5rem] overflow-hidden border border-zinc-200/50 dark:border-zinc-800/50 group">
+            <div class="relative aspect-[4/5] bg-white/50 dark:bg-zinc-900 backdrop-blur-sm rounded-[2.5rem] overflow-hidden border border-zinc-200/50 dark:border-zinc-800/50 group">
               <img :src="activeImage" :alt="product.name" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
               
               <div class="absolute top-6 left-6 flex flex-col gap-2 z-10">
@@ -47,7 +47,7 @@
                 v-for="(img, idx) in productImages" 
                 :key="idx"
                 @click="activeImage = img"
-                class="w-20 aspect-square rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border-2 transition-all duration-300 shrink-0"
+                class="w-20 aspect-square rounded-2xl overflow-hidden bg-white/50 dark:bg-zinc-900 border-2 transition-all duration-300 shrink-0"
                 :class="activeImage === img ? 'border-primary-500 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'"
               >
                 <img :src="img" :alt="`${product.name} view ${idx + 1}`" class="w-full h-full object-cover" />
@@ -121,7 +121,7 @@
                 class="px-6 py-4 rounded-full border flex items-center justify-center transition-all duration-300"
                 :class="isWishlisted 
                   ? 'border-primary-500 text-primary-600 bg-primary-50 dark:bg-primary-500/10' 
-                  : 'border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-50 hover:bg-zinc-50 dark:hover:bg-zinc-800'"
+                  : 'border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-50 hover:bg-white/70 dark:hover:bg-zinc-800'"
               >
                 <HeartIcon class="w-5 h-5 transition-transform" :class="isWishlisted ? 'fill-current scale-110' : ''" />
               </button>
@@ -129,7 +129,6 @@
 
             <!-- Accordions -->
             <div class="flex flex-col border-t border-zinc-200/50 dark:border-zinc-800/50">
-              <!-- Details Accordion -->
               <details class="group" open>
                 <summary class="flex justify-between items-center font-medium cursor-pointer list-none py-6 text-zinc-900 dark:text-zinc-50">
                   <span>Product Details</span>
@@ -149,7 +148,6 @@
               
               <div class="h-px bg-zinc-200/50 dark:bg-zinc-800/50 w-full"></div>
 
-              <!-- Shipping Accordion -->
               <details class="group">
                 <summary class="flex justify-between items-center font-medium cursor-pointer list-none py-6 text-zinc-900 dark:text-zinc-50">
                   <span>Shipping & Returns</span>
@@ -167,15 +165,15 @@
       </section>
 
       <!-- Reviews Section -->
-      <section id="reviews" class="bg-zinc-50/50 dark:bg-zinc-900/30 border-t border-zinc-200/50 dark:border-zinc-800/50 py-24">
+      <section id="reviews" class="bg-pink-50/60 dark:bg-zinc-900/30 border-t border-zinc-200/50 dark:border-zinc-800/50 py-24">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex items-center justify-between mb-12">
             <h2 class="text-3xl font-display font-medium text-zinc-900 dark:text-zinc-50">Customer Reviews</h2>
-            <span class="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 rounded-full text-xs font-semibold text-zinc-900 dark:text-zinc-50">{{ reviews.length }} Reviews</span>
+            <span class="px-4 py-2 bg-white/70 dark:bg-zinc-800 backdrop-blur-sm rounded-full text-xs font-semibold text-zinc-900 dark:text-zinc-50">{{ reviews.length }} Reviews</span>
           </div>
 
           <!-- Write Review -->
-          <div v-if="auth.isLoggedIn" class="bg-white dark:bg-zinc-900 rounded-3xl p-8 shadow-sm border border-zinc-200/50 dark:border-zinc-800/50 mb-16">
+          <div v-if="auth.isLoggedIn" class="bg-white/70 dark:bg-zinc-900 backdrop-blur-sm rounded-3xl p-8 shadow-sm border border-zinc-200/50 dark:border-zinc-800/50 mb-16">
             <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-50 mb-6">Write a Review</h3>
             <div class="flex gap-2 mb-6">
               <button v-for="star in 5" :key="star" @click="reviewForm.rating = star" class="text-2xl transition-transform hover:scale-110" :class="star <= reviewForm.rating ? 'text-primary-500' : 'text-zinc-200 dark:text-zinc-700'">
@@ -183,7 +181,7 @@
               </button>
             </div>
             <textarea v-model="reviewForm.comment" rows="4" placeholder="Share your thoughts on this product..."
-              class="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border-none rounded-xl text-sm text-zinc-900 dark:text-zinc-50 placeholder-zinc-400 focus:ring-2 focus:ring-primary-500 focus:outline-none transition-all resize-none mb-6"></textarea>
+              class="w-full px-4 py-3 bg-white/70 dark:bg-zinc-800 border-none rounded-xl text-sm text-zinc-900 dark:text-zinc-50 placeholder-zinc-400 focus:ring-2 focus:ring-primary-500 focus:outline-none transition-all resize-none mb-6"></textarea>
             <div class="flex justify-end">
               <button @click="submitReview" :disabled="reviewSubmitting"
                 class="btn-primary px-8 py-3 text-sm disabled:opacity-50">
@@ -194,9 +192,9 @@
 
           <!-- Reviews List -->
           <div class="space-y-6">
-            <div v-for="review in reviews" :key="review.id" class="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
+            <div v-for="review in reviews" :key="review.id" class="bg-white/70 dark:bg-zinc-900 backdrop-blur-sm p-8 rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
               <div class="flex items-center gap-4 mb-4">
-                <div class="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-900 dark:text-zinc-50 font-medium">
+                <div class="w-12 h-12 rounded-full bg-white/80 dark:bg-zinc-800 flex items-center justify-center text-zinc-900 dark:text-zinc-50 font-medium">
                   {{ (review.user?.name || 'U').charAt(0).toUpperCase() }}
                 </div>
                 <div>

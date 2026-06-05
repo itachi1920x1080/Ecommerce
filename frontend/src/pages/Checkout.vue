@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-surface dark:bg-surface-dark min-h-screen pt-20">
+  <div class="bg-gradient-to-br from-white via-pink-50 to-pink-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 min-h-screen pt-20 transition-colors duration-300">
     <section class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
       <!-- Checkout Header -->
       <div class="mb-12">
@@ -10,7 +10,7 @@
         <!-- Main Checkout Area (8 cols) -->
         <div class="lg:col-span-8">
           
-          <div class="bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl p-8 shadow-sm">
+          <div class="bg-white/70 dark:bg-zinc-900 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl p-8 shadow-sm">
             
             <div v-if="success" class="text-center py-12">
               <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-green-50 dark:bg-green-500/10 flex items-center justify-center">
@@ -32,7 +32,7 @@
               <h3 class="text-2xl font-display font-medium text-zinc-900 dark:text-zinc-50 mb-2">Scan to Pay</h3>
               <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-8">Scan this QR code with your KHQR app to complete payment</p>
               
-              <div class="p-6 bg-white border border-zinc-200 rounded-3xl shadow-sm mb-8 inline-block max-w-[240px]">
+              <div class="p-6 bg-white/80 border border-zinc-200 rounded-3xl shadow-sm mb-8 inline-block max-w-[240px]">
                 <img :src="qrCode" alt="KHQR Payment" class="w-full h-full object-contain" />
               </div>
 
@@ -46,28 +46,28 @@
               <!-- Step 1: Address -->
               <div>
                 <h2 class="text-lg font-medium text-zinc-900 dark:text-zinc-50 mb-6 flex items-center gap-3">
-                  <span class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-sm font-semibold">1</span>
+                  <span class="w-8 h-8 rounded-full bg-white/80 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-sm font-semibold">1</span>
                   Delivery Address
                 </h2>
                 
                 <div class="pl-11 space-y-4">
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input v-model="checkoutForm.receiver_name" type="text" placeholder="Receiver Name" class="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:border-primary-500 transition-all" />
-                    <input v-model="checkoutForm.phone_number" type="text" placeholder="Phone Number" class="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:border-primary-500 transition-all" />
+                    <input v-model="checkoutForm.receiver_name" type="text" placeholder="Receiver Name" class="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/70 dark:bg-zinc-800 text-sm focus:outline-none focus:border-primary-500 transition-all" />
+                    <input v-model="checkoutForm.phone_number" type="text" placeholder="Phone Number" class="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/70 dark:bg-zinc-800 text-sm focus:outline-none focus:border-primary-500 transition-all" />
                   </div>
-                  <textarea v-model="checkoutForm.full_address" placeholder="Full Address" rows="3" class="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm focus:outline-none focus:border-primary-500 transition-all resize-none"></textarea>
+                  <textarea v-model="checkoutForm.full_address" placeholder="Full Address" rows="3" class="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/70 dark:bg-zinc-800 text-sm focus:outline-none focus:border-primary-500 transition-all resize-none"></textarea>
                 </div>
               </div>
 
               <!-- Step 2: Payment Method -->
               <div>
                 <h2 class="text-lg font-medium text-zinc-900 dark:text-zinc-50 mb-6 flex items-center gap-3">
-                  <span class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-sm font-semibold">2</span>
+                  <span class="w-8 h-8 rounded-full bg-white/80 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-sm font-semibold">2</span>
                   Payment Method
                 </h2>
                 
                 <div class="pl-11 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <label class="flex items-center gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all bg-white dark:bg-zinc-800"
+                  <label class="flex items-center gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all bg-white/70 dark:bg-zinc-800 backdrop-blur-sm"
                     :class="checkoutForm.payment_method === 'KHQR' ? 'border-primary-500 shadow-sm' : 'border-zinc-200 dark:border-zinc-700'">
                     <input type="radio" v-model="checkoutForm.payment_method" value="KHQR" class="hidden" />
                     <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center" :class="checkoutForm.payment_method === 'KHQR' ? 'border-primary-500' : 'border-zinc-300 dark:border-zinc-600'">
@@ -79,7 +79,7 @@
                     <QrCodeIcon class="w-6 h-6 text-zinc-400" />
                   </label>
 
-                  <label class="flex items-center gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all bg-white dark:bg-zinc-800"
+                  <label class="flex items-center gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all bg-white/70 dark:bg-zinc-800 backdrop-blur-sm"
                     :class="checkoutForm.payment_method === 'COD' ? 'border-primary-500 shadow-sm' : 'border-zinc-200 dark:border-zinc-700'">
                     <input type="radio" v-model="checkoutForm.payment_method" value="COD" class="hidden" />
                     <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center" :class="checkoutForm.payment_method === 'COD' ? 'border-primary-500' : 'border-zinc-300 dark:border-zinc-600'">
@@ -109,12 +109,12 @@
 
         <!-- Order Summary Sidebar (4 cols) -->
         <div class="lg:col-span-4">
-          <div class="bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl p-8 sticky top-28 shadow-sm">
+          <div class="bg-white/70 dark:bg-zinc-900 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl p-8 sticky top-28 shadow-sm">
             <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-50 mb-6">Order Summary</h3>
             
             <div class="space-y-4 mb-6 pb-6 border-b border-zinc-100 dark:border-zinc-800/50 max-h-[40vh] overflow-y-auto no-scrollbar">
               <div v-for="item in cart.items" :key="item.id" class="flex gap-4">
-                <div class="w-16 h-16 rounded-xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden shrink-0 border border-zinc-200/50 dark:border-zinc-700/50">
+                <div class="w-16 h-16 rounded-xl bg-white/80 dark:bg-zinc-800 overflow-hidden shrink-0 border border-zinc-200/50 dark:border-zinc-700/50">
                   <img :src="item.image || 'https://placehold.co/100'" :alt="item.name" class="w-full h-full object-cover" />
                 </div>
                 <div class="flex-1 flex flex-col justify-center">
@@ -194,7 +194,6 @@ async function handleCheckout() {
 
   isSubmitting.value = true
   try {
-    // Save address first
     const addrRes = await api.post('/addresses', {
       receiver_name: checkoutForm.value.receiver_name,
       phone_number: checkoutForm.value.phone_number,

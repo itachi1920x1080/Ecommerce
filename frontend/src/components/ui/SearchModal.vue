@@ -6,7 +6,7 @@
 
     <Transition name="modal">
       <div v-if="show" class="fixed inset-0 z-[101] flex items-center justify-center p-4 sm:p-6 pointer-events-none">
-        <div class="w-full max-w-2xl bg-surface dark:bg-surface-dark rounded-[2rem] shadow-2xl border border-zinc-200/50 dark:border-zinc-800/50 pointer-events-auto overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="w-full max-w-2xl bg-white dark:bg-zinc-950 rounded-[2rem] shadow-2xl border border-zinc-200/50 dark:border-zinc-800/50 pointer-events-auto overflow-hidden flex flex-col max-h-[90vh]">
           
           <!-- Header -->
           <div class="flex items-center justify-between px-6 py-4 border-b border-zinc-100 dark:border-zinc-800/50">

@@ -27,6 +27,11 @@ const routes = [
     name: 'contact',
     component: () => import('@/pages/Contact.vue')
   },
+  {
+    path: '/about',
+    name: 'about',
+    component: () => import('@/pages/AboutView.vue')
+  },
 
   // ── Guest Routes (redirect if logged in) ──
   {
@@ -172,3 +177,4 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
+  

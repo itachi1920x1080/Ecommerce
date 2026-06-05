@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-surface dark:bg-surface-dark min-h-screen pt-20 pb-12 px-4">
+  <div class="bg-white dark:bg-zinc-950 min-h-screen pt-20 pb-12 px-4">
     <div class="max-w-4xl mx-auto bg-white dark:bg-zinc-900 p-8 md:p-12 shadow-sm rounded-3xl border border-zinc-200/50 dark:border-zinc-800/50" id="invoice-container">
       
       <!-- Header -->
