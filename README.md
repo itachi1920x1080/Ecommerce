@@ -178,7 +178,12 @@ Built with a modern tech stack featuring a decoupled architecture—a powerful *
    composer install
    ```
 
-4. **Configure Laravel Sail Alias (Optional):**
+4. **Install Laravel Sail:**
+   ```bash
+   php artisan sail:install
+   ```
+
+5. **Configure Laravel Sail Alias (Optional):**
 
    **1. Open bash config**
    ```bash
@@ -204,7 +209,7 @@ Built with a modern tech stack featuring a decoupled architecture—a powerful *
    source ~/.bashrc
    ```
 
-5. **Frontend Configuration:**
+6. **Frontend Configuration:**
    ```bash
    cd ../frontend
    npm install
