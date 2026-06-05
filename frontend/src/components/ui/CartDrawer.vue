@@ -6,7 +6,7 @@
   <!-- Mobile: bottom sheet | Desktop: side drawer -->
   <Transition name="drawer">
     <aside v-if="open"
-      class="fixed z-[101] flex flex-col bg-surface dark:bg-surface-dark shadow-2xl border-zinc-200/50 dark:border-zinc-800/50
+      class="fixed z-[101] flex flex-col bg-white dark:bg-zinc-950 shadow-2xl border-zinc-200/50 dark:border-zinc-800/50
              inset-x-0 bottom-0 max-h-[90vh] rounded-t-[2.5rem] border-t
              sm:inset-x-auto sm:bottom-auto sm:top-0 sm:right-0 sm:h-full sm:max-h-none sm:w-full sm:max-w-[440px] sm:rounded-none sm:border-t-0 sm:border-l">
 
@@ -75,7 +75,7 @@
         </div>
       </div>
 
-      <div v-if="cart.items.length > 0" class="border-t border-zinc-100 dark:border-zinc-800/50 bg-surface dark:bg-surface-dark p-6 sm:p-8 space-y-6">
+      <div v-if="cart.items.length > 0" class="border-t border-zinc-100 dark:border-zinc-800/50 bg-white dark:bg-zinc-950 p-6 sm:p-8 space-y-6">
         <div class="flex items-center justify-between">
           <span class="text-sm text-zinc-500 dark:text-zinc-400">Subtotal</span>
           <span class="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">${{ cart.cartTotal.toFixed(2) }}</span>

@@ -5,7 +5,7 @@
         <div class="absolute inset-0 bg-black/40 backdrop-blur-md" @click="handleClose"></div>
 
         <Transition name="modal">
-          <div v-if="show" class="relative z-10 w-full max-w-lg rounded-[2rem] bg-surface dark:bg-surface-dark shadow-2xl border border-zinc-200/50 dark:border-zinc-800/50 overflow-hidden">
+          <div v-if="show" class="relative z-10 w-full max-w-lg rounded-[2rem] bg-white dark:bg-zinc-900 shadow-2xl border border-zinc-200/50 dark:border-zinc-800/50 overflow-hidden">
 
             <!-- Success State: QR Code Display -->
             <div v-if="showQR" class="p-10 text-center flex flex-col items-center">
@@ -48,7 +48,7 @@
 
             <!-- Checkout Form -->
             <div v-else class="flex flex-col h-full max-h-[85vh]">
-              <div class="px-8 py-6 border-b border-zinc-100 dark:border-zinc-800/50 flex items-center justify-between sticky top-0 bg-surface dark:bg-surface-dark z-10">
+              <div class="px-8 py-6 border-b border-zinc-100 dark:border-zinc-800/50 flex items-center justify-between sticky top-0 bg-white dark:bg-zinc-950 z-10">
                 <div>
                   <h3 class="text-xl font-display font-medium text-zinc-900 dark:text-zinc-50">Checkout</h3>
                   <p class="text-sm text-zinc-500 dark:text-zinc-400">Complete your order securely.</p>
@@ -150,7 +150,8 @@
               </div>
 
               <!-- Footer Sticky -->
-              <div class="p-8 border-t border-zinc-100 dark:border-zinc-800/50 bg-surface dark:bg-surface-dark mt-auto">
+              <div class="p-8 border-t border-zinc-100 dark:border-zinc-800/50 bg-white dark:bg-zinc-900
+       mt-auto">
                 <div class="flex items-center justify-between mb-6">
                   <span class="text-sm text-zinc-500">Total to pay</span>
                   <span class="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">${{ finalTotal.toFixed(2) }}</span>

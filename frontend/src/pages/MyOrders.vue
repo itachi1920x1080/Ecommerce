@@ -1,15 +1,15 @@
 <template>
-  <div class="bg-surface dark:bg-surface-dark min-h-screen pt-20">
+  <div class="bg-gradient-to-br from-white via-pink-50 to-pink-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 min-h-screen pt-20 transition-colors duration-300">
     <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div class="mb-10">
         <h1 class="text-3xl font-display font-medium text-zinc-900 dark:text-zinc-50 mb-2">Order History</h1>
         <p class="text-sm text-zinc-500 dark:text-zinc-400">Track, return, or purchase items again.</p>
       </div>
 
-      <div class="bg-white dark:bg-zinc-900 rounded-[2rem] border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm overflow-hidden">
+      <div class="bg-white/70 dark:bg-zinc-900 backdrop-blur-sm rounded-[2rem] border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm overflow-hidden">
         
         <!-- Tabs -->
-        <div class="px-8 border-b border-zinc-200/50 dark:border-zinc-800/50 bg-zinc-50 dark:bg-zinc-900/50">
+        <div class="px-8 border-b border-zinc-200/50 dark:border-zinc-800/50 bg-white/50 dark:bg-zinc-900/50">
           <div class="flex gap-8 overflow-x-auto no-scrollbar">
             <button v-for="tab in tabs" :key="tab.value" @click="activeTab = tab.value"
               class="py-5 text-sm font-medium transition-colors border-b-2 whitespace-nowrap"
@@ -26,7 +26,7 @@
           
           <div v-else-if="filteredOrders.length > 0" class="space-y-6">
             <div v-for="order in filteredOrders" :key="order.id"
-              class="border border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl p-6 bg-white dark:bg-zinc-900">
+              class="border border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl p-6 bg-white/60 dark:bg-zinc-900">
               
               <!-- Order Header -->
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-zinc-100 dark:border-zinc-800/50">
@@ -57,18 +57,18 @@
 
               <!-- Order Items -->
               <div class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
-                <div v-for="item in order.items" :key="item.id" class="w-20 h-20 rounded-xl bg-zinc-50 dark:bg-zinc-800 overflow-hidden shrink-0 border border-zinc-100 dark:border-zinc-800">
+                <div v-for="item in order.items" :key="item.id" class="w-20 h-20 rounded-xl bg-white/80 dark:bg-zinc-800 overflow-hidden shrink-0 border border-zinc-100 dark:border-zinc-800">
                   <img :src="item.product?.image || 'https://placehold.co/100'" :alt="item.product?.name" class="w-full h-full object-cover" />
                 </div>
               </div>
 
-              <!-- Delivery Timeline (for active deliveries) -->
+              <!-- Delivery Timeline -->
               <div v-if="isDeliveryOrder(order)" class="mt-8 pt-8 border-t border-zinc-100 dark:border-zinc-800/50">
                 <div class="relative">
                   <div class="absolute left-5 top-0 bottom-0 w-0.5 bg-zinc-100 dark:bg-zinc-800 sm:hidden"></div>
                   <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-0 relative">
                     <div v-for="(step, idx) in deliverySteps" :key="step.key" class="flex flex-row sm:flex-col items-center gap-4 sm:gap-0" :class="idx < deliverySteps.length - 1 ? 'sm:flex-1' : ''">
-                      <div class="flex flex-col items-center z-10 bg-white dark:bg-zinc-900 sm:bg-transparent py-2 sm:py-0">
+                      <div class="flex flex-col items-center z-10 bg-white/60 dark:bg-zinc-900 sm:bg-transparent py-2 sm:py-0">
                         <div class="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500"
                           :class="isStepDone(order.status, step.key)
                             ? 'bg-primary-500 text-white shadow-md shadow-primary-500/20'
@@ -90,7 +90,7 @@
                 </div>
                 
                 <!-- Proof of Delivery -->
-                <div v-if="order.status === 'delivered' && order.full_delivery_photo_url" class="mt-8 p-6 bg-zinc-50 dark:bg-zinc-800/30 rounded-2xl border border-zinc-200/50 dark:border-zinc-700/50 flex flex-col sm:flex-row items-start gap-6">
+                <div v-if="order.status === 'delivered' && order.full_delivery_photo_url" class="mt-8 p-6 bg-white/60 dark:bg-zinc-800/30 rounded-2xl border border-zinc-200/50 dark:border-zinc-700/50 flex flex-col sm:flex-row items-start gap-6">
                   <div class="w-12 h-12 rounded-full bg-green-50 dark:bg-green-500/10 flex items-center justify-center shrink-0">
                     <CheckCircle2Icon class="w-6 h-6 text-green-500" />
                   </div>
@@ -108,7 +108,7 @@
 
           <!-- Empty -->
           <div v-else class="text-center py-24">
-            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-white/60 dark:bg-zinc-800 flex items-center justify-center">
               <ShoppingBagIcon class="w-8 h-8 text-zinc-400" />
             </div>
             <h3 class="text-xl font-medium text-zinc-900 dark:text-zinc-50 mb-2">No orders found</h3>

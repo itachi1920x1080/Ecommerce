@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white dark:bg-zinc-950 min-h-screen transition-colors">
+  <div class="bg-gradient-to-br from-white via-pink-50 to-pink-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 min-h-screen transition-colors">
     <section class="py-12 lg:py-20 px-4 sm:px-6">
       <div class="max-w-7xl mx-auto">
         <div class="mb-12 text-center">
@@ -9,14 +9,14 @@
 
         <div v-if="cart.items.length" class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 relative items-start">
           
-          <!-- Cart Items List (Left Side, 8 columns) -->
+          <!-- Cart Items List -->
           <div class="lg:col-span-8 flex flex-col gap-6">
             <TransitionGroup name="fade">
               <div v-for="item in cart.items" :key="item.id"
-                class="flex flex-col sm:flex-row gap-6 p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-900 dark:hover:border-zinc-100 transition-all duration-500 group rounded-3xl">
+                class="flex flex-col sm:flex-row gap-6 p-6 bg-white/70 dark:bg-zinc-900 backdrop-blur-sm border border-zinc-200 dark:border-zinc-800 hover:border-zinc-900 dark:hover:border-zinc-100 transition-all duration-500 group rounded-3xl">
                 
                 <!-- Product Image -->
-                <div class="w-28 h-36 shrink-0 overflow-hidden bg-zinc-50 dark:bg-zinc-800 rounded-xl">
+                <div class="w-28 h-36 shrink-0 overflow-hidden bg-white/80 dark:bg-zinc-800 rounded-xl">
                   <img :src="item.image || 'https://placehold.co/200x300/fdfaf6/d4a96a?text=Product'" :alt="item.name"
                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 </div>
@@ -26,7 +26,9 @@
                   <div class="flex justify-between items-start gap-4">
                     <div>
                       <span class="text-[9px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-1 block">{{ item.category?.name || 'Product' }}</span>
-                      <h3 class="text-lg font-display font-medium text-zinc-900 dark:text-white mb-1 leading-tight"><router-link :to="`/products/${item.product_id || item.id}`" class="hover:underline underline-offset-4">{{ item.name }}</router-link></h3>
+                      <h3 class="text-lg font-display font-medium text-zinc-900 dark:text-white mb-1 leading-tight">
+                        <router-link :to="`/products/${item.product_id || item.id}`" class="hover:underline underline-offset-4">{{ item.name }}</router-link>
+                      </h3>
                       <p v-if="item.variant" class="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Variant: {{ item.variant.name || item.variant.type }}</p>
                     </div>
                     <button @click="removeItem(item)" class="text-zinc-400 dark:text-zinc-500 hover:text-red-500 dark:hover:text-red-400 transition-colors p-1" title="Remove Item">
@@ -37,7 +39,7 @@
                   </div>
 
                   <div class="flex items-center justify-between mt-6 pt-6 border-t border-zinc-100 dark:border-zinc-800/50">
-                    <!-- Elegant Quantity Selector -->
+                    <!-- Quantity Selector -->
                     <div class="flex items-center border border-zinc-200 dark:border-zinc-700 rounded-full overflow-hidden">
                       <button @click="updateQty(item, item.quantity - 1)"
                         class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">
@@ -59,9 +61,9 @@
             </TransitionGroup>
           </div>
 
-          <!-- Order Summary (Right Side, 4 columns, Sticky) -->
+          <!-- Order Summary -->
           <div class="lg:col-span-4 sticky top-28">
-            <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-8 rounded-3xl">
+            <div class="bg-white/70 dark:bg-zinc-900 backdrop-blur-sm border border-zinc-200 dark:border-zinc-800 p-8 rounded-3xl">
               <h3 class="text-xl font-display font-medium text-zinc-900 dark:text-white mb-6 pb-4 border-b border-zinc-200 dark:border-zinc-800">Order Summary</h3>
 
               <div class="space-y-4 mb-8">
@@ -78,7 +80,7 @@
               <!-- Coupon Field -->
               <div class="mb-8 pb-8 border-b border-zinc-200 dark:border-zinc-800">
                 <div class="flex gap-2">
-                  <input type="text" placeholder="Promo Code" class="w-full px-4 py-3 text-xs bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-200 dark:focus:ring-zinc-700 transition-all rounded-full" />
+                  <input type="text" placeholder="Promo Code" class="w-full px-4 py-3 text-xs bg-white/70 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-200 dark:focus:ring-zinc-700 transition-all rounded-full" />
                   <button class="px-5 py-3 btn-primary text-[10px]">
                     Apply
                   </button>
@@ -106,7 +108,7 @@
         </div>
 
         <!-- Empty Cart -->
-        <div v-else class="text-center py-24 md:py-32 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] transition-colors">
+        <div v-else class="text-center py-24 md:py-32 bg-white/70 dark:bg-zinc-900 backdrop-blur-sm border border-zinc-200 dark:border-zinc-800 rounded-[2rem] transition-colors">
           <p class="text-sm font-sans text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-4">Your bag is empty</p>
           <h2 class="text-3xl font-display font-medium text-zinc-900 dark:text-white mb-8">Ready to discover something beautiful?</h2>
           <router-link to="/shop" class="inline-block px-10 py-4 btn-primary text-[11px] font-semibold tracking-widest uppercase">

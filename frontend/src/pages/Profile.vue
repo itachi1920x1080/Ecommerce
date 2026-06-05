@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-surface dark:bg-surface-dark min-h-screen pt-20">
+  <div class="bg-gradient-to-br from-white via-pink-50 to-pink-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 min-h-screen pt-20 transition-colors duration-300">
     <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div class="mb-10">
         <h1 class="text-3xl font-display font-medium text-zinc-900 dark:text-zinc-50 mb-2">My Profile</h1>
@@ -8,7 +8,7 @@
 
       <div class="space-y-8">
         <!-- Account Info -->
-        <div class="bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
+        <div class="bg-white/70 dark:bg-zinc-900 backdrop-blur-sm rounded-3xl p-8 border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
           <h2 class="text-xl font-medium text-zinc-900 dark:text-zinc-50 mb-6 flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-primary-50 dark:bg-primary-500/10 flex items-center justify-center">
               <UserIcon class="w-5 h-5 text-primary-600 dark:text-primary-400" />
@@ -26,7 +26,7 @@
                 </div>
                 <div>
                   <input type="file" ref="avatarInput" @change="handleAvatarChange" accept="image/*" class="hidden" />
-                  <button type="button" @click="$refs.avatarInput.click()" class="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-sm font-medium text-zinc-900 dark:text-zinc-50 rounded-xl transition-colors">
+                  <button type="button" @click="$refs.avatarInput.click()" class="px-4 py-2 bg-white/80 dark:bg-zinc-800 hover:bg-white dark:hover:bg-zinc-700 text-sm font-medium text-zinc-900 dark:text-zinc-50 rounded-xl transition-colors border border-zinc-200 dark:border-zinc-700">
                     Change Photo
                   </button>
                 </div>
@@ -36,12 +36,12 @@
               <div class="space-y-1.5">
                 <label class="block text-sm font-medium text-zinc-900 dark:text-zinc-50">Name</label>
                 <input v-model="profileForm.name" type="text" required
-                  class="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/50 dark:border-zinc-700/50 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all text-zinc-900 dark:text-zinc-50" />
+                  class="w-full px-4 py-3 rounded-xl bg-white/70 dark:bg-zinc-800/50 border border-zinc-200/50 dark:border-zinc-700/50 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all text-zinc-900 dark:text-zinc-50" />
               </div>
               <div class="space-y-1.5">
                 <label class="block text-sm font-medium text-zinc-900 dark:text-zinc-50">Email</label>
                 <input v-model="profileForm.email" type="email" required
-                  class="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/50 dark:border-zinc-700/50 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all text-zinc-900 dark:text-zinc-50" />
+                  class="w-full px-4 py-3 rounded-xl bg-white/70 dark:bg-zinc-800/50 border border-zinc-200/50 dark:border-zinc-700/50 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all text-zinc-900 dark:text-zinc-50" />
               </div>
             </div>
 
@@ -52,12 +52,12 @@
               <div class="space-y-1.5">
                 <label class="block text-sm font-medium text-zinc-900 dark:text-zinc-50">New Password</label>
                 <input v-model="profileForm.password" type="password" placeholder="Leave blank to keep current"
-                  class="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/50 dark:border-zinc-700/50 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all text-zinc-900 dark:text-zinc-50 placeholder-zinc-400" />
+                  class="w-full px-4 py-3 rounded-xl bg-white/70 dark:bg-zinc-800/50 border border-zinc-200/50 dark:border-zinc-700/50 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all text-zinc-900 dark:text-zinc-50 placeholder-zinc-400" />
               </div>
               <div class="space-y-1.5">
                 <label class="block text-sm font-medium text-zinc-900 dark:text-zinc-50">Confirm Password</label>
                 <input v-model="profileForm.password_confirmation" type="password" placeholder="Repeat new password"
-                  class="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/50 dark:border-zinc-700/50 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all text-zinc-900 dark:text-zinc-50 placeholder-zinc-400" />
+                  class="w-full px-4 py-3 rounded-xl bg-white/70 dark:bg-zinc-800/50 border border-zinc-200/50 dark:border-zinc-700/50 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all text-zinc-900 dark:text-zinc-50 placeholder-zinc-400" />
               </div>
             </div>
 
@@ -72,7 +72,7 @@
         </div>
 
         <!-- Addresses -->
-        <div class="bg-white dark:bg-zinc-900 rounded-3xl p-8 border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
+        <div class="bg-white/70 dark:bg-zinc-900 backdrop-blur-sm rounded-3xl p-8 border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
           <div class="flex items-center justify-between mb-8">
             <h2 class="text-xl font-medium text-zinc-900 dark:text-zinc-50 flex items-center gap-3">
               <div class="w-10 h-10 rounded-full bg-green-50 dark:bg-green-500/10 flex items-center justify-center">
@@ -89,15 +89,15 @@
 
           <!-- Add Address Form -->
           <Transition name="fade">
-            <form v-if="showAddAddress" @submit.prevent="addAddress" class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/30 rounded-2xl border border-zinc-200/50 dark:border-zinc-700/50 space-y-4">
+            <form v-if="showAddAddress" @submit.prevent="addAddress" class="mb-8 p-6 bg-white/60 dark:bg-zinc-800/30 rounded-2xl border border-zinc-200/50 dark:border-zinc-700/50 space-y-4">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <input v-model="addressForm.receiver_name" type="text" placeholder="Receiver Name" required
-                  class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:border-primary-500 transition-all text-zinc-900 dark:text-zinc-50" />
+                  class="w-full px-4 py-3 rounded-xl bg-white/80 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:border-primary-500 transition-all text-zinc-900 dark:text-zinc-50" />
                 <input v-model="addressForm.phone_number" type="text" placeholder="Phone Number" required
-                  class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:border-primary-500 transition-all text-zinc-900 dark:text-zinc-50" />
+                  class="w-full px-4 py-3 rounded-xl bg-white/80 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:border-primary-500 transition-all text-zinc-900 dark:text-zinc-50" />
               </div>
               <textarea v-model="addressForm.full_address" required placeholder="Full Address" rows="2"
-                class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:border-primary-500 transition-all text-zinc-900 dark:text-zinc-50 resize-none"></textarea>
+                class="w-full px-4 py-3 rounded-xl bg-white/80 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm focus:outline-none focus:border-primary-500 transition-all text-zinc-900 dark:text-zinc-50 resize-none"></textarea>
               <div class="flex gap-3 justify-end pt-2">
                 <button type="button" @click="showAddAddress = false" class="px-6 py-3 rounded-xl text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Cancel</button>
                 <button type="submit" :disabled="addressSaving" class="btn-primary px-6 py-3 text-sm disabled:opacity-50">
@@ -113,7 +113,7 @@
           </div>
           <div v-else-if="addresses.length" class="space-y-4">
             <div v-for="addr in addresses" :key="addr.id"
-              class="flex items-center justify-between p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/30 border border-zinc-200/50 dark:border-zinc-700/50 hover:border-primary-500/50 transition-colors group">
+              class="flex items-center justify-between p-5 rounded-2xl bg-white/60 dark:bg-zinc-800/30 border border-zinc-200/50 dark:border-zinc-700/50 hover:border-primary-500/50 transition-colors group">
               <div>
                 <p class="text-sm font-medium text-zinc-900 dark:text-zinc-50 flex items-center gap-3">
                   {{ addr.receiver_name }}
@@ -176,7 +176,6 @@ async function updateProfile() {
       formData.append('avatar', avatarFile.value)
     }
 
-    // Use POST with _method=PUT for file uploads in Laravel
     formData.append('_method', 'PUT')
     
     const res = await api.post('/user/profile', formData, {

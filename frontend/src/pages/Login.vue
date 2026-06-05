@@ -1,18 +1,18 @@
 <template>
-  <div class="min-h-screen flex bg-surface dark:bg-surface-dark">
+  <div class="min-h-screen flex bg-gradient-to-br from-white via-pink-50 to-pink-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 transition-colors duration-300">
     
     <!-- Left: Branding / Image -->
-    <div class="hidden lg:flex w-1/2 bg-zinc-900 dark:bg-black relative overflow-hidden items-center justify-center">
+    <div class="hidden lg:flex w-1/2 bg-white/40 dark:bg-zinc-900/60 backdrop-blur-sm relative overflow-hidden items-center justify-center transition-colors duration-300">
       <!-- Abstract Glows -->
       <div class="absolute -top-40 -right-40 w-96 h-96 bg-primary-500/20 rounded-full blur-[100px] animate-float"></div>
       <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-zinc-500/20 rounded-full blur-[100px] animate-float" style="animation-delay: -3s;"></div>
       
       <div class="relative z-10 p-12 text-center">
-        <router-link to="/" class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 text-white mb-8 hover:scale-105 transition-transform">
+        <router-link to="/" class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-zinc-900/10 dark:bg-white/10 backdrop-blur-md border border-zinc-900/10 dark:border-white/10 text-zinc-900 dark:text-white mb-8 hover:scale-105 transition-transform">
           <ShoppingBagIcon class="w-8 h-8" />
         </router-link>
-        <h2 class="text-4xl font-display font-medium text-white mb-4">Welcome back</h2>
-        <p class="text-zinc-400 font-light max-w-md mx-auto text-lg">
+        <h2 class="text-4xl font-display font-medium text-zinc-900 dark:text-white mb-4">Welcome back</h2>
+        <p class="text-zinc-500 dark:text-zinc-400 font-light max-w-md mx-auto text-lg">
           Sign in to access your curated collection of premium products and exclusive offers.
         </p>
       </div>
@@ -35,7 +35,7 @@
           <div class="space-y-1.5">
             <label for="email" class="block text-sm font-medium text-zinc-900 dark:text-zinc-50">Email</label>
             <input v-model="email" type="email" id="email" required placeholder="you@example.com"
-              class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all text-zinc-900 dark:text-zinc-50 placeholder-zinc-400" />
+              class="w-full px-4 py-3 rounded-xl bg-white/70 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all text-zinc-900 dark:text-zinc-50 placeholder-zinc-400" />
           </div>
 
           <div class="space-y-1.5">
@@ -44,7 +44,7 @@
               <a href="#" class="text-xs font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700">Forgot password?</a>
             </div>
             <input v-model="password" type="password" id="password" required placeholder="••••••••"
-              class="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all text-zinc-900 dark:text-zinc-50 placeholder-zinc-400" />
+              class="w-full px-4 py-3 rounded-xl bg-white/70 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all text-zinc-900 dark:text-zinc-50 placeholder-zinc-400" />
           </div>
 
           <p v-if="error" class="text-sm font-medium text-red-500 flex items-center gap-2 p-3 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
