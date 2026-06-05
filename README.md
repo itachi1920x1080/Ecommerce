@@ -162,7 +162,13 @@ Built with a modern tech stack featuring a decoupled architecture—a powerful *
    ```
    *Ensure the `.env` file matches your local environment requirements. Laravel Sail handles the DB configuration by default.*
 
-3. **Install Backend Dependencies via Docker:**
+3. **Install Backend Dependencies:**
+   If you have Composer installed locally, you can simply run:
+   ```bash
+   composer install
+   ```
+
+   *Alternatively, to install via Docker without local PHP/Composer:*
    ```bash
    docker run --rm \
    -u "$(id -u):$(id -g)" \
@@ -173,8 +179,29 @@ Built with a modern tech stack featuring a decoupled architecture—a powerful *
    ```
 
 4. **Configure Laravel Sail Alias (Optional):**
+
+   **1. Open bash config**
+   ```bash
+   nano ~/.bashrc
+   ```
+   
+   **✅ 2. Add alias at the bottom**
+   Scroll all the way down and paste:
    ```bash
    alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
+   ```
+   
+   **✅ 3. Save file in nano**
+   Press: `Ctrl + O`  
+   Then press: `Enter` *(This confirms the filename to save)*
+   
+   **✅ 4. Exit nano**
+   Press: `Ctrl + X`
+   
+   **✅ 5. Apply changes immediately**
+   Run:
+   ```bash
+   source ~/.bashrc
    ```
 
 5. **Frontend Configuration:**
@@ -214,6 +241,8 @@ npm run dev
 * `sail shell` : Access the container's bash shell.
 * `sail artisan migrate` : Run database migrations.
 * `sail logs` : View application logs.
+* `./vendor/bin/sail artisan make:factory ProductFactory` : Generate a new factory for the Product model.
+* `./vendor/bin/sail artisan make:factory UserFactory` : Generate a new factory for the User model.
 
 ---
 
