@@ -6,6 +6,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '@/api/axios.js'
+import axios from 'axios'
 
 export const useAuthStore = defineStore('auth', () => {
 
@@ -22,11 +23,20 @@ export const useAuthStore = defineStore('auth', () => {
    * Login with email/password via Sanctum token auth
    */
   async function login(email, password) {
-    // ជំហានទី ១៖ សុំសោរ CSRF សិន
-    await api.get('/sanctum/csrf-cookie')
+    
+    // ជំហានទី ១: សុំសោរ CSRF ពី Backend 
+    await axios.get('https://ecommerce-production-3bc1.up.railway.app/sanctum/csrf-cookie', {
+      withCredentials: true // សំខាន់បំផុត
+    });
 
-    // ជំហានទី ២៖ ទើបធ្វើការ POST Login
-    const res = await api.post('/login', { email, password })
+    // ជំហានទី ២: ធ្វើការ Login បញ្ជូន Email & Password
+    // ចំណាំ៖ ដោយសារកូដ API Login របស់អ្នកស្ថិតក្នុង /api/login សូមប្រាកដថាប្រើ /api/login ឬ /login បើប្រើ web route
+    const res = await axios.post('https://ecommerce-production-3bc1.up.railway.app/api/login', {
+      email: email,
+      password: password
+    }, {
+      withCredentials: true // សំខាន់បំផុត
+    });
 
     token.value = res.data?.token || 'cookie-auth'
     user.value  = { email, role: res.data?.role, name: res.data?.name || email.split('@')[0] }
