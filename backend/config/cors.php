@@ -1,11 +1,28 @@
 <?php
+
 return [
-    "paths" => ["api/*"],
-    "allowed_methods" => ["*"],
-    "allowed_origins" => ["*"],
-    "allowed_origins_patterns" => [],
-    "allowed_headers" => ["*"],
-    "exposed_headers" => [],
-    "max_age" => 0,
-    "supports_credentials" => false,
+    /*
+     * បន្ថែម 'sanctum/csrf-cookie' និង 'login' ដើម្បីឱ្យ Frontend មានសិទ្ធិហៅមកបាន
+     */
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'login', 'logout'],
+
+    'allowed_methods' => ['*'],
+
+    /*
+     * ភ្ជាប់ទៅកាន់ Link Frontend របស់អ្នក
+     */
+    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
+
+    'allowed_origins_patterns' => [],
+
+    'allowed_headers' => ['*'],
+
+    'exposed_headers' => [],
+
+    'max_age' => 0,
+
+    /*
+     * ដាច់ខាតត្រូវតែ true ទើបអាច Login បាន
+     */
+    'supports_credentials' => true,
 ];
