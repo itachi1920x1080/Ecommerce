@@ -7,3 +7,8 @@ Route::get('/', function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/linkstorage', function () {
+    \Illuminate\Support\Facades\Artisan::call('storage:link');
+    return 'Storage linked!';
+});
