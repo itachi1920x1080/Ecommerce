@@ -70,6 +70,10 @@
                   >
                     <option value="pending">Pending</option>
                     <option value="processing">Processing</option>
+                    <option value="finding_driver">Finding Driver</option>
+                    <option value="driver_assigned">Driver Assigned</option>
+                    <option value="at_restaurant">At Restaurant</option>
+                    <option value="delivering">Delivering</option>
                     <option value="paid">Paid</option>
                     <option value="completed">Completed</option>
                     <option value="delivered">Delivered</option>
@@ -120,6 +124,10 @@ function statusBadge(status) {
     processing: 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800',
     pending:    'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-700',
     cancelled:  'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800',
+    finding_driver: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800',
+    driver_assigned: 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-800',
+    at_restaurant: 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-800',
+    delivering: 'bg-cyan-50 dark:bg-cyan-900/20 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-800',
   }
   return map[status] || 'bg-white dark:bg-zinc-900 text-zinc-500 border-zinc-200 dark:border-zinc-700'
 }

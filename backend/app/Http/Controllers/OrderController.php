@@ -192,7 +192,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:pending,processing,paid,completed,delivered,cancelled'
+            'status' => 'required|in:pending,processing,finding_driver,driver_assigned,at_restaurant,delivering,paid,completed,delivered,cancelled'
         ]);
 
         $order = Order::findOrFail($id);
