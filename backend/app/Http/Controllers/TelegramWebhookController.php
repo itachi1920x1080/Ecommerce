@@ -90,7 +90,7 @@ class TelegramWebhookController extends Controller
 
                     $keyboard = [
                         'inline_keyboard' => [
-                            [['text' => '🌐 ចូលទិញទំនិញក្នុង Web', 'url' => 'https://tapered-motocross-versus.ngrok-free.dev']],
+                            [['text' => '🌐 ចូលទិញទំនិញក្នុង Web', 'url' => 'https://beautiful-reflection-production.up.railway.app']],
                             [['text' => '💬 ឆាតសួរព័ត៌មាន Admin', 'url' => 'https://t.me/mk_bo1879']]
                         ]
                     ];
@@ -141,7 +141,7 @@ class TelegramWebhookController extends Controller
 
                     $keyboard = [
                         'inline_keyboard' => [
-                            [['text' => '🛒 មើលទំនិញទាំងអស់ក្នុង Web', 'url' => 'https://tapered-motocross-versus.ngrok-free.dev/api/products']]
+                            [['text' => '🛒 មើលទំនិញទាំងអស់ក្នុង Web', 'url' => 'https://beautiful-reflection-production.up.railway.app/products']]
                         ]
                     ];
 
