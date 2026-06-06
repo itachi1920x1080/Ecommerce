@@ -1,8 +1,14 @@
 import axios from 'axios'
 
 // 1. កំណត់ baseURL ឱ្យត្រង់ទៅកាន់ Backend URL របស់អ្នកតែម្តង
+let baseUrlRaw = import.meta.env.VITE_API_URL || 'https://ecommerce-production-3bc1.up.railway.app/api';
+// ប្រាកដថា baseURL តែងតែបញ្ចប់ដោយ /api (ការពារករណីភ្លេចដាក់ក្នុង Railway Variables)
+if (!baseUrlRaw.endsWith('/api')) {
+  baseUrlRaw = baseUrlRaw.replace(/\/$/, '') + '/api';
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://ecommerce-production-3bc1.up.railway.app/api',
+  baseURL: baseUrlRaw,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
