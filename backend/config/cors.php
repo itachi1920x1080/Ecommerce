@@ -11,9 +11,9 @@ return [
     /*
      * ភ្ជាប់ទៅកាន់ Link Frontend របស់អ្នក
      */
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
-
+    'allowed_origins' => ['https://beautiful-reflection-production.up.railway.app'],
     'allowed_origins_patterns' => [],
+    'supports_credentials' => true,
 
     'allowed_headers' => ['*'],
 
