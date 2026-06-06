@@ -87,15 +87,7 @@ async function handleLogin() {
   error.value = ''
   loading.value = true
   try {
-    // ជំហានទី ១: សុំសោរ CSRF (ត្រូវហៅ URL ពេញ)
-    await axios.get('https://ecommerce-production-3bc1.up.railway.app/sanctum/csrf-cookie', {
-      withCredentials: true 
-    });
-
-    // ជំហានទី ២: ហៅ Login (ត្រូវហៅ URL ពេញ)
     await auth.login(email.value, password.value) 
-    
-    // រួចហើយទើប Redirect
     router.push('/')
   } catch (e) {
     // បង្ហាញ Error ឱ្យច្បាស់ដើម្បីងាយស្រួលដោះស្រាយ

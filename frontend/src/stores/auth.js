@@ -24,22 +24,10 @@ export const useAuthStore = defineStore('auth', () => {
    */
   async function login(email, password) {
     
-    // ជំហានទី ១: សុំសោរ CSRF ពី Backend 
-    await axios.get('https://ecommerce-production-3bc1.up.railway.app/sanctum/csrf-cookie', {
-      withCredentials: true // សំខាន់បំផុត
-    });
+    const res = await api.post('/login', { email, password });
 
-    // ជំហានទី ២: ធ្វើការ Login បញ្ជូន Email & Password
-    // ចំណាំ៖ ដោយសារកូដ API Login របស់អ្នកស្ថិតក្នុង /api/login សូមប្រាកដថាប្រើ /api/login ឬ /login បើប្រើ web route
-    const res = await axios.post('https://ecommerce-production-3bc1.up.railway.app/api/login', {
-      email: email,
-      password: password
-    }, {
-      withCredentials: true // សំខាន់បំផុត
-    });
-
-    token.value = res.data?.token || 'cookie-auth'
-    user.value  = { email, role: res.data?.role, name: res.data?.name || email.split('@')[0] }
+    token.value = res.data?.token || ''
+    user.value  = { email, role: res.data?.user?.role, name: res.data?.user?.name || email.split('@')[0] }
 
     localStorage.setItem('token', token.value)
     localStorage.setItem('user', JSON.stringify(user.value))
