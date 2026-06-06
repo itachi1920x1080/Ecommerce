@@ -73,6 +73,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { ShoppingBag as ShoppingBagIcon, AlertCircle as AlertCircleIcon, Loader2 as Loader2Icon } from '@lucide/vue'
+import axios from 'axios'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -86,10 +87,20 @@ async function handleLogin() {
   error.value = ''
   loading.value = true
   try {
-    await auth.login(email.value, password.value)
+    // ជំហានទី ១: សុំសោរ CSRF (ត្រូវហៅ URL ពេញ)
+    await axios.get('https://ecommerce-production-3bc1.up.railway.app/sanctum/csrf-cookie', {
+      withCredentials: true 
+    });
+
+    // ជំហានទី ២: ហៅ Login (ត្រូវហៅ URL ពេញ)
+    await auth.login(email.value, password.value) 
+    
+    // រួចហើយទើប Redirect
     router.push('/')
   } catch (e) {
-    error.value = e.response?.data?.message || 'Invalid credentials'
+    // បង្ហាញ Error ឱ្យច្បាស់ដើម្បីងាយស្រួលដោះស្រាយ
+    error.value = e.response?.data?.message || 'Login failed. Please check your credentials.'
+    console.error("Login Error:", e)
   } finally {
     loading.value = false
   }
