@@ -53,6 +53,40 @@
       </table>
     </div>
 
+    <!-- Pagination -->
+    <div v-if="lastPage > 1" class="flex items-center justify-center gap-2">
+      <button
+        @click="goToPage(currentPage - 1)"
+        :disabled="currentPage === 1"
+        class="px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed transition"
+      >← Prev</button>
+
+      <template v-for="item in paginationPages" :key="item">
+        <span v-if="item === '...'" class="text-zinc-400 px-1">...</span>
+        <button
+          v-else
+          @click="goToPage(item)"
+          :class="[
+            'w-10 h-10 rounded-full text-sm font-medium transition',
+            item === currentPage
+              ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900'
+              : 'border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+          ]"
+        >{{ item }}</button>
+      </template>
+
+      <button
+        @click="goToPage(currentPage + 1)"
+        :disabled="currentPage === lastPage"
+        class="px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed transition"
+      >Next →</button>
+    </div>
+
+    <!-- Total -->
+    <p class="text-center text-zinc-400 text-sm -mt-4">
+      Page {{ currentPage }} / {{ lastPage }} — សរុប {{ total }} products
+    </p>
+
     <!-- Add/Edit Modal -->
     <AddProductModal
       v-if="showModal"
@@ -92,7 +126,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, inject } from 'vue'
+import { ref, computed, onMounted, inject } from 'vue'
 import api from '@/api/axios.js'
 import AddProductModal from '@/components/admin/ProductModal.vue'
 import { Plus as PlusIcon, Trash2 as TrashIcon } from '@lucide/vue'
@@ -107,21 +141,61 @@ const showModal      = ref(false)
 const editingProduct = ref(null)
 const deleteTarget   = ref(null)
 
-// Fetch all data
-async function loadData() {
+// Pagination
+const currentPage = ref(1)
+const lastPage    = ref(1)
+const total       = ref(0)
+const perPage     = 20
+
+// Smart pagination pages: 1 | 2 | 3 | ... | 20
+const paginationPages = computed(() => {
+  const pages = []
+  const tp = lastPage.value
+  const cp = currentPage.value
+
+  if (tp <= 7) {
+    for (let i = 1; i <= tp; i++) pages.push(i)
+    return pages
+  }
+
+  pages.push(1)
+  if (cp > 4) pages.push('...')
+
+  const start = Math.max(2, cp - 1)
+  const end   = Math.min(tp - 1, cp + 1)
+  for (let i = start; i <= end; i++) pages.push(i)
+
+  if (cp < tp - 3) pages.push('...')
+  pages.push(tp)
+
+  return pages
+})
+
+// Fetch products for a given page
+async function loadData(page = 1) {
   loading.value = true
   try {
     const [pRes, cRes] = await Promise.all([
-      api.get('/products'),
+      api.get(`/products?per_page=${perPage}&page=${page}`),
       api.get('/categories')
     ])
-    products.value   = pRes.data.data || pRes.data || []
-    categories.value = cRes.data.data || cRes.data || []
+    products.value   = pRes.data.data || []
+    currentPage.value = pRes.data.current_page || 1
+    lastPage.value    = pRes.data.last_page || 1
+    total.value       = pRes.data.total || 0
+    categories.value  = cRes.data.data || cRes.data || []
   } catch (e) {
     toast('Failed to load products', 'error')
   } finally {
     loading.value = false
   }
+}
+
+function goToPage(page) {
+  if (page < 1 || page > lastPage.value) return
+  currentPage.value = page
+  loadData(page)
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 // Modal handlers
@@ -138,11 +212,10 @@ function closeModal() {
   editingProduct.value = null
 }
 
-// Submit (create or update) — uses FormData for image upload
+// Submit (create or update)
 async function handleSubmit(data) {
   saving.value = true
   try {
-    // ProductModal emits a plain object; convert to FormData for image upload support
     const formData = data instanceof FormData ? data : (() => {
       const fd = new FormData()
       Object.entries(data).forEach(([k, v]) => { if (v !== '' && v !== null && v !== undefined) fd.append(k, v) })
@@ -162,7 +235,7 @@ async function handleSubmit(data) {
       toast('Product created!', 'success')
     }
     closeModal()
-    await loadData()
+    await loadData(currentPage.value) // ← stay on same page after edit
   } catch (e) {
     toast(e.response?.data?.message || 'Failed to save product', 'error')
   } finally {
@@ -177,8 +250,8 @@ function handleDelete(product) {
 async function confirmDelete() {
   try {
     await api.delete(`/products/${deleteTarget.value.id}`)
-    products.value = products.value.filter(p => p.id !== deleteTarget.value.id)
     toast('Product deleted', 'success')
+    await loadData(currentPage.value) // ← reload current page after delete
   } catch (e) {
     toast('Failed to delete product', 'error')
   } finally {
@@ -186,5 +259,5 @@ async function confirmDelete() {
   }
 }
 
-onMounted(loadData)
+onMounted(() => loadData(1))
 </script>

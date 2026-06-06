@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
     // ១. ទាញយកទំនិញទាំងអស់ (មានមុខងារ Search, Filter, Pagination និង Category)
-    // ១. ទាញយកទំនិញទាំងអស់ (មានមុខងារ Search, Filter, Pagination និង Category)
     public function index(Request $request)
     {
         // ភ្ជាប់ជាមួយ category និង variants ដើម្បីទាញយកមកព្រមគ្នា
@@ -34,17 +33,44 @@ class ProductController extends Controller
             $query->where('price', '<=', $request->max_price);
         }
 
-        // ង. បិទមិនបង្ហាញផលិតផលដែលអស់ស្តុក ហើយ admin កំណត់ថា hide
-        $query->where(function ($q) {
-            $q->where('stock', '>', 0)
-              ->orWhere('out_of_stock_status', '!=', 'hide');
+        // ឃ. មុខងារចម្រោះតាម Category
+        if ($request->has('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // ង. មុខងារចម្រោះតាម Sale (discount_percent > 0)
+        if ($request->has('sale') && $request->sale === 'true') {
+            $query->where('discount_percent', '>', 0);
+        }
+
+        // ច. បិទមិនបង្ហាញផលិតផលដែល admin កំណត់ថា hide តែប៉ុណ្ណោះ
+        // ✅ FIX: include NULL rows too — whereNull handles products with no status set
+        $query->where(function($q) {
+            $q->where('out_of_stock_status', '!=', 'hide')
+              ->orWhereNull('out_of_stock_status');
         });
 
-        // ច. បែងចែកទំព័រ (ប្រើកូដ paginate ដើមរបស់អ្នកវិញទើបត្រូវ)
-        $products = $query->latest()->paginate(10);
+        // ឆ. មុខងារតម្រៀប
+        if ($request->has('sort')) {
+            if ($request->sort === 'price_asc') {
+                $query->orderBy('price', 'asc');
+            } elseif ($request->sort === 'price_desc') {
+                $query->orderBy('price', 'desc');
+            } else {
+                $query->latest();
+            }
+        } else {
+            $query->latest();
+        }
+
+        // ជ. បែងចែកទំព័រ — ✅ FIX: cast to int និង whitelist តម្លៃដែលអនុញ្ញាត
+        $perPage = (int) $request->get('per_page', 20);
+        $perPage = in_array($perPage, [20, 50, 100, 300]) ? $perPage : 20;
+        $products = $query->paginate($perPage);
 
         return response()->json($products);
-    }   
+    }
+
     // ២. បញ្ចូលទំនិញថ្មី (សម្រាប់ Admin)
     public function store(Request $request)
     {
@@ -53,7 +79,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'category_id' => 'nullable|exists:categories,id', // ឆែកថាតើ category_id នេះពិតជាមានក្នុងប្រព័ន្ធឬអត់
+            'category_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'discount_percent' => 'nullable|numeric|min:0|max:100',
             'out_of_stock_status' => 'nullable|string|in:show,hide,preorder',
@@ -75,18 +101,15 @@ class ProductController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'បញ្ចូលទំនិញជោគជ័យ!', 
+            'message' => 'បញ្ចូលទំនិញជោគជ័យ!',
             'product' => $product
         ], 201);
     }
 
     // ៣. មើលទំនិញតែមួយមុខលម្អិត
-    // ៣. មើលទំនិញតែមួយមុខលម្អិត
     public function show($id)
     {
-        // កន្លែងនេះទើបយើងប្រើ findOrFail($id) ដោយភ្ជាប់ category និង variants មកជាមួយ
         $product = Product::with(['category', 'variants'])->findOrFail($id);
-        
         return response()->json($product);
     }
 
@@ -121,11 +144,11 @@ class ProductController extends Controller
             'category_id' => $request->category_id ?? $product->category_id,
             'out_of_stock_status' => $request->out_of_stock_status ?? 'show',
         ]);
-        
+
         $product->save();
 
         return response()->json([
-            'message' => 'កែប្រែទំនិញជោគជ័យ!', 
+            'message' => 'កែប្រែទំនិញជោគជ័យ!',
             'product' => $product
         ]);
     }
@@ -134,14 +157,14 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
-        
+
         // លុបរូបភាពចេញពី Folder ផងដែរ
         if ($product->image_url) {
             Storage::disk('public')->delete($product->image_url);
         }
-        
+
         $product->delete();
 
         return response()->json(['message' => 'លុបទំនិញជោគជ័យ!']);
     }
- }
+}
