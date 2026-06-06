@@ -22,12 +22,16 @@ export const useAuthStore = defineStore('auth', () => {
    * Login with email/password via Sanctum token auth
    */
   async function login(email, password) {
+    // ជំហានទី ១៖ សុំសោរ CSRF សិន
+    await api.get('/sanctum/csrf-cookie')
+
+    // ជំហានទី ២៖ ទើបធ្វើការ POST Login
     const res = await api.post('/login', { email, password })
 
-    token.value = res.data.token
-    user.value  = { email, role: res.data.role, name: res.data.name || email.split('@')[0] }
+    token.value = res.data?.token || 'cookie-auth'
+    user.value  = { email, role: res.data?.role, name: res.data?.name || email.split('@')[0] }
 
-    localStorage.setItem('token', res.data.token)
+    localStorage.setItem('token', token.value)
     localStorage.setItem('user', JSON.stringify(user.value))
   }
 

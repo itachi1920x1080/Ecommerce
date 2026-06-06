@@ -1,35 +1,25 @@
-/**
- * Axios API Service Layer
- * Centralized HTTP client with auth token injection and 401 auto-logout.
- */
 import axios from 'axios'
 
-const defaultBaseUrl = window.location.hostname === 'localhost' 
-  ? 'http://localhost:8000/api'
-  : `http://${window.location.hostname}:8000/api`;
-
+// 1. កំណត់ baseURL ឱ្យត្រង់ទៅកាន់ Backend URL របស់អ្នកតែម្តង
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || defaultBaseUrl,
-  headers: { 'Content-Type': 'application/json' }
-})
-
-// ── Request interceptor: attach Bearer token ──
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+  baseURL: import.meta.env.VITE_API_URL || 'https://ecommerce-production-3bc1.up.railway.app/api', // ត្រូវប្រាកដថា URL នេះគឺ https://ecommerce-production-3bc1.up.railway.app
+  withCredentials: true, // នេះសំខាន់បំផុត៖ ដើម្បីឱ្យ Browser បញ្ជូន Cookie ទៅឱ្យ Backend
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
   }
-  return config
 })
 
-// ── Response interceptor: auto-logout on 401 ──
+// 2. លុប Request Interceptor ចាស់ដែលប្រើ Bearer Token ចោល
+// (ប្រសិនបើអ្នកប្រើ Sanctum Cookie, អ្នកមិនចាំបាច់ផ្ញើ Token តាម Header ទៀតទេ)
+
+// 3. Response Interceptor (រក្សាទុកដដែល)
 api.interceptors.response.use(
   response => response,
   error => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token')
+      // លុបអ្វីដែលមិនចាំបាច់ចេញ
       localStorage.removeItem('user')
-      // Redirect to login if not already there
       if (window.location.pathname !== '/login') {
         window.location.href = '/login'
       }
