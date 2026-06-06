@@ -74,7 +74,7 @@
               >
                 <img
                   v-if="auth.user?.avatar"
-                  :src="auth.user.avatar.startsWith('http') ? auth.user.avatar : 'http://localhost:8000/storage/' + auth.user.avatar"
+                  :src="auth.user.avatar.startsWith('http') ? auth.user.avatar : 'https://ecommerce-production-3bc1.up.railway.app/storage/' + auth.user.avatar"
                   class="w-6 h-6 rounded-full object-cover border border-zinc-200 dark:border-zinc-700"
                   alt="Avatar"
                 />

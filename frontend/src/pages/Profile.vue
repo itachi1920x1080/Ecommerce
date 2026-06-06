@@ -21,7 +21,7 @@
               <label class="block text-sm font-medium text-zinc-900 dark:text-zinc-50">Profile Photo</label>
               <div class="flex items-center gap-6">
                 <div class="w-20 h-20 rounded-full bg-zinc-100 dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 overflow-hidden flex items-center justify-center">
-                  <img v-if="avatarPreview || auth.user?.avatar" :src="avatarPreview || (auth.user.avatar.startsWith('http') ? auth.user.avatar : 'http://localhost:8000/storage/' + auth.user.avatar)" alt="Avatar" class="w-full h-full object-cover" />
+                  <img v-if="avatarPreview || auth.user?.avatar" :src="avatarPreview || (auth.user.avatar.startsWith('http') ? auth.user.avatar : 'https://ecommerce-production-3bc1.up.railway.app/storage/' + auth.user.avatar)" alt="Avatar" class="w-full h-full object-cover" />
                   <UserIcon v-else class="w-8 h-8 text-zinc-400" />
                 </div>
                 <div>
