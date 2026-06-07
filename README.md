@@ -110,6 +110,7 @@ Built with a modern tech stack featuring a decoupled architecture—a powerful *
 ### Backend
 * **Framework:** Laravel 13.x (PHP 8.3+)
 * **Authentication:** Laravel Sanctum (Token-based API Auth)
+* **Media Storage:** Cloudinary PHP SDK (For persistent image storage on ephemeral hosts like Railway)
 * **Utilities:** `simplesoftwareio/simple-qrcode`
 
 ### Database & Containerization
@@ -160,7 +161,7 @@ Built with a modern tech stack featuring a decoupled architecture—a powerful *
    cd backend
    cp .env.example .env
    ```
-   *Ensure the `.env` file matches your local environment requirements. Laravel Sail handles the DB configuration by default.*
+   *Ensure the `.env` file matches your local environment requirements, including adding your `CLOUDINARY_URL` for image uploads. Laravel Sail handles the DB configuration by default.*
 
 3. **Install Backend Dependencies:**
    If you have Composer installed locally, you can simply run:
