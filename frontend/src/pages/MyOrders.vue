@@ -58,7 +58,7 @@
               <!-- Order Items -->
               <div class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
                 <div v-for="item in order.items" :key="item.id" class="w-20 h-20 rounded-xl bg-white/80 dark:bg-zinc-800 overflow-hidden shrink-0 border border-zinc-100 dark:border-zinc-800">
-                  <img :src="item.product?.image_url ? getStorageUrl(item.product.image_url) : (item.product?.full_image_url || item.product?.image || 'https://placehold.co/100')" :alt="item.product?.name" class="w-full h-full object-cover" />
+                  <img :src="item.product?.image_url ? getStorageUrl(item.product.image_url) : (item.product?.full_image_url || item.product?.image || 'https://placehold.co/100')" :alt="item.product?.name" class="w-full h-full object-cover" @error="$event.target.src='https://placehold.co/100'" />
                 </div>
               </div>
 

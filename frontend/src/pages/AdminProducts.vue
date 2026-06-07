@@ -31,7 +31,7 @@
         <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800/50">
           <tr v-for="p in products" :key="p.id" class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
             <td class="px-8 py-5 flex items-center gap-4">
-              <img :src="p.image_url ? getStorageUrl(p.image_url) : (p.full_image_url || p.image || 'https://placehold.co/40')" class="w-12 h-12 rounded-xl object-cover border border-zinc-200 dark:border-zinc-700" :alt="p.name" />
+              <img :src="p.image_url ? getStorageUrl(p.image_url) : (p.full_image_url || p.image || 'https://placehold.co/40')" class="w-12 h-12 rounded-xl object-cover border border-zinc-200 dark:border-zinc-700" :alt="p.name" @error="$event.target.src='https://placehold.co/40'" />
               <span class="font-medium text-zinc-900 dark:text-zinc-50">{{ p.name }}</span>
             </td>
             <td class="px-6 py-5">
