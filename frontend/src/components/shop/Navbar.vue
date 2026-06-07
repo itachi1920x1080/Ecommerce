@@ -74,7 +74,7 @@
               >
                 <img
                   v-if="auth.user?.avatar"
-                  :src="auth.user.avatar.startsWith('http') ? auth.user.avatar : 'https://ecommerce-production-3bc1.up.railway.app/storage/' + auth.user.avatar"
+                  :src="getStorageUrl(auth.user.avatar)"
                   class="w-6 h-6 rounded-full object-cover border border-zinc-200 dark:border-zinc-700"
                   alt="Avatar"
                 />
@@ -213,6 +213,7 @@
 import { ref, computed, inject, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { getStorageUrl } from '@/api/axios.js'
 import { useCartStore } from '@/stores/cart'
 import { useTheme } from '@/composables/useTheme'
 import {

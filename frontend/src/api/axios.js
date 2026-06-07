@@ -39,4 +39,12 @@ api.interceptors.response.use(
   }
 )
 
+export function getStorageUrl(path) {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  let base = api.defaults.baseURL.replace(/\/api\/?$/, '');
+  path = path.replace(/^\//, '');
+  return `${base}/storage/${path}`;
+}
+
 export default api
