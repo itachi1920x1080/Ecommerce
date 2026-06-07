@@ -169,4 +169,13 @@ class ProductController extends Controller
 
         return response()->json(['message' => 'លុបទំនិញជោគជ័យ!']);
     }
+
+    public function serveImage($path)
+    {
+        $fullPath = storage_path('app/public/' . $path);
+        if (file_exists($fullPath)) {
+            return response()->file($fullPath);
+        }
+        abort(404);
+    }
 }

@@ -14,18 +14,8 @@ Route::get('/linkstorage', function () {
 });
 
 // Fallback to serve storage files if symlink is missing
-Route::get('/storage/{path}', function ($path) {
-    $fullPath = storage_path('app/public/' . $path);
-    if (file_exists($fullPath)) {
-        return response()->file($fullPath);
-    }
-    abort(404);
-})->where('path', '.*');
+Route::get('/storage/{path}', [ProductController::class, 'serveImage'])->where('path', '.*');
 
-Route::get('/fetch-image/{path}', function ($path) {
-    $fullPath = storage_path('app/public/' . $path);
-    if (file_exists($fullPath)) {
-        return response()->file($fullPath);
-    }
-    abort(404);
-})->where('path', '.*');
+use App\Http\Controllers\ProductController;
+
+Route::get('/fetch-image/{path}', [ProductController::class, 'serveImage'])->where('path', '.*');
