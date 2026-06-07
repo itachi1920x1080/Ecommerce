@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\ProductController;
+
 Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
@@ -15,7 +17,5 @@ Route::get('/linkstorage', function () {
 
 // Fallback to serve storage files if symlink is missing
 Route::get('/storage/{path}', [ProductController::class, 'serveImage'])->where('path', '.*');
-
-use App\Http\Controllers\ProductController;
 
 Route::get('/fetch-image/{path}', [ProductController::class, 'serveImage'])->where('path', '.*');
