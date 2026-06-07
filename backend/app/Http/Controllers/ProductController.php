@@ -96,6 +96,7 @@ class ProductController extends Controller
             'price' => $request->price,
             'stock' => $request->stock,
             'category_id' => $request->category_id,
+            'discount_percent' => $request->discount_percent ?? 0,
             'out_of_stock_status' => $request->out_of_stock_status ?? 'show',
             'image_url' => $imagePath,
         ]);
@@ -142,6 +143,7 @@ class ProductController extends Controller
             'price' => $request->price,
             'stock' => $request->stock,
             'category_id' => $request->category_id ?? $product->category_id,
+            'discount_percent' => $request->discount_percent ?? $product->discount_percent,
             'out_of_stock_status' => $request->out_of_stock_status ?? 'show',
         ]);
 
