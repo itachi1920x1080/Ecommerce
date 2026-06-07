@@ -35,8 +35,8 @@ class Product extends Model
             if (\Illuminate\Support\Str::startsWith($this->image_url, ['http://', 'https://'])) {
                 return $this->image_url;
             }
-            // បង្កើត Link ពេញលេញ (ឧ. http://localhost:8000/storage/products/xxx.jpg)
-            return asset('storage/' . $this->image_url);
+            // បង្កើត Link ពេញលេញដោយប្រើ Route ថ្មីដែលយើងបានបង្កើត
+            return asset('fetch-image/' . $this->image_url);
         }
         // បើអត់ទាន់មានរូបភាព ប្រើរូបភាព Default នេះសិន
         return 'https://via.placeholder.com/150?text=No+Image'; 
