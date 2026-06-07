@@ -98,7 +98,7 @@ import api from '@/api/axios.js'
 import { ShoppingBag as ShoppingBagIcon, BarChart2 as BarChart2Icon } from '@lucide/vue'
 
 const dashCards = computed(() => {
-  const d = analytics.value?.data || analytics.value || {}
+  const d = analytics.value?.analytics || analytics.value?.data || analytics.value || {}
   return [
     { label: 'Total Revenue', value: '$' + Number(d.total_revenue || 0).toFixed(2) },
     { label: 'Total Orders', value: d.total_orders || 0 },
