@@ -152,5 +152,4 @@ Route::middleware(['auth:sanctum', 'driver'])->group(function () {
     Route::get('/driver/active-orders', [\App\Http\Controllers\DriverController::class, 'getActiveDeliveries']);
     Route::post('/driver/orders/{id}/accept', [\App\Http\Controllers\DriverController::class, 'acceptOrder']);
     Route::put('/driver/orders/{id}/status', [\App\Http\Controllers\DriverController::class, 'updateStatus']);
-});R o u t e : : g e t ( ' / d e b u g - e n v ' ,   f u n c t i o n   ( )   {   r e t u r n   [ ' b a s e _ p a t h '   = >   b a s e _ p a t h ( ) ,   ' s t o r a g e _ p a t h '   = >   s t o r a g e _ p a t h ( ) ,   ' p u b l i c _ p a t h '   = >   p u b l i c _ p a t h ( ) ,   ' f i l e s '   = >   g l o b ( s t o r a g e _ p a t h ( ' a p p / p u b l i c / p r o d u c t s / * ' ) ) ] ;   } ) ;  
- 
+});
