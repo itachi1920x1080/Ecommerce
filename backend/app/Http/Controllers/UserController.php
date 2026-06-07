@@ -70,12 +70,17 @@ class UserController extends Controller
 
         if ($request->hasFile('avatar')) {
             // លុបរូបចាស់បើមាន
-            if ($user->avatar && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->avatar)) {
+            if ($user->avatar && !str_starts_with($user->avatar, 'http')) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($user->avatar);
             }
-            // រក្សាទុករូបថ្មី
-            $path = $request->file('avatar')->store('avatars', 'public');
-            $data['avatar'] = $path;
+            if (env('CLOUDINARY_URL')) {
+                $cloudinary = new \Cloudinary\Cloudinary(env('CLOUDINARY_URL'));
+                $result = $cloudinary->uploadApi()->upload($request->file('avatar')->getRealPath(), ['folder' => 'avatars']);
+                $data['avatar'] = $result['secure_url'];
+            } else {
+                $path = $request->file('avatar')->store('avatars', 'public');
+                $data['avatar'] = $path;
+            }
         }
 
         $user->update($data);
