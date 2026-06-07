@@ -78,7 +78,7 @@
                 <td class="px-5 py-3.5">
                   <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-lg bg-gray-100 dark:bg-gray-800 overflow-hidden shrink-0 flex items-center justify-center">
-                      <img v-if="product.image" :src="product.image" class="w-full h-full object-cover"
+                      <img v-if="product.image_url || product.full_image_url || product.image" :src="product.image_url ? getStorageUrl(product.image_url) : (product.full_image_url || product.image)" class="w-full h-full object-cover"
                            :alt="product.name" @error="product.image = ''"/>
                       <svg v-else class="w-4 h-4 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -226,6 +226,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { getStorageUrl } from '@/api/axios'
 
 // ALL data comes from AdminView — no local dummy data
 const props = defineProps({

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import api from '@/api/axios.js'
+import api, { getStorageUrl } from '@/api/axios.js'
 
 export const useCartStore = defineStore('cart', () => {
 
@@ -45,7 +45,7 @@ export const useCartStore = defineStore('cart', () => {
           price: finalPrice,
           original_price: Number(c.product?.price || 0),
           discount_percent: c.product?.discount_percent || 0,
-          image: c.product?.full_image_url || c.product?.image || 'https://placehold.co/64x64/e2e8f0/94a3b8?text=Product',
+          image: c.product?.image_url ? getStorageUrl(c.product.image_url) : (c.product?.full_image_url || c.product?.image || 'https://placehold.co/64x64/e2e8f0/94a3b8?text=Product'),
           quantity: c.quantity
         }
       })
@@ -73,7 +73,7 @@ export const useCartStore = defineStore('cart', () => {
         price: finalPrice,
         original_price: Number(product.price || 0),
         discount_percent: product.discount_percent || 0,
-        image: product.full_image_url || product.image || 'https://placehold.co/64x64/e2e8f0/94a3b8?text=Product',
+        image: product.image_url ? getStorageUrl(product.image_url) : (product.full_image_url || product.image || 'https://placehold.co/64x64/e2e8f0/94a3b8?text=Product'),
         quantity: 1
       })
     }

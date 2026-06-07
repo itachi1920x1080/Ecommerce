@@ -115,7 +115,7 @@
               <div class="flex items-center gap-3">
                 <span class="text-xs font-semibold text-zinc-400 w-4">{{ i + 1 }}</span>
                 <div class="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 overflow-hidden shrink-0">
-                  <img v-if="product.image" :src="product.image" class="w-full h-full object-cover" @error="product.image=''" :alt="product.name"/>
+                  <img v-if="product.image_url || product.full_image_url || product.image" :src="product.image_url ? getStorageUrl(product.image_url) : (product.full_image_url || product.image)" class="w-full h-full object-cover" :alt="product.name"/>
                 </div>
                 <span class="text-sm font-medium text-zinc-900 dark:text-zinc-50 truncate max-w-[160px]">
                   {{ product.name }}
@@ -143,6 +143,7 @@
 <script setup>
 import { computed } from 'vue'
 import { DollarSign as DollarSignIcon, ShoppingCart as ShoppingCartIcon, Package as PackageIcon, TrendingUp as TrendingUpIcon } from '@lucide/vue'
+import { getStorageUrl } from '@/api/axios'
 
 const props = defineProps({
   loading:   { type: Boolean, default: false },

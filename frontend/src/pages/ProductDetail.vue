@@ -225,7 +225,7 @@
 <script setup>
 import { ref, onMounted, inject, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import api from '@/api/axios.js'
+import api, { getStorageUrl } from '@/api/axios.js'
 import { useAuthStore } from '@/stores/auth'
 import { useCartStore } from '@/stores/cart'
 import Footer from '@/components/shop/Footer.vue'
@@ -249,7 +249,7 @@ const activeImage = ref('')
 
 const productImages = computed(() => {
   if (!product.value) return []
-  const mainImage = product.value.full_image_url || product.value.image || 'https://placehold.co/800x1000/f4f4f5/52525b?text=Product'
+  const mainImage = product.value.image_url ? getStorageUrl(product.value.image_url) : (product.value.full_image_url || product.value.image || 'https://placehold.co/800x1000/f4f4f5/52525b?text=Product')
   return [mainImage]
 })
 
