@@ -178,9 +178,7 @@ async function updateProfile() {
 
     formData.append('_method', 'PUT')
     
-    const res = await api.post('/user/profile', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
+    const res = await api.post('/user/profile', formData)
     
     auth.user = res.data.user
     localStorage.setItem('user', JSON.stringify(auth.user))

@@ -227,14 +227,10 @@ async function handleSubmit(data) {
 
     if (editingProduct.value) {
       formData.append('_method', 'PUT')
-      await api.post(`/products/${editingProduct.value.id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
+      await api.post(`/products/${editingProduct.value.id}`, formData)
       toast('Product updated!', 'success')
     } else {
-      await api.post('/products', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
+      await api.post('/products', formData)
       toast('Product created!', 'success')
     }
     closeModal()

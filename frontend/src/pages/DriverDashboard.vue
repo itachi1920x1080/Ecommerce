@@ -174,11 +174,7 @@ async function uploadDeliveryPhoto(event, order) {
     formData.append('image', file)
     formData.append('_method', 'PUT')
     
-    await api.post(`/driver/orders/${order.id}/status`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+    await api.post(`/driver/orders/${order.id}/status`, formData)
     
     toast('Order delivered successfully!', 'success')
     await fetchActive()
