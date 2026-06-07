@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Cloudinary\Cloudinary;
 
 class ProductController extends Controller
 {
@@ -87,7 +88,13 @@ class ProductController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
+            if (env('CLOUDINARY_URL')) {
+                $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
+                $result = $cloudinary->uploadApi()->upload($request->file('image')->getRealPath(), ['folder' => 'products']);
+                $imagePath = $result['secure_url'];
+            } else {
+                $imagePath = $request->file('image')->store('products', 'public');
+            }
         }
 
         $product = Product::create([
@@ -131,10 +138,16 @@ class ProductController extends Controller
 
         // បើមានរូបភាពថ្មី លុបរូបភាពចាស់ចោល រួចបញ្ចូលរូបភាពថ្មី
         if ($request->hasFile('image')) {
-            if ($product->image_url) {
+            if ($product->image_url && !str_starts_with($product->image_url, 'http')) {
                 Storage::disk('public')->delete($product->image_url);
             }
-            $product->image_url = $request->file('image')->store('products', 'public');
+            if (env('CLOUDINARY_URL')) {
+                $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
+                $result = $cloudinary->uploadApi()->upload($request->file('image')->getRealPath(), ['folder' => 'products']);
+                $product->image_url = $result['secure_url'];
+            } else {
+                $product->image_url = $request->file('image')->store('products', 'public');
+            }
         }
 
         $product->update([
@@ -161,7 +174,7 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         // លុបរូបភាពចេញពី Folder ផងដែរ
-        if ($product->image_url) {
+        if ($product->image_url && !str_starts_with($product->image_url, 'http')) {
             Storage::disk('public')->delete($product->image_url);
         }
 

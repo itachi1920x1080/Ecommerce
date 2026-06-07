@@ -3,7 +3,7 @@
     <!-- Image Container -->
     <div class="relative w-full aspect-[3/4] overflow-hidden bg-zinc-100 dark:bg-zinc-900 mb-4">
       <img
-        :src="product.image_url ? getStorageUrl(product.image_url) : (product.full_image_url || product.image || 'https://placehold.co/400x500/f4f4f5/52525b?text=Product')"
+        :src="product.full_image_url || (product.image_url ? getStorageUrl(product.image_url) : product.image) || 'https://placehold.co/400x500/f4f4f5/52525b?text=Product'"
         :alt="product.name"
         class="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105"
         loading="lazy"
