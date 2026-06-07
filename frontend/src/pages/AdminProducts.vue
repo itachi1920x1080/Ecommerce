@@ -218,7 +218,10 @@ async function handleSubmit(data) {
   try {
     const formData = data instanceof FormData ? data : (() => {
       const fd = new FormData()
-      Object.entries(data).forEach(([k, v]) => { if (v !== '' && v !== null && v !== undefined) fd.append(k, v) })
+      Object.entries(data).forEach(([k, v]) => { 
+        if (k === 'image' && !(v instanceof File)) return // Don't send string URLs as files
+        if (v !== '' && v !== null && v !== undefined) fd.append(k, v) 
+      })
       return fd
     })()
 

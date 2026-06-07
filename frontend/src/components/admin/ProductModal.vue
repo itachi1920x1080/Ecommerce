@@ -175,6 +175,7 @@
 <script setup>
 import { ref, watch, computed } from 'vue'
 import { Edit as EditIcon, Plus as PlusIcon, X as XIcon, Image as ImageIcon, AlertCircle as AlertCircleIcon, Loader2 as Loader2Icon, Check as CheckIcon } from '@lucide/vue'
+import { getStorageUrl } from '@/api/axios.js'
 
 const props = defineProps({
   editing:   { type: Object,  default: null },   // null = add mode, object = edit mode
@@ -224,7 +225,7 @@ watch(() => props.editing, (val) => {
       description: val.description ?? '',
       image:       val.image       ?? '',
     }
-    imagePreview.value = val.full_image_url || val.image || val.image_url || ''
+    imagePreview.value = val.image_url ? getStorageUrl(val.image_url) : (val.full_image_url || val.image || '')
   } else {
     form.value = defaultForm()
     imagePreview.value = ''
