@@ -17,7 +17,7 @@ const message = ref('')
 const messages = ref([])
 
 const sendMessage = async () => {
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+  const baseUrl = import.meta.env.VITE_CHATBOT_URL || 'http://localhost:8000'
   const res = await axios.post(
     `${baseUrl}/chat/`,
     {
