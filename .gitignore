@@ -1,2 +1,4 @@
-
 *Zone.Identifier
+venv/
+__pycache__/
+*.pyc
