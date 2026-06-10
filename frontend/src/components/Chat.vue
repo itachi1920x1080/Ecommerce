@@ -126,7 +126,10 @@ const sendMessage = async () => {
   await scrollToBottom()
 
   try {
-    const baseUrl = import.meta.env.VITE_CHATBOT_URL || 'http://localhost:8000'
+    let baseUrl = import.meta.env.VITE_CHATBOT_URL || 'http://localhost:8000'
+    // Remove accidental quotes and trailing slashes from the URL
+    baseUrl = baseUrl.replace(/^"|"$/g, '').replace(/\/+$/, '')
+    
     const res = await axios.post(`${baseUrl}/chat/`, {
       message: userMsg
     })
