@@ -33,6 +33,8 @@
       </main>
     </div>
 
+    <!-- Chatbot Widget -->
+    <Chat />
   </div>
 </template>
 
@@ -45,6 +47,7 @@ import Navbar from '@/components/shop/Navbar.vue'
 import Sidebar from '@/components/Sidebar.vue'
 import CartDrawer from '@/components/ui/CartDrawer.vue'
 import ToastProvider from '@/components/ui/ToastProvider.vue'
+import Chat from '@/components/Chat.vue'
 
 const auth  = useAuthStore()
 const route = useRoute()
