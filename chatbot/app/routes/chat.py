@@ -1,5 +1,15 @@
+import os
 from fastapi import APIRouter
 from pydantic import BaseModel
+import google.generativeai as genai
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Configure Gemini API
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 router = APIRouter(prefix="/chat", tags=["Chat"])
 
@@ -8,24 +18,21 @@ class ChatRequest(BaseModel):
 
 @router.post("/")
 def chat(data: ChatRequest):
-
-    msg = data.message.lower()
-
-    if any(word in msg for word in ["hello", "hi", "hey"]):
-        reply = "Hello! Welcome to Tea Tik kok Shop! How can I help you today?"
-    elif any(word in msg for word in ["price", "cost", "how much"]):
-        reply = "Please tell me the name of the product you're interested in, and I'll check the price for you."
-    elif any(word in msg for word in ["shipping", "delivery"]):
-        reply = "We offer free standard shipping on all orders! Delivery usually takes 3-5 business days."
-    elif any(word in msg for word in ["return", "refund"]):
-        reply = "We have a 30-day hassle-free return policy. If you're not satisfied, you can return your item for a full refund."
-    elif any(word in msg for word in ["track", "status"]):
-        reply = "You can track your order by clicking the 'Track Order' link in the top menu and entering your order number."
-    elif any(word in msg for word in ["payment", "credit card", "paypal", "pay"]):
-        reply = "We accept all major credit cards (Visa, MasterCard, Amex) as well as PayPal and Apple Pay."
-    elif any(word in msg for word in ["contact", "support", "human"]):
-        reply = "You can reach our human support team by visiting the 'Contact' page or emailing support@teatikkok.com."
-    else:
-        reply = "I'm sorry, I don't quite understand. Could you rephrase your question, or ask about our shipping, returns, or products?"
+    system_prompt = (
+        "You are a helpful and polite customer support agent for Tea Tik kok Shop. "
+        "Keep your answers brief, professional, and directly address the user's question. "
+        "Context: We offer free standard shipping (3-5 days), a 30-day return policy, "
+        "accept all major credit cards and PayPal, and our support email is support@teatikkok.com. "
+        "We do not have physical store locations. If the user asks a question unrelated to "
+        "ecommerce or our shop, politely steer the conversation back to our products."
+    )
+    
+    try:
+        # Pass the system prompt and the user's message to Gemini
+        response = model.generate_content(f"System: {system_prompt}\n\nUser: {data.message}")
+        reply = response.text
+    except Exception as e:
+        print(f"Error calling Gemini API: {e}")
+        reply = "I'm having trouble connecting to my AI brain right now. Please try again later or email support@teatikkok.com."
 
     return {"reply": reply}
