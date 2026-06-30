@@ -90,8 +90,15 @@ class ChatRequest(BaseModel):
 async def chat_endpoint(request: ChatRequest):
     try:
         response = chat_session.send_message(request.message)
-        # FastAPI automatically converts standard Python dictionaries to JSON
         return {"response": response.text}
+    
     except Exception as e:
-        # Handle errors gracefully
-        raise HTTPException(status_code=500, detail=str(e))
+        error_msg = str(e)
+        # ប្រសិនបើកំហុសពាក់ព័ន្ធនឹងការអស់កូតា (429)
+        if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
+            return {
+                "response": "⚠️ សូមអភ័យទោស ប្រព័ន្ធឆ្លើយតបស្វ័យប្រវត្តិកំពុងមានអ្នកប្រើប្រាស់ច្រើន។ សូមរង់ចាំប្រហែល ១ នាទី រួចសាកល្បងសួរម្តងទៀតបាទ។ 🙏"
+            }
+        
+        # ប្រសិនបើកំហុសផ្សេងៗទៀត
+        raise HTTPException(status_code=500, detail=error_msg)
