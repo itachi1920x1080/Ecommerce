@@ -1,0 +1,12 @@
+[
+  {
+    "name": "ASUS TUF Gaming F17",
+    "price": 950,
+    "image_url": "https://placehold.co/400x300/1e3a8a/white?text=ASUS+TUF+F17"
+  },
+  {
+    "name": "ASUS ROG Phone 3",
+    "price": 450,
+    "image_url": "https://placehold.co/400x300/dc2626/white?text=ROG+Phone+3"
+  }
+]
