@@ -51,7 +51,7 @@
                   : 'bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl rounded-bl-sm text-zinc-800 dark:text-zinc-200'
               ]"
             >
-              {{ msg.text }}
+              <div v-html="formatMessage(msg.text)" class="prose prose-sm max-w-none dark:prose-invert"></div>
             </div>
           </div>
 
@@ -102,6 +102,18 @@
 <script setup>
 import { ref, nextTick } from 'vue'
 import axios from 'axios'
+
+// បន្ថែម Function នេះដើម្បីបំប្លែង Markdown រូបភាពទៅជា HTML <img>
+const formatMessage = (text) => {
+  if (!text) return ''
+  // Regex សម្រាប់រកមើល ![alt](url)
+  const imageRegex = /!\[(.*?)\]\((.*?)\)/g;
+  
+  // ប្តូរវាទៅជា Tag HTML ដែលមាន Design រួចជាស្រេចពី Tailwind
+  return text.replace(imageRegex, (match, alt, url) => {
+    return `<img src="${url}" alt="${alt}" class="w-full max-w-[250px] rounded-lg mt-3 shadow-md border border-gray-200" />`;
+  });
+}
 
 const isOpen = ref(false)
 const message = ref('')
