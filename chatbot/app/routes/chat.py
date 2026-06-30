@@ -14,13 +14,22 @@ router = APIRouter()
 
 client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
+import urllib.request
+
 def get_dynamic_catalog():
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    json_path = os.path.join(current_dir, "../../new_products.json") 
-    
     try:
-        with open(json_path, 'r', encoding='utf-8') as file:
-            products = json.load(file)
+        # Fetch directly from the Laravel Backend API (similar to Telegram Bot)
+        backend_url = os.getenv("BACKEND_API_URL", "https://ecommerce-production-3bc1.up.railway.app/api")
+        
+        req = urllib.request.Request(f"{backend_url}/products")
+        with urllib.request.urlopen(req, timeout=10) as response:
+            data = json.loads(response.read().decode())
+            
+        # Laravel's pagination usually wraps items in a 'data' array
+        products = data.get('data', []) if isinstance(data, dict) else data
+        
+        # Get the top 5 latest products just like in TelegramWebhookController
+        products = products[:5]
             
         catalog_text = "📦 បញ្ជីទំនិញថ្មីៗទើបមកដល់ (New Arrivals):\n"
         
@@ -29,12 +38,18 @@ def get_dynamic_catalog():
             price = item.get('price', 0)
             image = item.get('image_url', '')
             
+            # Format image URL if it's stored locally on the Laravel backend
+            if image and not str(image).startswith('http'):
+                base_url = backend_url.replace('/api', '')
+                image = f"{base_url}/storage/{image}"
+            
             catalog_text += f"- {name} (តម្លៃ: ${price})\n"
             catalog_text += f"  រូបភាពទំនិញ: ![{name}]({image})\n\n"
             
         return catalog_text
     
-    except FileNotFoundError:
+    except Exception as e:
+        print(f"Error fetching catalog: {e}")
         return "⚠️ កំពុងរៀបចំទំនិញថ្មីៗ..."
 
 base_context = """
