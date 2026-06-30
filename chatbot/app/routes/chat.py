@@ -18,7 +18,7 @@ import urllib.request
 
 def get_dynamic_catalog():
     try:
-        # Fetch directly from the Laravel Backend API (similar to Telegram Bot)
+        # Fetch directly from the Laravel Backend API (similar to Telegram Bot) 
         backend_url = os.getenv("BACKEND_API_URL", "https://ecommerce-production-3bc1.up.railway.app/api")
         
         req = urllib.request.Request(f"{backend_url}/products")
