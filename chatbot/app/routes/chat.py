@@ -1,38 +1,53 @@
+from fastapi import FastAPI, APIRouter, HTTPException
 import os
-from fastapi import APIRouter
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
 
-# Configure Gemini API
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel('gemini-1.5-flash')
+router = APIRouter()
 
-router = APIRouter(prefix="/chat", tags=["Chat"])
+client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
+shop_context = """
+អ្នកគឺជាជំនួយការផ្នែកលក់ដ៏គួរសមម្នាក់របស់ហាង "Tea Tik Kok Shop"
+នេះជាព័ត៌មានផ្លូវការរបស់ហាងសម្រាប់ឆ្លើយតប៖
+- ម៉ោងបើកទ្វារ៖ ច័ន្ទ ដល់ អាទិត្យ (ម៉ោង 8:00 ព្រឹក ដល់ 8:00 យប់)។
+- ទីតាំងហាង៖ ជិតសាកលវិទ្យាល័យភូមិន្ទភ្នំពេញ (RUPP) មហាវិថីសហព័ន្ធរុស្ស៊ី ភ្នំពេញ។
+- សេវាដឹកជញ្ជូន៖ ដឹកជញ្ជូនឥតគិតថ្លៃក្នុងភ្នំពេញ សម្រាប់ការទិញចាប់ពី $50 ឡើងទៅ។ ខេត្តក្រៅសេវាដឹក $2។
+- ទំនាក់ទំនង៖ លេខទូរស័ព្ទ 012-345-678 ឬ Telegram @cambodiatechshop។
+
+ប្រសិនបើអតិថិជនសួរក្រៅពីព័ត៌មាននេះ ឬសួររកទំនិញដែលគ្មាន ចូលប្រាប់ពួកគេឲ្យទាក់ទងមកកាន់ក្រុមការងារតាម Telegram ឬទូរស័ព្ទ។
+
+"""
+chat_session = client.chats.create(
+    model="gemini-2.5-flash",
+    config=types.GenerateContentConfig(
+        system_instruction=shop_context,
+        temperature=0.7 
+    )
+)
+
+
+@router.get("/")
+def health_check():
+    return {"message": "ok"}
+
+# 4. Define the exact data structure we expect from the frontend
 class ChatRequest(BaseModel):
     message: str
 
-@router.post("/")
-def chat(data: ChatRequest):
-    system_prompt = (
-        "You are a helpful and polite customer support agent for Tea Tik kok Shop. "
-        "Keep your answers brief, professional, and directly address the user's question. "
-        "Context: We offer free standard shipping (3-5 days), a 30-day return policy, "
-        "accept all major credit cards and PayPal, and our support email is support@teatikkok.com. "
-        "We do not have physical store locations. If the user asks a question unrelated to "
-        "ecommerce or our shop, politely steer the conversation back to our products."
-    )
-    
+# 5. The API Endpoint (Notice the async/await syntax)
+@router.post("/api/chat")
+async def chat_endpoint(request: ChatRequest):
     try:
-        # Pass the system prompt and the user's message to Gemini
-        response = model.generate_content(f"System: {system_prompt}\n\nUser: {data.message}")
-        reply = response.text
+        response = chat_session.send_message(request.message)
+        # FastAPI automatically converts standard Python dictionaries to JSON
+        return {"response": response.text}
     except Exception as e:
-        print(f"Error calling Gemini API: {e}")
-        reply = "I'm having trouble connecting to my AI brain right now. Please try again later or email support@teatikkok.com."
-
-    return {"reply": reply}
+        # Handle errors gracefully
+        raise HTTPException(status_code=500, detail=str(e))
