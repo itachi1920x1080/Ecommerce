@@ -29,47 +29,17 @@ Route::post('/webhook', [TelegramWebhookController::class, 'handle']);
 Route::post('/payment/webhook', [\App\Http\Controllers\PaymentController::class, 'webhook']);
 Route::get('/orders/{id}/status', [\App\Http\Controllers\OrderController::class, 'checkStatus']);
 
+use App\Http\Controllers\AuthController;
+
 // ២. បង្កើតគណនី (Register API)
-Route::post('/register', function (Request $request) {
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users',
-        'password' => 'required|min:8',
-    ]);
-
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'role' => 'user', // លំនាំដើមជា user
-    ]);
-
-    return response()->json([
-        'message' => 'បង្កើតគណនីជោគជ័យ!',
-        'token' => $user->createToken('API_Token')->plainTextToken
-    ], 201);
-});
+Route::post('/register', [AuthController::class, 'register']);
 
 // ៣. ចូលគណនី (Login API)
-Route::post('/login', function (Request $request) {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
+Route::post('/login', [AuthController::class, 'login']);
 
-    $user = User::where('email', $request->email)->first();
-
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        return response()->json(['message' => 'Email ឬ Password មិនត្រឹមត្រូវទេ'], 401);
-    }
-
-    return response()->json([
-        'message' => 'ចូលគណនីជោគជ័យ!',
-        'token' => $user->createToken('API_Token')->plainTextToken,
-        'role' => $user->role 
-    ]);
-});
-
+// Google OAuth routes
+Route::get('/auth/login', [AuthController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
 
 // ៤. ក្រុមទី ១៖ សម្រាប់អ្នកប្រើប្រាស់ធម្មតា (User Routes)
 Route::middleware(['auth:sanctum'])->group(function () {
