@@ -89,7 +89,7 @@ class AuthController extends Controller
 
             // Redirect back to the Vue frontend, passing the token in the URL
             $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
-            return redirect($frontendUrl . '/dashboard?token=' . $token);
+            return redirect($frontendUrl . '/auth/callback?token=' . $token);
 
         } catch (\Exception $e) {
             return response()->json(['message' => 'Google Authentication failed: ' . $e->getMessage()], 400);

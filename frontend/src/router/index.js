@@ -46,6 +46,12 @@ const routes = [
     component: () => import('@/pages/Register.vue'),
     meta: { guest: true }
   },
+  {
+    path: '/auth/callback',
+    name: 'auth-callback',
+    component: () => import('@/pages/AuthCallback.vue'),
+    meta: { guest: true }
+  },
 
   // ── Auth Routes (require login) ──
   {

@@ -57,5 +57,22 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('user')
   }
 
-  return { token, user, isAdmin, isDriver, isLoggedIn, userName, login, register, logout }
+  /**
+   * Login with existing token (e.g. from Google OAuth callback)
+   */
+  async function loginWithToken(newToken) {
+    token.value = newToken
+    localStorage.setItem('token', token.value)
+    
+    // Fetch user details
+    const res = await api.get('/user')
+    user.value = {
+      name: res.data.name,
+      email: res.data.email,
+      role: res.data.role
+    }
+    localStorage.setItem('user', JSON.stringify(user.value))
+  }
+
+  return { token, user, isAdmin, isDriver, isLoggedIn, userName, login, register, logout, loginWithToken }
 })
